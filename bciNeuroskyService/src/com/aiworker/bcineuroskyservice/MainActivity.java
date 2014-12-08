@@ -4,9 +4,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +32,7 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
         tv_Att = (TextView) findViewById(R.id.Att_label);
         tv_Med = (TextView) findViewById(R.id.Med_lable);       
         tv_NeuroskyStatus = (TextView) findViewById(R.id.NeuroskyStatus);
-		//Button resetButton=(Button)findViewById(R.id.my_button_del);
-		//resetButton.setVisibility(0); //To set visible
+			
 		
         // -- get the between instance stored values (status of music player)
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -50,11 +55,16 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 	          		case 1:
 	          			NeuroskyStatus = msg.obj.toString();
 	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
+	          			if(!NeuroskyStatus.equals("connecting . . .")){
+	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+		          			StopServiceButton.setVisibility(View.VISIBLE); 
+	          			}
+	          		
 	          			break;
 	          			
 	          		case 2:
-	          			tv_Att.setText(String.valueOf(msg.arg1));
-	          			tv_Med.setText(String.valueOf(msg.arg2));
+	          			At = msg.arg1; tv_Att.setText(String.valueOf(At));
+	          			Med = msg.arg2; tv_Med.setText(String.valueOf(Med));
 	          			break;
 	          		
 	          		case 3:
@@ -74,6 +84,11 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 	{
 		//start the service from here //eegService is your service class name
 		startService(new Intent(this, eegService.class));
+		Button StartServiceButton=(Button)findViewById(R.id.start_service);
+		StartServiceButton.setVisibility(View.INVISIBLE); 
+		
+		//Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+		//StopServiceButton.setVisibility(View.VISIBLE); 
 	}
 	//Stop the started service
 	public void onClickStopService(View V)
@@ -81,6 +96,13 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 		//Stop the running service from here//eegService is your service class name
 		//Service will only stop if it is already running.
 		stopService(new Intent(this, eegService.class));
+		
+		Button StartServiceButton=(Button)findViewById(R.id.start_service);
+		StartServiceButton.setVisibility(View.VISIBLE); 
+		
+		Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+		StopServiceButton.setVisibility(View.INVISIBLE); 
+		
 	}
 	//send message to service
 	public void onClickSendMessage (View v)
@@ -89,6 +111,8 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 		//here we will get the handler from the service first, then 
 		//we will send a message to the service.
 
+        EditText et_CurrentActivity = (EditText)findViewById(R.id.editTextCurrentActivity);
+        
 		if(null != eegService.meegServiceHandler)
 		{
 			//first build the message and send.
@@ -96,8 +120,9 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 			//For Example: lets use 0 (msg.what = 0;) for getting service running status from the service
 			Message msg = new Message();
 			msg.what = 0; 
-			msg.obj  = "Add your Extra Meaage Here"; // you can put extra message here
+			msg.obj  = et_CurrentActivity.getText(); // you can put extra message here
 			eegService.meegServiceHandler.sendMessage(msg);
+			et_CurrentActivity.setText("");
 		}
 	}
 	
@@ -114,7 +139,12 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
         	// -- commit to storage 
         editor.commit(); 
            
-       // finish();
+        // finish();
     }
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	        return super.onKeyDown(keyCode, event);
+	}
+	
 }

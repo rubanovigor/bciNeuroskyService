@@ -22,13 +22,16 @@ public final class R {
         public static final int activity_vertical_margin=0x7f040001;
     }
     public static final class drawable {
-        public static final int blacksquare=0x7f020000;
-        public static final int ic_launcher=0x7f020001;
+        public static final int aiworker_logo=0x7f020000;
+        public static final int blacksquare=0x7f020001;
+        public static final int ic_launcher=0x7f020002;
+        public static final int mindhackme_logo=0x7f020003;
     }
     public static final class id {
         public static final int Att_label=0x7f060005;
         public static final int Med_lable=0x7f060006;
         public static final int NeuroskyStatus=0x7f060004;
+        public static final int editTextCurrentActivity=0x7f060007;
         public static final int send_message=0x7f060003;
         public static final int start_service=0x7f060002;
         public static final int stop_service=0x7f060001;

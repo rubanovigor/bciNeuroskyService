@@ -16,43 +16,44 @@
   		android:gravity="center_horizontal"
   		android:textColor="#FFFFFF"
         android:textSize="20sp"
-        android:text="mindhack.me\nservice fo collecting data\nfor Neurosky Mindwave Mobile" />
+        android:text="mindhack.me\nservice for collecting data\nfor Neurosky Mindwave Mobile" />
 
-     <Button
+
+	 <Button
          android:id="@+id/stop_service"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignBaseline="@+id/start_service"
-         android:layout_alignBottom="@+id/start_service"
-         android:layout_alignRight="@+id/text_view_header"
+         android:layout_below="@+id/text_view_header"
+         android:layout_centerHorizontal="true"
          android:gravity="center"
          android:onClick="onClickStopService"
          android:text="Stop Service" 
-         android:textColor="#FFFFFF"
-         android:visibility="visible"/>
+         android:textColor="#000000"
+         android:visibility="invisible"/>
 
      <Button
          android:id="@+id/start_service"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/text_view_header"
-         android:layout_centerVertical="true"
+         android:layout_below="@+id/text_view_header"
+         android:layout_centerHorizontal="true"
          android:onClick="onClickStartServie"
-         android:textColor="#FFFFFF"
+         android:textColor="#000000"
          android:text="Start Service" />
 
      <Button
           android:id="@+id/send_message"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/stop_service"
           android:layout_centerHorizontal="true"
-          android:layout_marginTop="70dp"
+          android:layout_alignParentBottom="true"
+          android:layout_marginTop="5dp"
           android:gravity="center"
           android:onClick="onClickSendMessage"
-          android:text="Send Message"
-          android:textColor="#FFFFFF" 
-          android:visibility="invisible"/>
+          android:text="Add Current Activity"
+          android:textColor="#000000" 
+          android:visibility="visible"/>
+
 
        <TextView
            android:id="@+id/NeuroskyStatus"
@@ -90,7 +91,16 @@
 		   android:layout_alignParentRight="true"
            android:textColor="#ffffff"
            android:textSize="12sp" />
-                
+
+       <EditText
+           android:id="@+id/editTextCurrentActivity"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:maxLines="1"
+           android:layout_above="@+id/send_message"
+           android:layout_centerHorizontal="true"
+           android:layout_marginBottom="16dp"
+           android:ems="10"  />
 
 </RelativeLayout>
 
