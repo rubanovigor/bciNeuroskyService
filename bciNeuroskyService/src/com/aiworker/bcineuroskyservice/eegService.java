@@ -29,7 +29,7 @@ import com.neurosky.thinkgear.TGEegPower;
 
 public class eegService extends Service{
 	private static final String TAG = "eegService";
-	public String userName = "denis";
+	public String userName = "ihar";
 	public String appName;
 	
 	// -- used for getting the handler from other class for sending messages
@@ -90,6 +90,7 @@ public class eegService extends Service{
 		//Toast.makeText(this, "Congrats! My Service Started", Toast.LENGTH_LONG).show();
 		// We need to return if we want to handle this service explicitly. 
 		return START_STICKY;
+		//return Service.START_REDELIVER_INTENT;
 	}
 
 	@Override
