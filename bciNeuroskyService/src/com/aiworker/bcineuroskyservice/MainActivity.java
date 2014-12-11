@@ -122,7 +122,7 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 			msg.what = 0; 
 			msg.obj  = et_CurrentActivity.getText(); // you can put extra message here
 			eegService.meegServiceHandler.sendMessage(msg);
-			et_CurrentActivity.setText("");
+			//et_CurrentActivity.setText("");
 		}
 	}
 	

@@ -29,6 +29,8 @@ import com.neurosky.thinkgear.TGEegPower;
 
 public class eegService extends Service{
 	private static final String TAG = "eegService";
+	public String userName = "denis";
+	public String appName;
 	
 	// -- used for getting the handler from other class for sending messages
 	public static Handler 		meegServiceHandler 			= null;
@@ -41,7 +43,7 @@ public class eegService extends Service{
 	private int At=42; private int Med=42;
 	private int delta = 0; private int high_alpha = 0; private int high_beta = 0; private int low_alpha = 0;
 	private int low_beta = 0; private int low_gamma = 0; private int mid_gamma = 0; private int theta = 0;
-	private String CurrentActivity = "";
+	private String CurrentActivity = "default";
 	 	
 	// -- notifications
 	private NotificationManager mNotificationManager;
@@ -272,13 +274,13 @@ public class eegService extends Service{
 			                          
 	    	                    // --saving data to file
 	    	                    String filename; 
-	    	                    String user_g = "ihar";
+	    	                    //String userName = "ihar";
 	    	                    Time now = new Time();
 	    	                    now.setToNow();
 	    	                    String date_time = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));                    
 	    	                    filename = "bciNeuroskyService" + date_time + ".csv";
 	    	                    
-	    	                    writeToExternalStoragePublic(filename, user_g, now, At, Med);
+	    	                    writeToExternalStoragePublic(filename, userName, now, At, Med);
 	    	                    //writeToExternalStoragePublic(filename, gmail, now, At, Med);
 			                    break;
 			                    
@@ -335,7 +337,7 @@ public class eegService extends Service{
 		};
 
 	public void writeToExternalStoragePublic(String filename,
-		   String user_g_l, Time now_l, int At_l, int Med_l) {
+		   String userName_l, Time now_l, int At_l, int Med_l) {
 		    	
 		        String packageName = this.getPackageName();
 		        String path = Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -345,6 +347,7 @@ public class eegService extends Service{
 		        		+ "delta;high_alpha;high_beta;low_alpha;low_beta;low_gamma;mid_gamma;theta;"
 		        		+ "CurrentActivity";
 		        
+		        appName = packageName;
 		        try {
 		               boolean exists = (new File(path)).exists();
 		               if (!exists) {
@@ -356,8 +359,9 @@ public class eegService extends Service{
 		                    	FileOutputStream fOut = new FileOutputStream(path + filename,true);
 		                    	// -- write Head and integers as separated ascii's
 		                    	//fOut.write((titles.toString() + "\n").getBytes());
-		                    	fOut.write(("bciNeuroskyService" + ";").getBytes());
-		                    	fOut.write((user_g_l.toString() + ";").getBytes());
+		                    	//fOut.write(("bciNeuroskyService" + ";").getBytes());
+		                    	fOut.write((appName + ";").getBytes()); 
+		                    	fOut.write((userName_l.toString() + ";").getBytes());
 		                    	fOut.write((now_l.toString() + ";").getBytes());
 		                        fOut.write((Integer.valueOf(At_l).toString() + ";").getBytes());
 		                        fOut.write((Integer.valueOf(Med_l).toString() + ";").getBytes());
@@ -369,7 +373,7 @@ public class eegService extends Service{
 		                        fOut.write((Double.valueOf(low_gamma).toString() + ";").getBytes());
 		                        fOut.write((Double.valueOf(mid_gamma).toString() + ";").getBytes());
 		                        fOut.write((Double.valueOf(theta).toString() + ";").getBytes());
-		                        fOut.write((CurrentActivity + ";").getBytes());
+		                        fOut.write((CurrentActivity + "\n").getBytes());
 		                        fOut.flush();
 		                        fOut.close();
 		                    }    
