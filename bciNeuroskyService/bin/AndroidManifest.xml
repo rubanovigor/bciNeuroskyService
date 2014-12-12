@@ -35,8 +35,7 @@
         
         
         <service android:enabled="true"
-            	 android:name=".eegService"
-            	 android:process="my_process" />
+            	 android:name=".eegService" />
         
     </application>
 

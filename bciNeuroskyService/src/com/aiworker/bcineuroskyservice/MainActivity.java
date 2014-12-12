@@ -22,7 +22,7 @@ public static Handler mUiHandler = null;
 TextView tv_Med;    TextView tv_Att;    TextView tv_NeuroskyStatus; 
 private int At=42; private int Med=42;
 
-String NeuroskyStatus; String Key_NeuroskyStatus;
+String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,31 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
         	tv_NeuroskyStatus.setText(NeuroskyStatus);
         }
         
+        // -- manage correct appearance of the start/stop buttons
+		if(eegService.mIsServiceRunning == true){
+			Button StartServiceButton=(Button)findViewById(R.id.start_service);
+			StartServiceButton.setVisibility(View.INVISIBLE); 
+			Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+			StopServiceButton.setVisibility(View.VISIBLE); 
+		} else {
+			Button StartServiceButton=(Button)findViewById(R.id.start_service);
+			StartServiceButton.setVisibility(View.VISIBLE); 		
+			Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+			StopServiceButton.setVisibility(View.INVISIBLE); 
+		}
+		
+		if(NeuroskyStatus.equals("connected")){
+			Button StartServiceButton=(Button)findViewById(R.id.start_service);
+			StartServiceButton.setVisibility(View.INVISIBLE); 
+			Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+			StopServiceButton.setVisibility(View.VISIBLE); 
+		}
+	    if(NeuroskyStatus.equals("connecting . . .")){
+		    Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+		    StopServiceButton.setVisibility(View.INVISIBLE); 
+		} 
+		
+		
 		mUiHandler = new Handler() // Receive messages from service class 
         {
 			public void handleMessage(Message msg)
@@ -55,9 +80,22 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 	          		case 1:
 	          			NeuroskyStatus = msg.obj.toString();
 	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
-	          			if(!NeuroskyStatus.equals("connecting . . .")){
+	          			/*if(!NeuroskyStatus.equals("connecting . . .") && 
+	          					eegService.At != 0 && eegService.Med != 0){
 	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
 		          			StopServiceButton.setVisibility(View.VISIBLE); 
+	          			}*/
+	          			if(NeuroskyStatus.equals("connected") ){
+	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+		          			StopServiceButton.setVisibility(View.VISIBLE); 
+	          			}
+	          			if(NeuroskyStatus.equals("neurosky mindwave mobile\ndisconnected") || 
+	          			   NeuroskyStatus.equals("neurosky mindwave mobile\nnot paired") ||
+	          			   NeuroskyStatus.equals("neurosky mindwave mobile\nwas not found")    ){
+		          			/*	Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+			          			StopServiceButton.setVisibility(View.VISIBLE); 
+			          			Button StartServiceButton=(Button)findViewById(R.id.start_service);
+			        			StartServiceButton.setVisibility(View.INVISIBLE); */
 	          			}
 	          		
 	          			break;
@@ -65,6 +103,8 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 	          		case 2:
 	          			At = msg.arg1; tv_Att.setText(String.valueOf(At));
 	          			Med = msg.arg2; tv_Med.setText(String.valueOf(Med));
+	          			NeuroskyStatus = msg.obj.toString();
+	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
 	          			break;
 	          		
 	          		case 3:
@@ -84,11 +124,11 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 	{
 		//start the service from here //eegService is your service class name
 		startService(new Intent(this, eegService.class));
-		Button StartServiceButton=(Button)findViewById(R.id.start_service);
-		StartServiceButton.setVisibility(View.INVISIBLE); 
+		//if(eegService.mIsServiceRunning == true){
+			Button StartServiceButton=(Button)findViewById(R.id.start_service);
+			StartServiceButton.setVisibility(View.INVISIBLE); 
+		//}
 		
-		//Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-		//StopServiceButton.setVisibility(View.VISIBLE); 
 	}
 	//Stop the started service
 	public void onClickStopService(View V)
@@ -98,10 +138,11 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
 		stopService(new Intent(this, eegService.class));
 		
 		Button StartServiceButton=(Button)findViewById(R.id.start_service);
-		StartServiceButton.setVisibility(View.VISIBLE); 
-		
+		StartServiceButton.setVisibility(View.VISIBLE); 	
 		Button StopServiceButton=(Button)findViewById(R.id.stop_service);
 		StopServiceButton.setVisibility(View.INVISIBLE); 
+		//NeuroskyStatus = "neurosky mindwave mobile\ndisconnected";
+	    //tv_NeuroskyStatus.setText(NeuroskyStatus);
 		
 	}
 	//send message to service
@@ -139,7 +180,7 @@ String NeuroskyStatus; String Key_NeuroskyStatus;
         	// -- commit to storage 
         editor.commit(); 
            
-        // finish();
+        finish();
     }
 
 	@Override

@@ -14,6 +14,7 @@ import android.app.TaskStackBuilder;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -40,7 +41,7 @@ public class eegService extends Service{
 	// -- BT and TG
 	private BluetoothAdapter bluetoothAdapter;	TGDevice tgDevice;
 	private static final boolean RAW_ENABLED = false; // false by default	
-	private int At=42; private int Med=42;
+	public static int At=0; public static int Med=0;
 	private int delta = 0; private int high_alpha = 0; private int high_beta = 0; private int low_alpha = 0;
 	private int low_beta = 0; private int low_gamma = 0; private int mid_gamma = 0; private int theta = 0;
 	private String CurrentActivity = "default";
@@ -92,7 +93,7 @@ public class eegService extends Service{
 		return START_STICKY;
 		//return Service.START_REDELIVER_INTENT;
 	}
-
+    
 	@Override
 	public void onDestroy() {
 		//Toast.makeText(this, "eegService Stopped", Toast.LENGTH_LONG).show();
