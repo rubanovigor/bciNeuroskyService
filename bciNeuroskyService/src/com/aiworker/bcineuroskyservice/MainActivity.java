@@ -16,16 +16,34 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
-public static Handler mUiHandler = null;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
 
-TextView tv_Med;    TextView tv_Att;    TextView tv_NeuroskyStatus; 
-private int At=42; private int Med=42;
-
-String NeuroskyStatus = ""; String Key_NeuroskyStatus;
-
+public class MainActivity extends Activity{
+//public class MainActivity extends PApplet{
+	public static Handler mUiHandler = null;
+	
+	TextView tv_Med;    TextView tv_Att;    TextView tv_NeuroskyStatus; 
+	public static int At=42; public static int Med=42;
+	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
+	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
+	
+	// -- processing variables 
+	int pts = 40; 	float angle = 0;	float radius = 60.0f;
+		// -- lathe segments
+	int segments = 60;	float latheAngle = 0;	float latheRadius = 100.0f;
+		// -- vertices
+	PVector vertices[], vertices2[];
+		// -- for shaded or wireframe rendering 
+	boolean isWireFrame = false;
+		// -- for optional helix
+	boolean isHelix = false;	float helixOffset = 5.0f;
+	// -- END processing variables 
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
@@ -35,14 +53,21 @@ String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 			
 		
         // -- get the between instance stored values (status of music player)
+        tv_NeuroskyStatus.setText(NeuroskyStatus);
+        tv_Att.setText(String.valueOf(ServiceRunningFlag));
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         if (preferences.getString(Key_NeuroskyStatus, null) != null){
         	NeuroskyStatus =  preferences.getString(Key_NeuroskyStatus, null);
+        	ServiceRunningFlag =  preferences.getString(Key_ServiceRunningFlag, "stoped");
         	tv_NeuroskyStatus.setText(NeuroskyStatus);
+        	tv_Att.setText(String.valueOf(ServiceRunningFlag));
         }
         
         // -- manage correct appearance of the start/stop buttons
-		if(eegService.mIsServiceRunning == true){
+        //tv_Att.setText(String.valueOf(eegService.mIsServiceRunning)); 
+        //tv_Att.setText(String.valueOf(ServiceRunningFlag));
+        //if(eegService.mIsServiceRunning == true){
+		if(ServiceRunningFlag.equals("running")){
 			Button StartServiceButton=(Button)findViewById(R.id.start_service);
 			StartServiceButton.setVisibility(View.INVISIBLE); 
 			Button StopServiceButton=(Button)findViewById(R.id.stop_service);
@@ -80,22 +105,27 @@ String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 	          		case 1:
 	          			NeuroskyStatus = msg.obj.toString();
 	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
-	          			/*if(!NeuroskyStatus.equals("connecting . . .") && 
-	          					eegService.At != 0 && eegService.Med != 0){
-	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-		          			StopServiceButton.setVisibility(View.VISIBLE); 
-	          			}*/
+
 	          			if(NeuroskyStatus.equals("connected") ){
 	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
 		          			StopServiceButton.setVisibility(View.VISIBLE); 
+		          			Button StartServiceButton=(Button)findViewById(R.id.start_service);
+		          			StartServiceButton.setVisibility(View.INVISIBLE); 
+	          			}
+	          			if(NeuroskyStatus.equals("connecting . . .") ){
+	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+		          			StopServiceButton.setVisibility(View.INVISIBLE); 
+		          			Button StartServiceButton=(Button)findViewById(R.id.start_service);
+		          			StartServiceButton.setVisibility(View.INVISIBLE); 
 	          			}
 	          			if(NeuroskyStatus.equals("neurosky mindwave mobile\ndisconnected") || 
 	          			   NeuroskyStatus.equals("neurosky mindwave mobile\nnot paired") ||
 	          			   NeuroskyStatus.equals("neurosky mindwave mobile\nwas not found")    ){
-		          			/*	Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-			          			StopServiceButton.setVisibility(View.VISIBLE); 
-			          			Button StartServiceButton=(Button)findViewById(R.id.start_service);
-			        			StartServiceButton.setVisibility(View.INVISIBLE); */
+	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+		          			StopServiceButton.setVisibility(View.INVISIBLE); 
+		          			Button StartServiceButton=(Button)findViewById(R.id.start_service);
+		          			StartServiceButton.setVisibility(View.VISIBLE); 
+	          				
 	          			}
 	          		
 	          			break;
@@ -128,6 +158,7 @@ String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 			Button StartServiceButton=(Button)findViewById(R.id.start_service);
 			StartServiceButton.setVisibility(View.INVISIBLE); 
 		//}
+		ServiceRunningFlag = "running";
 		
 	}
 	//Stop the started service
@@ -143,9 +174,9 @@ String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 		StopServiceButton.setVisibility(View.INVISIBLE); 
 		//NeuroskyStatus = "neurosky mindwave mobile\ndisconnected";
 	    //tv_NeuroskyStatus.setText(NeuroskyStatus);
-		
+		ServiceRunningFlag = "stoped";
 	}
-	//send message to service
+	// -- submit current user activity 
 	public void onClickSendMessage (View v)
 	{
 		//only we need a handler to send message to any component.
@@ -167,7 +198,20 @@ String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 		}
 	}
 	
+	//s -- start toroid
+	public void onClickStart_toroid (View v)
+	{
+		Intent intent = new Intent(this, ProcessingToroid.class);
+		startActivity(intent);
+	}
 	
+	//s -- start wave
+	public void onClickStart_wave (View v)
+	{
+		Intent intent = new Intent(this, ProcessingWave.class);
+		startActivity(intent);
+	}
+		
     @Override
     public void onPause() {        
         super.onPause();
@@ -177,15 +221,17 @@ String NeuroskyStatus = ""; String Key_NeuroskyStatus;
         SharedPreferences.Editor editor = preferences.edit();  // Put the values from the UI 
         	//editor.putBoolean(KEY_play_flag, true); // value to store  
         editor.putString(Key_NeuroskyStatus, NeuroskyStatus);
+        editor.putString(Key_ServiceRunningFlag, ServiceRunningFlag);
         	// -- commit to storage 
         editor.commit(); 
            
-        finish();
+        //finish();
     }
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	        return super.onKeyDown(keyCode, event);
 	}
+		
 	
 }
