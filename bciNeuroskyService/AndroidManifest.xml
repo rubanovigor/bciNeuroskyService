@@ -35,6 +35,9 @@
         
         <activity
         	android:name=".ProcessingToroid"
+        	android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="portrait" 
+            android:background="@android:color/transparent"
         	android:label="@string/app_name"
         	android:parentActivityName="com.aiworker.bcineuroskyservice.MainActivity" >
 	        <meta-data

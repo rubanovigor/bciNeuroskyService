@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException; 
 
+import android.view.KeyEvent;
+
 public class ProcessingToroid extends PApplet{
 
 /**
@@ -36,9 +38,12 @@ public class ProcessingToroid extends PApplet{
  * 'h' key toggle sphere/helix <br />
  */
 int At_pr=0; int Med_pr=0; int S=0; int P=0;
+float accel_alpha = 0; float CoordY = 0;
+float accel_rot = 0; float angleY = 0;
+
 int pts = 40; 
 float angle = 0;
-float radius = 60.0f;
+float radius = 50.0f;
 
 // lathe segments
 int segments = 60;
@@ -56,14 +61,52 @@ boolean isHelix = false;
 float helixOffset = 5.0f;
 
 public void setup(){
-
+	background(0, 0, 0);
 }
 
 public void draw(){
 	 At_pr = MainActivity.At;
 	 Med_pr = MainActivity.Med;
-	 S = At_pr- Med_pr;
+	 S = At_pr - Med_pr;
 	 P = At_pr + Med_pr;
+	 
+	 // -- limit vertical acceleration
+	 float Mconst = 0.7f;
+     if (accel_alpha>=Mconst)	{accel_alpha = Mconst;  }          
+     if (accel_alpha<=-Mconst)	{accel_alpha = -Mconst; }
+     
+     float ClusterLeftX = -30; float ClusterRightX = 30;  float ClusterDelta = 0;
+     float graviton = 0.10f;
+     if(S >= ClusterLeftX-ClusterDelta &&
+         	S <= ClusterRightX+ClusterDelta) 
+         				{ accel_alpha = accel_alpha - 0; CoordY = CoordY + accel_alpha; }
+         else {
+             if (S > ClusterRightX+ClusterDelta )
+             			{ accel_alpha = accel_alpha - graviton; CoordY = CoordY + accel_alpha; } 
+             else {
+             	if (S < ClusterLeftX-ClusterDelta )
+             			{ accel_alpha = accel_alpha + graviton; CoordY = CoordY + accel_alpha; }
+             }                    
+         }
+     
+     if ((920 + CoordY) >= 1900f || (920 + CoordY) <= 0f) {CoordY = 0;}
+  	 // -- limit rotational acceleration
+     if (accel_rot>=0.0010f)	{accel_rot = 0.001f;  }          
+     if (accel_rot<=-0.0010f)	{accel_rot = -0.001f; }
+     
+     float ClusterLeftY = 65; float ClusterRightY = 130;  float ClusterDeltaY = 0;
+     float gravitonY = 0.1f;
+     if(P >= ClusterLeftY-ClusterDeltaY &&
+         	P <= ClusterRightY+ClusterDeltaY) 
+         				{ accel_rot = accel_rot - 0; angleY = angleY + accel_rot; }
+         else {
+             if (P > ClusterRightY+ClusterDeltaY )
+             			{ accel_rot = accel_rot - gravitonY; angleY = angleY + accel_rot; } 
+             else {
+             	if (P < ClusterLeftY-ClusterDeltaY )
+             			{ accel_rot = accel_rot + gravitonY; angleY = angleY + accel_rot; }
+             }                    
+         }
 	 
   //background(50, 64, 42);
   background(0, 0, 0);
@@ -73,26 +116,29 @@ public void draw(){
   // wireframe or solid
   if (isWireFrame){
     //stroke(255, 255, 150);
-    stroke(179, 79, 240);
+    //stroke(150, 150, 150);
+    stroke(150, 150, 200);
     noFill();
   } 
   else {
     noStroke();
    // fill(150, 195, 125);
-    stroke(159, 79, 240);
+    //stroke(150, 150, 240);
+    stroke(150, 150, 200);
   }
   //center and spin toroid
   //translate(mouseX/2, mouseY/2, -100);
   //translate(At_pr, Med_pr, -100);
-  translate(300, S*5+300, -100);
+  translate(590, 920 + CoordY, -1);
 
   //rotateX(frameCount*PI/150);
   //rotateY(frameCount*PI/170);
   //rotateZ(frameCount*PI/90);
  // rotateX(At_pr);
   //rotateY(Med_pr);
-  rotateX(0);
-  rotateY(P/2);
+ // rotateX(0);
+  rotateY(angleY);
+  rotateY(0);
   rotateZ(0);
 
   // initialize point arrays
@@ -214,8 +260,12 @@ public void keyPressed(){
 }
 
 
-  public int sketchWidth() { return 800; }
-  public int sketchHeight() { return 600; }
+  public int sketchWidth() { return 1080; }
+  public int sketchHeight() { return 1920; }
   public String sketchRenderer() { return P3D; }
   
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	        return super.onKeyDown(keyCode, event);
+	}
 }

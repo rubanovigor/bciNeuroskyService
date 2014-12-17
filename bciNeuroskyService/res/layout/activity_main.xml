@@ -76,7 +76,7 @@
           android:layout_marginTop="5dp"
           android:gravity="center"
           android:onClick="onClickStart_wave"
-          android:text="start wave"
+          android:text="wave sample"
           android:textColor="#FF0000" 
           android:visibility="visible"/>
 
