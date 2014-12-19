@@ -41,14 +41,16 @@ int At_pr=0; int Med_pr=0; int S=0; int P=0;
 float accel_alpha = 0; float CoordY = 0;
 float accel_rot = 0; float angleY = 0;
 
-int pts = 40; 
+//int pts = 40;
+int pts = 20;
 float angle = 0;
-float radius = 50.0f;
+float radius = 100.0f;
 
 // lathe segments
-int segments = 60;
+//int segments = 60;
+int segments = 40;
 float latheAngle = 0;
-float latheRadius = 100.0f;
+float latheRadius = 150.0f;
 
 //vertices
 PVector vertices[], vertices2[];
@@ -136,15 +138,15 @@ public void draw(){
   //translate(590, 920 + CoordY, -1);
   translate(displayWidth/2, displayHeight/2 + CoordY, -1);
 
-  //rotateX(frameCount*PI/150);
-  //rotateY(frameCount*PI/170);
+  rotateX(frameCount*PI/50);
+  //rotateY(frameCount*PI/17);
   //rotateZ(frameCount*PI/90);
  // rotateX(At_pr);
   //rotateY(Med_pr);
-  rotateX(0);
-  rotateY(angleY/30);
-  //rotateY(0);
-  rotateZ(frameCount*PI/200);
+  //rotateX(0);
+  //rotateY(angleY/30);
+  rotateY(1.57f);
+  //rotateZ(frameCount*PI/20);
   //rotateZ(0);
 
   // initialize point arrays

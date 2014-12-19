@@ -36,10 +36,6 @@ public class ProcessingWave extends PApplet {
 	 * 'h' key toggle sphere/helix <br />
 	 */
 
-	int At_pr=0; int Med_pr=0; int S=0; int P=0;
-	float accel_alpha = 0; float VerticalMovement = 0;
-	float accel_rot = 0; float angleY = 0;
-	
 	int pts = 10; 
 	float angle = 0;
 	float radius = 30.0f;
@@ -54,7 +50,7 @@ public class ProcessingWave extends PApplet {
 	PVector vertices[], vertices2[];
 
 	// for shaded or wireframe rendering 
-	boolean isWireFrame = true;
+	boolean isWireFrame = false;
 
 	// for optional helix
 	boolean isHelix = false;
@@ -66,76 +62,49 @@ public class ProcessingWave extends PApplet {
 	}
 
 	public void draw(){
-		At_pr = MainActivity.At;
-		Med_pr = MainActivity.Med;
-		S = At_pr - Med_pr;
-		P = At_pr + Med_pr;
-		 
-		 // -- limit vertical acceleration
-		 float Mconst = 0.7f;
-	     if (accel_alpha>=Mconst)	{accel_alpha = Mconst;  }          
-	     if (accel_alpha<=-Mconst)	{accel_alpha = -Mconst; }
-	     
-	     float ClusterLeftX = -30; float ClusterRightX = 30;  float ClusterDelta = 0;
-	     float graviton = 0.10f;
-	     if(S >= ClusterLeftX-ClusterDelta &&
-	         	S <= ClusterRightX+ClusterDelta) 
-	         				{ accel_alpha = accel_alpha - 0; VerticalMovement = VerticalMovement + accel_alpha; }
-	         else {
-	             if (S > ClusterRightX+ClusterDelta )
-	             			{ accel_alpha = accel_alpha - graviton; VerticalMovement = VerticalMovement + accel_alpha; } 
-	             else {
-	             	if (S < ClusterLeftX-ClusterDelta )
-	             			{ accel_alpha = accel_alpha + graviton; VerticalMovement = VerticalMovement + accel_alpha; }
-	             }                    
-	         }
-	     
-	     if ((displayHeight/2 + VerticalMovement) >= displayHeight) {VerticalMovement = -displayHeight/2;}
-	     if ((displayHeight/2 + VerticalMovement) <= 0f) {VerticalMovement = displayHeight/2;}
-	     
-		
-		
-		
 	  background(0);
 	  // basic lighting setup
 	  lights(); 
 	 // directionalLight(mouseX/4, 0, mouseY/3, 1, 1, -1);
 	 // ambientLight(0, 0, mouseY/5, 1, 1, -1);
 	  
-	  
-	  // -- toroid1
-	  	//center and spin toroid
-	  	//translate(displayWidth/2-150,displayHeight/2, 0);
-	  	rotateY(5f);
-	  	rotateX(5f);
-	  	thoroid(displayWidth/2-200,displayHeight/2 + VerticalMovement, false);
-	  		
-		//translate(0, 0, 0);
-		//rotateX(frameCount*PI/200);
-	  	//translate(mouseX, mouseY, 0);
+	  //center and spin toroid
+	 acceleration=acceleration-1;
 	 
-	  // -- toroid2
-	  	// rotateZ(frameCount*PI/120);
-	  	//rotateZ(frameCount*PI/10);
-	  	//rotateY(frameCount*PI/170);
-	  //rotateX(frameCount*PI/200);
-	  	thoroid(displayWidth/2+200,displayHeight-150, true);
-	  	
-	  
+	  pushMatrix();
+	  translate(width/2+150,height+acceleration);
+	  rotateZ(acceleration*PI/100);
+	  rotateY(acceleration*PI/160);
+	  rotateX(acceleration*PI/120);
+
+	  thoroid(0,0,mouseX/4, mouseY/3, mouseX-mouseY);
+	 //translate(0, 0, 0);
+	 //rotateX(frameCount*PI/200);
+	 //translate(mouseX, mouseY, 0);
+	   popMatrix();
+	 
+	 pushMatrix();
+	 translate(width/2-150,height+acceleration);
+	 rotateZ(acceleration*PI/200);
+	 rotateY(acceleration*PI/200);
+	 rotateX(acceleration*PI/120);
+	 //println(frameCount);
+	  thoroid(0,0, mouseY/3, mouseX/4, mouseY-480);
+	  popMatrix();
 	 
 	  }
 
 
-	public void thoroid (int _positionX, float verticalSpeed2, boolean isHelix_l) {
+	public void thoroid (int _positionX, int _positionY, int _R, int _G, int _B) {
 	    // 2 rendering styles
 	  // wireframe or solid
 	  if (isWireFrame){
-	    stroke(0, _positionX/4, verticalSpeed2/3);
+	    stroke(_R, _G, _B);
 	    noFill();
 	  } 
 	  else {
 	    noStroke();
-	    fill(0, _positionX/4, verticalSpeed2/3);
+	    fill(_R, _G, _B);
 	  }
 
 	  vertices = new PVector[pts+1];
@@ -156,7 +125,7 @@ public class ProcessingWave extends PApplet {
 	    angle+=360.0f/pts;
 	  }
 
-	  // -- draw toroid
+	  // draw toroid
 	  latheAngle = 0;
 	  for(int i=0; i<=segments; i++){
 	    beginShape(QUAD_STRIP);
@@ -165,7 +134,7 @@ public class ProcessingWave extends PApplet {
 	        vertex(vertices2[j].x, vertices2[j].y, vertices2[j].z);
 	      }
 	      vertices2[j].x = cos(radians(latheAngle))*vertices[j].x + PApplet.parseInt(_positionX);
-	      vertices2[j].y = sin(radians(latheAngle))*vertices[j].x + PApplet.parseInt(verticalSpeed2);
+	      vertices2[j].y = sin(radians(latheAngle))*vertices[j].x + PApplet.parseInt(_positionY);
 	      vertices2[j].z = vertices[j].z;
 	      // optional helix offset
 	      if (isHelix){
@@ -173,8 +142,8 @@ public class ProcessingWave extends PApplet {
 	      } 
 	      vertex(vertices2[j].x, vertices2[j].y, vertices2[j].z);
 	    }
-	    // -- create extra rotation for helix
-	    if (isHelix_l){
+	    // create extra rotation for helix
+	    if (isHelix){
 	      latheAngle+=720.0f/segments;
 	    } 
 	    else {

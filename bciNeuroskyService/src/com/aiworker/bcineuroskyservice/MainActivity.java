@@ -89,7 +89,19 @@ public class MainActivity extends Activity{
 		    Button StopServiceButton=(Button)findViewById(R.id.stop_service);
 		    StopServiceButton.setVisibility(View.INVISIBLE); 
 		} 
-		
+	    // -- for glass testing only
+	   /* Button StopServiceButton=(Button)findViewById(R.id.stop_service);
+	    StopServiceButton.setVisibility(View.INVISIBLE); 
+	    Button StartServiceButton=(Button)findViewById(R.id.start_service);
+		StartServiceButton.setVisibility(View.INVISIBLE); 
+	    Button mActivity=(Button)findViewById(R.id.send_message);
+	    mActivity.setVisibility(View.INVISIBLE); 
+		Button temp=(Button)findViewById(R.id.start_wave);
+		temp.setVisibility(View.INVISIBLE); 
+			
+		Intent intent = new Intent(this, ProcessingToroid.class);
+		startActivity(intent);*/
+		// - end testing for glass
 		
 		mUiHandler = new Handler() // Receive messages from service class 
         {
