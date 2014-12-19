@@ -54,7 +54,8 @@ float latheRadius = 100.0f;
 PVector vertices[], vertices2[];
 
 // for shaded or wireframe rendering 
-boolean isWireFrame = false;
+//boolean isWireFrame = false;
+boolean isWireFrame = true;
 
 // for optional helix
 boolean isHelix = false;
@@ -89,12 +90,14 @@ public void draw(){
              }                    
          }
      
-     if ((920 + CoordY) >= 1900f || (920 + CoordY) <= 0f) {CoordY = 0;}
+     if ((displayHeight/2 + CoordY) >= displayHeight) {CoordY = -displayHeight/2;}
+     if ((displayHeight/2 + CoordY) <= 0f) {CoordY = displayHeight/2;}
   	 // -- limit rotational acceleration
-     if (accel_rot>=0.0010f)	{accel_rot = 0.001f;  }          
-     if (accel_rot<=-0.0010f)	{accel_rot = -0.001f; }
+     float MconstRot = 0.006f;
+     if (accel_rot>=MconstRot)	{accel_rot = MconstRot;  }          
+     if (accel_rot<=-MconstRot)	{accel_rot = MconstRot; }
      
-     float ClusterLeftY = 65; float ClusterRightY = 130;  float ClusterDeltaY = 0;
+     float ClusterLeftY = 85; float ClusterRightY = 150;  float ClusterDeltaY = 0;
      float gravitonY = 0.1f;
      if(P >= ClusterLeftY-ClusterDeltaY &&
          	P <= ClusterRightY+ClusterDeltaY) 
@@ -116,30 +119,33 @@ public void draw(){
   // wireframe or solid
   if (isWireFrame){
     //stroke(255, 255, 150);
-    //stroke(150, 150, 150);
-    stroke(150, 150, 200);
+	  
+    stroke(50+At_pr*2f, 50+At_pr, 255-At_pr);
+    //stroke(150, 150, 200);
     noFill();
   } 
   else {
     noStroke();
-   // fill(150, 195, 125);
+    fill(150, 195, 125);
     //stroke(150, 150, 240);
-    stroke(150, 150, 200);
+    //stroke(150, 150, 200);
   }
   //center and spin toroid
   //translate(mouseX/2, mouseY/2, -100);
   //translate(At_pr, Med_pr, -100);
-  translate(590, 920 + CoordY, -1);
+  //translate(590, 920 + CoordY, -1);
+  translate(displayWidth/2, displayHeight/2 + CoordY, -1);
 
   //rotateX(frameCount*PI/150);
   //rotateY(frameCount*PI/170);
   //rotateZ(frameCount*PI/90);
  // rotateX(At_pr);
   //rotateY(Med_pr);
- // rotateX(0);
-  rotateY(angleY);
-  rotateY(0);
-  rotateZ(0);
+  rotateX(0);
+  rotateY(angleY/30);
+  //rotateY(0);
+  rotateZ(frameCount*PI/200);
+  //rotateZ(0);
 
   // initialize point arrays
   vertices = new PVector[pts+1];
@@ -260,8 +266,10 @@ public void keyPressed(){
 }
 
 
-  public int sketchWidth() { return 1080; }
-  public int sketchHeight() { return 1920; }
+ // public int sketchWidth() { return 1080; }
+ // public int sketchHeight() { return 1920; }
+  public int sketchWidth() { return displayWidth; }
+  public int sketchHeight() { return displayHeight; }
   public String sketchRenderer() { return P3D; }
   
 	@Override
