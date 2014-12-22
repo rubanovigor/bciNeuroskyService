@@ -12,7 +12,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter; 
 import java.io.InputStream; 
 import java.io.OutputStream; 
-import java.io.IOException; 
+import java.io.IOException;  
 
 public class ProcessingWave extends PApplet {
 
@@ -39,17 +39,16 @@ public class ProcessingWave extends PApplet {
 	int At_pr=0; int Med_pr=0; int S=0; int P=0;
 	int Ra; int Ga; int Ba;
 	int Rm; int Gm; int Bm;
-	float accel_alpha = 0; float CoordY = 0; float accel_rot = 0;
 	
 	int pts = 10; 
 	float angle = 0;
-	float radius = 40.0f;
+	float radiusAt = 10.0f; float radiusMed = 10.0f; float AtDynamicR = radiusAt;
 	int acceleration = 1;
 
 	// lathe segments
 	int segments = 40;
 	float latheAngle = 0;
-	float latheRadius = 70.0f;
+	float latheRadiusAt = 50.0f; float latheRadiusMed = 50.0f;  float MedDynamicR = radiusMed;
 
 	//vertices
 	PVector vertices[], vertices2[];
@@ -63,9 +62,30 @@ public class ProcessingWave extends PApplet {
 
 	KochFractal k;
 	
+	// -- mainGUI
+	PVector vert1, vert2, vert3;
+	PVector[] coords1, coords2, coords3;
+	float baseLength1, baseLength2, baseLength3;
+	int count1, count2, count3;
+	float [] f1; 	float [] f2;	float [] f3;
+	
 	public void setup(){	 
 		 // frameRate(1);  // Animate slowly
 		  k = new KochFractal();
+		  smooth();
+		 // noStroke();
+		 // colorMode(HSB, 8, 100, 100);
+		  
+		  // -- mainGUI
+		  vert1 = new PVector(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
+		  vert2 = new PVector(displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
+		  vert3 = new PVector (displayWidth/2, displayHeight/2 - 2*displayHeight/10);
+
+		  createPath();
+		  count1 = 0; count2 = 0;  count3 = 0;
+		  f1 = coords1[count1].array(); 
+		  f2 = coords2[count2].array();
+		  f3 = coords3[count3].array();
 		  
 	}
 
@@ -80,11 +100,13 @@ public class ProcessingWave extends PApplet {
 		  Ra = (255 * At_pr) / 100;
 		  Ga = 0;
 		  Ba = (255 * (100 - At_pr)) / 100 ;
-		  
+		  DynamicRadiusP();
+		  		  
 		  // -- blue(0)-violete(50)-red(100) 
 		  Rm = (255 * Med_pr) / 100;
 		  Gm = 0 ;
 		  Bm = (255 * (100 - Med_pr)) / 100;
+		  DynamicRadiusS();
 		  
 		  // - draw background
 		  background(0);
@@ -93,50 +115,99 @@ public class ProcessingWave extends PApplet {
 				 // directionalLight(mouseX/4, 0, mouseY/3, 1, 1, -1);
 				 // ambientLight(0, 0, mouseY/5, 1, 1, -1);
 		  
-		  // -- center and spin toroid left
+		  // -- center and spin toroid At (left)
 		  acceleration=acceleration-1;
 		  pushMatrix();
 		  		//translate(width/2+150,height+acceleration)
 		  translate(displayWidth/2-350, displayHeight - 9*displayHeight/10);
 		  rotateZ(0);
-		  rotateY(100*sin(PI*P));
+		  rotateY(0);
 		  rotateX(0);
 		  		//thoroid(0,0,mouseX/4, mouseY/3, mouseX-mouseY);
-		  thoroid(0,0, Ra, Ga, Ba, true);
+		  thoroid(0,0, Ra, Ga, Ba, true, AtDynamicR, latheRadiusAt);
 				 //translate(0, 0, 0);
 				 //rotateX(frameCount*PI/200);
 				 //translate(mouseX, mouseY, 0);
 		  popMatrix();
 		 
-		  // -- center and spin toroid right
+		  // -- center and spin toroid Med (right)
 		  pushMatrix();
 		  		//translate(width/2-150,height+acceleration);
 		  translate(displayWidth/2+350,displayHeight - 9*displayHeight/10);
-//		  rotateZ(acceleration*PI/120);
+		  		//rotateZ(acceleration*PI/120);
 		  rotateZ(0);
 		  rotateY(0);
-		  rotateX(10*sin(PI*S));
+		  rotateX(0);
 		  		//println(frameCount);
 		  		//thoroid(0,0, mouseY/3, mouseX/4, mouseY-480);
-		  thoroid(0,0, Rm, Gm, Bm, false);
+		  thoroid(0,0, Rm, Gm, Bm, true, MedDynamicR, latheRadiusMed);
 		  popMatrix();
 		 
-		  // -- Draws the snowflake!
-//		  pushMatrix();
-		 /* k.render();
-		  	// -- Iterate
-		  k.nextLevel();
-		  	// -- Let's not do it more than 5 times. . .
-		  if (k.getCount() > 4) {
-		    k.restart();
-		  }*/
-//		  popMatrix();
+		  // -- Draws the SierFractal2DColor
+			  	//triangleSier(0, 700, 400, 0, 800, 700, mouseY/100);
+			  	//triangleSier(0, 700, 400, 0, 800, 700, 4);
+		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
+				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
+				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
+				  	   At_pr/10);
+		  
+				  // -- Draws the snowflake!
+		  			//pushMatrix();
+				 /* k.render();
+				  	// -- Iterate
+				  k.nextLevel();
+				  	// -- Let's not do it more than 5 times. . .
+				  if (k.getCount() > 4) {
+				    k.restart();
+				  }*/
+		  			//popMatrix();
 	  
+		  // -- Draw mainGUI
+		  f1 = coords1[count1].array(); 
+		  f2 = coords2[count2].array();
+		  f3 = coords3[count3].array();  
+		  
+		  if (count3 >= (baseLength3 - 5) ){
+			   count1 = 0; count2 = 0;  count3 = 0;
+			   f1 = coords2[count2].array(); 
+			   f2 = coords3[count3].array();
+			   f3 = coords1[count1].array();
+		  }
+		  count1=count1+3;  count2=count2+3;  count3=count3+3;
+		    
+		  println ("coord1 " + baseLength1);
+		  println ("coord2 " + baseLength2);
+		  println ("coord3 " + baseLength3);
+		  
+		  // -- point 1
+		   pushMatrix();		   
+		   translate(f1[0], f1[1],0);
+		   stroke(0,0,255);
+		   fill (255,0,0);
+		   sphere(50);		   
+		   popMatrix();
+		   
+		  // -- point 2  
+		   pushMatrix();		     
+		   translate(f2[0], f2[1],0);
+		   stroke(0,0,255);
+		   fill (0,255,0);
+		   sphere(50);		   
+		   popMatrix();
+		   
+		  // -- point 3
+		   pushMatrix();
+		   translate(f3[0],f3[1],0);
+		   stroke(0,255,0);
+		   fill (0,0,255);
+		   sphere(50);
+		   popMatrix();
 	  
 	}
 
 
-	public void thoroid (int _positionX, int _positionY, int _R, int _G, int _B, boolean isWireFrame_l) {
+	public void thoroid (int _positionX, int _positionY, int _R, int _G, int _B, boolean isWireFrame_l,
+			float radius_l, float latheRadius_l) {
 	    // 2 rendering styles
 	  // wireframe or solid
 	  if (isWireFrame_l){
@@ -155,13 +226,13 @@ public class ProcessingWave extends PApplet {
 	  for(int i=0; i<=pts; i++){
 	    vertices[i] = new PVector();
 	    vertices2[i] = new PVector();
-	    vertices[i].x = latheRadius + sin(radians(angle))*radius;
+	    vertices[i].x = latheRadius_l + sin(radians(angle))*radius_l;
 	    if (isHelix){
-	      vertices[i].z = cos(radians(angle))*radius-(helixOffset* 
+	      vertices[i].z = cos(radians(angle))*radius_l-(helixOffset* 
 	        segments)/2;
 	    } 
 	    else{
-	      vertices[i].z = cos(radians(angle))*radius;
+	      vertices[i].z = cos(radians(angle))*radius_l;
 	    }
 	    angle+=360.0f/pts;
 	  }
@@ -330,27 +401,98 @@ public class ProcessingWave extends PApplet {
 	  }
 	}
 
-	public void scaleRotationAngle(){
-		 // -- limit vertical acceleration
-//	     float MconstRot = 0.006f;
-//	     if (accel_rot>=MconstRot)	{accel_rot = MconstRot;  }          
-//	     if (accel_rot<=-MconstRot)	{accel_rot = MconstRot; }
-//	     
-//	     float ClusterLeftY = 85; float ClusterRightY = 150;  float ClusterDeltaY = 0;
-//	     float gravitonY = 0.1f;
-//	     if(P >= ClusterLeftY-ClusterDeltaY &&
-//	         	P <= ClusterRightY+ClusterDeltaY) 
-//	         				{ accel_rot = accel_rot - 0; angleY = angleY + accel_rot; }
-//	         else {
-//	             if (P > ClusterRightY+ClusterDeltaY )
-//	             			{ accel_rot = accel_rot - gravitonY; angleY = angleY + accel_rot; } 
-//	             else {
-//	             	if (P < ClusterLeftY-ClusterDeltaY )
-//	             			{ accel_rot = accel_rot + gravitonY; angleY = angleY + accel_rot; }
-//	             }                    
-//	         }
+	public void DynamicRadiusP(){
+		 // -- limit radius
+	     if (AtDynamicR>=latheRadiusAt)	{AtDynamicR = latheRadiusAt; }          
+	     if (AtDynamicR<=radiusAt )		{AtDynamicR = radiusAt; }
+	     
+	     float ClusterLeftY = 85; float ClusterRightY = 150;  float ClusterDeltaY = 0;
+	     float graviton = 0.5f;
+	     if(P >= ClusterLeftY-ClusterDeltaY &&	P <= ClusterRightY+ClusterDeltaY) 
+	         				{ AtDynamicR = AtDynamicR ; }
+	         else {
+	             if (P > ClusterRightY+ClusterDeltaY )
+	             			{ AtDynamicR = AtDynamicR + graviton; } 
+	             else {
+	             	if (P < ClusterLeftY-ClusterDeltaY )
+	             			{ AtDynamicR = AtDynamicR - graviton;  }
+	             }                    
+	         }
 	     
 	}
+	
+	public void DynamicRadiusS(){
+		 // -- limit radius
+	     if (MedDynamicR>=latheRadiusMed)	{MedDynamicR = latheRadiusMed; }          
+	     if (MedDynamicR<=radiusMed )		{MedDynamicR = radiusMed; }
+	     
+	     float ClusterLeftX = -30; float ClusterRightX = 30;  float ClusterDelta = 0;
+	     float graviton = 0.5f;
+	     if(S >= ClusterLeftX-ClusterDelta &&
+	         	S <= ClusterRightX+ClusterDelta) 
+	         				{ MedDynamicR = MedDynamicR; }
+	         else {
+	             if (S > ClusterRightX+ClusterDelta )
+	             			{ MedDynamicR = MedDynamicR + graviton;  } 
+	             else {
+	             	if (S < ClusterLeftX-ClusterDelta )
+	             			{ MedDynamicR = MedDynamicR - graviton;  }
+	             }                    
+	         }
+	     
+	}
+	
+	public void triangleSier(float x1, float y1, float x2, float y2, float x3, float y3, int n) {
+		  // 'n' is the number of iteration.
+		  if ( n > 0 ) {
+		    fill(255/n, 0, 0);
+		    triangle(x1, y1, x2, y2, x3, y3);
+		     
+		    // Calculating the midpoints of all segments.
+		    float h1 = (x1+x2)/2.0f;
+		    float w1 = (y1+y2)/2.0f;
+		    float h2 = (x2+x3)/2.0f;
+		    float w2 = (y2+y3)/2.0f;
+		    float h3 = (x3+x1)/2.0f;
+		    float w3 = (y3+y1)/2.0f;
+		     
+		    // Trace the triangle with the new coordinates.
+		    triangleSier(x1, y1, h1, w1, h3, w3, n-1);
+		    triangleSier(h1, w1, x2, y2, h2, w2, n-1);
+		    triangleSier(h3, w3, h2, w2, x3, y3, n-1);
+		  }
+		}
+
+	public void createPath() {
+		  // calculate length of base top
+		  baseLength1 = PVector.dist(vert1, vert2);
+		  baseLength2 = PVector.dist(vert1, vert3);
+		  baseLength3 = PVector.dist(vert2, vert3);
+
+		  // fill base top coordinate array
+		  coords1 = new PVector[ceil(baseLength3)];
+		  for (int i=0; i<coords1.length; i++) {
+		    coords1[i] = new PVector();
+		    coords1[i].x = vert1.x + ((vert2.x-vert1.x)/baseLength1)*i;
+		    coords1[i].y = vert1.y + ((vert2.y-vert1.y)/baseLength1)*i;
+		    }
+		  
+		  coords2 = new PVector[ceil(baseLength3)];
+		  for (int i=0; i<coords2.length; i++) {
+		    coords2[i] = new PVector();
+		    coords2[i].x = vert3.x + ((vert1.x-vert3.x)/baseLength2)*i;
+		    coords2[i].y = vert3.y + ((vert1.y-vert3.y)/baseLength2)*i;
+		  }
+		  
+		  coords3 = new PVector[ceil(baseLength3)];
+		  for (int i=0; i<coords3.length; i++) {
+		    coords3[i] = new PVector();
+		    coords3[i].x = vert2.x + ((vert3.x-vert2.x)/baseLength3)*i;
+		    coords3[i].y = vert2.y + ((vert3.y-vert2.y)/baseLength3)*i;
+		}
+		}
+
+	
 	/*
 	 left/right arrow keys control ellipse detail
 	 up/down arrow keys control segment detail.
@@ -385,46 +527,46 @@ public class ProcessingWave extends PApplet {
 	    } 
 	  }
 	  // lathe radius
-	  if (key =='a'){
-	    if (latheRadius>0){
-	      latheRadius--; 
-	    }
-	  } 
-	  else if (key == 's'){
-	    latheRadius++; 
-	  }
-	  // ellipse radius
-	  if (key =='z'){
-	    if (radius>10){
-	      radius--;
-	    }
-	  } 
-	  else if (key == 'x'){
-	    radius++;
-	  }
-	  // wireframe
-	  if (key =='w'){
-	    if (isWireFrame){
-	      isWireFrame=false;
-	    } 
-	    else {
-	      isWireFrame=true;
-	    }
-	  }
-	  // helix
-	  if (key =='h'){
-	    if (isHelix){
-	      isHelix=false;
-	    } 
-	    else {
-	      isHelix=true;
-	    }
-	  }
+//	  if (key =='a'){
+//	    if (latheRadius>0){
+//	      latheRadius--; 
+//	    }
+//	  } 
+//	  else if (key == 's'){
+//	    latheRadius++; 
+//	  }
+//	  // ellipse radius
+//	  if (key =='z'){
+//	    if (radius>10){
+//	      radius--;
+//	    }
+//	  } 
+//	  else if (key == 'x'){
+//	    radius++;
+//	  }
+//	  // wireframe
+//	  if (key =='w'){
+//	    if (isWireFrame){
+//	      isWireFrame=false;
+//	    } 
+//	    else {
+//	      isWireFrame=true;
+//	    }
+//	  }
+//	  // helix
+//	  if (key =='h'){
+//	    if (isHelix){
+//	      isHelix=false;
+//	    } 
+//	    else {
+//	      isHelix=true;
+//	    }
+//	  }
 	}
 
 
-	  public int sketchWidth() { return displayWidth; }
-	  public int sketchHeight() { return displayHeight; }
-	  public String sketchRenderer() { return P3D; }
+	public int sketchWidth() { return displayWidth; }
+	public int sketchHeight() { return displayHeight; }
+	public String sketchRenderer() { return P3D; }
 
 }
