@@ -48,6 +48,8 @@
         <activity
         	android:name=".ProcessingWave"
         	android:label="@string/app_name"
+        	android:screenOrientation="portrait" 
+        	android:background="@android:color/transparent"
         	android:parentActivityName="com.aiworker.bcineuroskyservice.MainActivity" >
 	        <meta-data
 	            android:name="android.support.PARENT_ACTIVITY"
