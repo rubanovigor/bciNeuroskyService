@@ -149,7 +149,7 @@ public class ProcessingWave extends PApplet {
 		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
 				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
 				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
-				  	   At_pr/10);
+				  	   At_pr/15);
 		  
 				  // -- Draws the snowflake!
 		  			//pushMatrix();
@@ -173,11 +173,12 @@ public class ProcessingWave extends PApplet {
 			   f2 = coords3[count3].array();
 			   f3 = coords1[count1].array();
 		  }
+		  // -- speed of sphere movement
 		  count1=count1+3;  count2=count2+3;  count3=count3+3;
 		    
-		  println ("coord1 " + baseLength1);
-		  println ("coord2 " + baseLength2);
-		  println ("coord3 " + baseLength3);
+		 // println ("coord1 " + baseLength1);
+		  // println ("coord2 " + baseLength2);
+		  // println ("coord3 " + baseLength3);
 		  
 		  // -- point 1
 		   pushMatrix();		   
@@ -489,7 +490,7 @@ public class ProcessingWave extends PApplet {
 		    coords3[i] = new PVector();
 		    coords3[i].x = vert2.x + ((vert3.x-vert2.x)/baseLength3)*i;
 		    coords3[i].y = vert2.y + ((vert3.y-vert2.y)/baseLength3)*i;
-		}
+		  }
 		}
 
 	

@@ -24,8 +24,11 @@ public final class R {
     public static final class drawable {
         public static final int aiworker_logo=0x7f020000;
         public static final int blacksquare=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
-        public static final int mindhackme_logo=0x7f020003;
+        public static final int button_mindos=0x7f020002;
+        public static final int button_sierpinski=0x7f020003;
+        public static final int button_sierpinski_57=0x7f020004;
+        public static final int ic_launcher=0x7f020005;
+        public static final int mindhackme_logo=0x7f020006;
     }
     public static final class id {
         public static final int Att_label=0x7f060007;
