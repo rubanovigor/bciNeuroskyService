@@ -14,13 +14,9 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException; 
 
-import com.aiworker.bcineuroskyservice.ProcessingWave.KochFractal;
-import com.aiworker.bcineuroskyservice.ProcessingWave.KochLine;
-
-import android.content.SharedPreferences;
 import android.view.KeyEvent;
 
-public class ProcessingToroid extends PApplet{
+public class ProcessingAttVividF extends PApplet{
 
 	int At_pr=0; int Med_pr=0; int S=0; int P=0;
 	int Ra; int Ga; int Ba;
@@ -46,15 +42,23 @@ public class ProcessingToroid extends PApplet{
 	boolean isHelix = false;
 	float helixOffset = 5.0f;
 
-	
 	// -- sierpinski triangle
 	PVector vert1, vert2, vert3;
 	PVector[] coords1, coords2, coords3;
 	int iterrationN = 0;
 	
+	// -- vivid fractal
+	float frac = 24;	float slope = 0.8f; 	float sc = 1.8f;
+	float nx,ny;	float TH = 0;	float depth = 1;	 
+	PVector one,two,shift;
+	
+	int ir_t = 2000;  int ir_t1 = 50;
+	
 	public void setup(){	 
 		 // frameRate(1);  // Animate slowly
-		  smooth();
+		  background(0); 
+		  noSmooth();
+//		  smooth();
 		 // noStroke();
 		 // colorMode(HSB, 8, 100, 100);
 		  
@@ -86,7 +90,7 @@ public class ProcessingToroid extends PApplet{
 		  DynamicRadiusS();*/
 		  
 		  // - draw background and lighting setup
-		  background(0);  lights(); 
+//		  background(0);  lights(); 
 				 // directionalLight(mouseX/4, 0, mouseY/3, 1, 1, -1);
 				 // ambientLight(0, 0, mouseY/5, 1, 1, -1);
 		  
@@ -105,10 +109,10 @@ public class ProcessingToroid extends PApplet{
 		  popMatrix();*/
 		 
 		  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
-		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
-				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
-				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
-				  	   iterrationN);
+//		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
+//				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
+//				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
+//				  	   iterrationN);
 		  
 //		  int tShift = 15;
 //		  triangleSier(displayWidth/2 - 4*displayWidth/10 + tShift*DynamicIterrN, displayHeight/2 + 2*displayHeight/10 + tShift*DynamicIterrN,
@@ -116,6 +120,34 @@ public class ProcessingToroid extends PApplet{
 //			  	   displayWidth/2 + tShift*DynamicIterrN, displayHeight/2 - 2*displayHeight/10 + tShift*DynamicIterrN,
 //			  	   iterrationN);
 	  
+		  // -- Vivid Fractal
+		  one = new PVector(0,mouseX/2);  two = new PVector(width-0,mouseX/2);
+		  noiseSeed(mouseY);
+		 
+//		  one = new PVector(0,ir_t/2);  two = new PVector(width-0,ir_t/2);
+//		  noiseSeed(ir_t1);
+		  ir_t1 = ir_t1 + 10;
+		  
+		  fill(0,5);  noStroke();  rect(0,0, width,height);
+		 
+		  tint(255,10);
+		  image(g,random(-2,2),random(-2,2));
+		  nx = noise(frameCount/1000.0f,0)*sc;
+		  ny = noise(0,frameCount/1000.0f)*sc;
+		   
+		  stroke(255,10);
+		 		 
+		  for(int i= 0 ; i < frac;i++){
+			    TH = frameCount/200.0f+i*(TWO_PI/frac);
+			    pushMatrix();
+			    translate(width/2,height/2);
+			    rotate(-TH);
+			    translate(-width/2,-height/2);
+			 
+			    fractal(one,two,depth);
+			    popMatrix();
+		  }
+		   
 	}
 
 
@@ -249,6 +281,29 @@ public class ProcessingToroid extends PApplet{
 		  }
 	}
 
+	public void fractal(PVector p1,PVector p2,float depth){
+		 
+		  float d = dist(p1.x,p1.y,p2.x,p2.y);
+		  if(d>=1.5f){
+		    float theta = atan2(p2.y-p1.y,p2.x-p1.x)+(frameCount)/(((1/depth))*200.0f);
+		 
+		    PVector p3 =
+		      new PVector(
+		          (p1.x+p2.x)/2.0f+cos(theta)*nx*d/2.0f,
+		          (p1.y+p2.y)/2.0f+sin(theta)*nx*d/2.0f);
+		 
+//		    stroke(lerpColor(0xffffccff,0xff00ccee,map(theta,-PI,PI,0,1)),10); //colors
+		    stroke(lerpColor(0xffffccff,0xff00ccee,map(theta,-PI/2,PI/2,0,1)),10); //colors
+		    if(d<50)
+		      line(p1.x,p1.y,p2.x,p2.y);
+		    depth *= slope;
+		 
+		    if(depth >= 0.1f){
+		      fractal(p1,p3,depth);
+		      fractal(p2,p3,depth);
+		    }
+		  }
+		}
 	
 	public void keyPressed(){
 	  
@@ -270,3 +325,4 @@ public class ProcessingToroid extends PApplet{
 	public String sketchRenderer() { return P3D; }
 
 }
+

@@ -34,19 +34,8 @@
         </activity>
         
         <activity
-        	android:name=".ProcessingToroid"
+        	android:name=".AppsActivity"
         	android:theme="@android:style/Theme.NoTitleBar"
-            android:screenOrientation="portrait"  
-            android:background="@android:color/transparent"
-        	android:label="@string/app_name"
-        	android:parentActivityName="com.aiworker.bcineuroskyservice.MainActivity" >
-	        <meta-data
-	            android:name="android.support.PARENT_ACTIVITY"
-	            android:value="com.aiworker.bcineuroskyservice.MainActivity" />
-	    </activity>
-	    
-        <activity
-        	android:name=".ProcessingWave"
         	android:label="@string/app_name"
         	android:screenOrientation="portrait" 
         	android:background="@android:color/transparent"
@@ -54,7 +43,46 @@
 	        <meta-data
 	            android:name="android.support.PARENT_ACTIVITY"
 	            android:value="com.aiworker.bcineuroskyservice.MainActivity" />
+	    </activity> 
+        
+        
+        <activity
+        	android:name=".ProcessingToroid"
+        	android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="portrait"  
+            android:background="@android:color/transparent"
+        	android:label="@string/app_name"
+        	android:parentActivityName="com.aiworker.bcineuroskyservice.AppsActivity" >
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.aiworker.bcineuroskyservice.AppsActivity" />
 	    </activity>
+	    
+        <activity
+        	android:name=".ProcessingWave"
+        	android:theme="@android:style/Theme.NoTitleBar"
+        	android:label="@string/app_name"
+        	android:screenOrientation="portrait" 
+        	android:background="@android:color/transparent"
+        	android:parentActivityName="com.aiworker.bcineuroskyservice.AppsActivity" >
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.aiworker.bcineuroskyservice.AppsActivity" />
+	    </activity>
+	    
+        <activity
+        	android:name=".ProcessingAttVividF"
+        	android:theme="@android:style/Theme.NoTitleBar"
+        	android:label="@string/app_name"
+        	android:screenOrientation="portrait" 
+        	android:background="@android:color/transparent"
+        	android:parentActivityName="com.aiworker.bcineuroskyservice.AppsActivity" >
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.aiworker.bcineuroskyservice.AppsActivity" />
+	    </activity>
+               
+        
         
         <service android:enabled="true"
             	 android:name=".eegService" />

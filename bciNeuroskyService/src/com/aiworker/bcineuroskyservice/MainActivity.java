@@ -30,17 +30,6 @@ public class MainActivity extends Activity{
 	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
 	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 	
-	// -- processing variables 
-	int pts = 40; 	float angle = 0;	float radius = 60.0f;
-		// -- lathe segments
-	int segments = 60;	float latheAngle = 0;	float latheRadius = 100.0f;
-		// -- vertices
-	PVector vertices[], vertices2[];
-		// -- for shaded or wireframe rendering 
-	boolean isWireFrame = false;
-		// -- for optional helix
-	boolean isHelix = false;	float helixOffset = 5.0f;
-	// -- END processing variables 
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -210,19 +199,27 @@ public class MainActivity extends Activity{
 		}
 	}
 	
-	//s -- start toroid
-	public void onClickStart_toroid (View v)
-	{
-		Intent intent = new Intent(this, ProcessingToroid.class);
-		startActivity(intent);
-	}
+//	// -- start toroid
+//	public void onClickStart_toroid (View v)
+//	{
+//		Intent intent = new Intent(this, ProcessingToroid.class);
+//		startActivity(intent);
+//	}
 	
-	//s -- start wave
-	public void onClickStart_wave (View v)
+	// -- start toroid
+	public void onClickStart_activity_apps (View v)
 	{
-		Intent intent = new Intent(this, ProcessingWave.class);
+		Intent intent = new Intent(this, AppsActivity.class);
 		startActivity(intent);
 	}
+		
+	
+//	//s -- start wave
+//	public void onClickStart_wave (View v)
+//	{
+//		Intent intent = new Intent(this, ProcessingWave.class);
+//		startActivity(intent);
+//	}
 		
     @Override
     public void onPause() {        
