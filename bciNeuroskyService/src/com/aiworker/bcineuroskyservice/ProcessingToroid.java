@@ -14,9 +14,6 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException; 
 
-import com.aiworker.bcineuroskyservice.ProcessingWave.KochFractal;
-import com.aiworker.bcineuroskyservice.ProcessingWave.KochLine;
-
 import android.content.SharedPreferences;
 import android.view.KeyEvent;
 

@@ -43,49 +43,50 @@ public class ProcessingWave extends PApplet {
 	int pts = 10; 
 	float angle = 0;
 	float radiusAt = 10.0f; float radiusMed = 10.0f; float AtDynamicR = radiusAt;
-	int acceleration = 1;
+	float AtDynamicAccDec = 0;
+	
 
 	// lathe segments
 	int segments = 40;
 	float latheAngle = 0;
 	float latheRadiusAt = 50.0f; float latheRadiusMed = 50.0f;  float MedDynamicR = radiusMed;
 
-	//vertices
+	// -- vertices
 	PVector vertices[], vertices2[];
 
-	// for shaded or wireframe rendering 
+	// -- for shaded or wireframe rendering 
 	boolean isWireFrame = false;
 
-	// for optional helix
-	boolean isHelix = false;
-	float helixOffset = 5.0f;
-
-	KochFractal k;
+	// -- for optional helix
+	boolean isHelix = false;	float helixOffset = 5.0f;
 	
-	// -- mainGUI
+	// -- mainGUI (3 icons on triangle)
 	PVector vert1, vert2, vert3;
-	PVector[] coords1, coords2, coords3;
-	float baseLength1, baseLength2, baseLength3;
-	int count1, count2, count3;
-	float [] f1; 	float [] f2;	float [] f3;
+	PVector[] coords1, coords2, coords3, allCoords;
+	float baseLength1, baseLength2, baseLength3, totalLength;
+	int count1, count2, count3, countAll;
+	float [] f1; 	float [] f2;	float [] f3; float [] fAllCoords;
+	float RotationSpeed = 3;
+	int iterrationN = 0;
 	
 	public void setup(){	 
 		 // frameRate(1);  // Animate slowly
-		  k = new KochFractal();
+
 		  smooth();
 		 // noStroke();
 		 // colorMode(HSB, 8, 100, 100);
 		  
-		  // -- mainGUI
+		  // -- setup vertices coordinates
 		  vert1 = new PVector(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
 		  vert2 = new PVector(displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
 		  vert3 = new PVector (displayWidth/2, displayHeight/2 - 2*displayHeight/10);
 
 		  createPath();
-		  count1 = 0; count2 = 0;  count3 = 0;
+		  count1 = 0; count2 = 0;  count3 = 0; countAll = 0;
 		  f1 = coords1[count1].array(); 
 		  f2 = coords2[count2].array();
 		  f3 = coords3[count3].array();
+		  fAllCoords = allCoords[countAll].array();
 		  
 	}
 
@@ -96,13 +97,13 @@ public class ProcessingWave extends PApplet {
 		  S = At_pr - Med_pr;
 		  P = At_pr + Med_pr;
 		  
-		  // -- blue(0)-violete(50)-red(100) 
+		  // -Att- blue(0)-violete(50)-red(100) 
 		  Ra = (255 * At_pr) / 100;
 		  Ga = 0;
 		  Ba = (255 * (100 - At_pr)) / 100 ;
 		  DynamicRadiusP();
 		  		  
-		  // -- blue(0)-violete(50)-red(100) 
+		  // --Med blue(0)-violete(50)-red(100) 
 		  Rm = (255 * Med_pr) / 100;
 		  Gm = 0 ;
 		  Bm = (255 * (100 - Med_pr)) / 100;
@@ -116,91 +117,80 @@ public class ProcessingWave extends PApplet {
 				 // ambientLight(0, 0, mouseY/5, 1, 1, -1);
 		  
 		  // -- center and spin toroid At (left)
-		  acceleration=acceleration-1;
 		  pushMatrix();
-		  		//translate(width/2+150,height+acceleration)
 		  translate(displayWidth/2-350, displayHeight - 9*displayHeight/10);
-		  rotateZ(0);
-		  rotateY(0);
-		  rotateX(0);
-		  		//thoroid(0,0,mouseX/4, mouseY/3, mouseX-mouseY);
+		  rotateZ(0);		  rotateY(0);		  rotateX(0);
 		  thoroid(0,0, Ra, Ga, Ba, true, AtDynamicR, latheRadiusAt);
-				 //translate(0, 0, 0);
-				 //rotateX(frameCount*PI/200);
-				 //translate(mouseX, mouseY, 0);
 		  popMatrix();
 		 
 		  // -- center and spin toroid Med (right)
 		  pushMatrix();
-		  		//translate(width/2-150,height+acceleration);
 		  translate(displayWidth/2+350,displayHeight - 9*displayHeight/10);
-		  		//rotateZ(acceleration*PI/120);
-		  rotateZ(0);
-		  rotateY(0);
-		  rotateX(0);
-		  		//println(frameCount);
-		  		//thoroid(0,0, mouseY/3, mouseX/4, mouseY-480);
+		  rotateZ(0);		  rotateY(0);		  rotateX(0);
 		  thoroid(0,0, Rm, Gm, Bm, true, MedDynamicR, latheRadiusMed);
 		  popMatrix();
 		 
 		  // -- Draws the SierFractal2DColor
-			  	//triangleSier(0, 700, 400, 0, 800, 700, mouseY/100);
-			  	//triangleSier(0, 700, 400, 0, 800, 700, 4);
+//		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
+//				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
+//				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
+//				  	   At_pr/15);
+		  
+		  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
 		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
 				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
 				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
-				  	   At_pr/15);
-		  
-				  // -- Draws the snowflake!
-		  			//pushMatrix();
-				 /* k.render();
-				  	// -- Iterate
-				  k.nextLevel();
-				  	// -- Let's not do it more than 5 times. . .
-				  if (k.getCount() > 4) {
-				    k.restart();
-				  }*/
-		  			//popMatrix();
+				  	   iterrationN);
 	  
-		  // -- Draw mainGUI
-		  f1 = coords1[count1].array(); 
-		  f2 = coords2[count2].array();
-		  f3 = coords3[count3].array();  
+		  // -- setup coordinates for 3 icons
+//		  f1 = coords1[count1].array(); 
+//		  f2 = coords2[count2].array();
+//		  f3 = coords3[count3].array();  
+		  //fAllCoords = allCoords[countAll].array();
 		  
-		  if (count3 >= (baseLength3 - 5) ){
-			   count1 = 0; count2 = 0;  count3 = 0;
-			   f1 = coords2[count2].array(); 
-			   f2 = coords3[count3].array();
-			   f3 = coords1[count1].array();
-		  }
-		  // -- speed of sphere movement
-		  count1=count1+3;  count2=count2+3;  count3=count3+3;
+//		  if (count3 >= (baseLength3 - 5) ){
+//			   count1 = 0; count2 = 0;  count3 = 0;
+//			   f1 = coords2[count2].array(); 
+//			   f2 = coords3[count3].array();
+//			   f3 = coords1[count1].array();
+//		  }
+//		  fAllCoords = allCoords[countAll].array();
+		  
+		  if (count1 >=totalLength ){   count1 = 0;   }
+		  f3 = allCoords[count1].array();
+		  
+		  if (count2+baseLength1 >=totalLength ){   count2=(int) (-1*baseLength1);   }
+		  f1 = allCoords[(int) (count2+baseLength1)].array(); 
+		  
+		  if (count3+2*baseLength1 >=totalLength ){   count3 = (int) (-2*baseLength1);   }
+		  f2 = allCoords[(int) (count3+2*baseLength1)].array();
+		  
+		  // -- speed of sphere movement	
+		  AttAccDeceleration();
+		  count1=(int) (count1+RotationSpeed); 
+		  count2=(int) (count2+RotationSpeed);  
+		  count3=(int) (count3+RotationSpeed);
+//		  countAll = countAll + 3;
 		    
-		 // println ("coord1 " + baseLength1);
-		  // println ("coord2 " + baseLength2);
-		  // println ("coord3 " + baseLength3);
-		  
-		  // -- point 1
+		  // -- draw 3 icons
+		  // -- icon 2
 		   pushMatrix();		   
 		   translate(f1[0], f1[1],0);
-		   stroke(0,0,255);
-		   fill (255,0,0);
+		   stroke(0,0,255);  fill (255,0,0);
 		   sphere(50);		   
 		   popMatrix();
 		   
-		  // -- point 2  
+		  // -- icon 3  
 		   pushMatrix();		     
 		   translate(f2[0], f2[1],0);
-		   stroke(0,0,255);
-		   fill (0,255,0);
+		   stroke(0,0,255);  fill (0,255,0);
 		   sphere(50);		   
 		   popMatrix();
 		   
-		  // -- point 3
+		  // -- icon 1
 		   pushMatrix();
 		   translate(f3[0],f3[1],0);
-		   stroke(0,255,0);
-		   fill (0,0,255);
+		   stroke(0,255,0);  fill (0,0,255);
 		   sphere(50);
 		   popMatrix();
 	  
@@ -268,140 +258,6 @@ public class ProcessingWave extends PApplet {
 	  //rotateX(frameCount*PI/150);
 	}
 	
-	
-	// Koch Curve
-	// A class to manage the list of line segments in the snowflake pattern
-
-	class KochFractal {
-	  PVector start;       // A PVector for the start
-	  PVector end;         // A PVector for the end
-	  ArrayList<KochLine> lines;   // A list to keep track of all the lines
-	  int count;
-	  
-	  KochFractal() {
-	    start = new PVector(0,height-20);
-	    end = new PVector(width,height-20);
-	    lines = new ArrayList<KochLine>();
-	    restart();
-	  }
-
-	  public void nextLevel() {  
-	    // For every line that is in the arraylist
-	    // create 4 more lines in a new arraylist
-	    lines = iterate(lines);
-	    count++;
-	  }
-
-	  public void restart() { 
-	    count = 0;      // Reset count
-	    lines.clear();  // Empty the array list
-	    lines.add(new KochLine(start,end));  // Add the initial line (from one end PVector to the other)
-	  
-	  }
-	  
-	  public int getCount() {
-	    return count;
-	  }
-	  
-	  // This is easy, just draw all the lines
-	  public void render() {
-	    for(KochLine l : lines) {
-	      l.display();
-	    }
-	  }
-
-	  // This is where the **MAGIC** happens
-	  // Step 1: Create an empty arraylist
-	  // Step 2: For every line currently in the arraylist
-	  //   - calculate 4 line segments based on Koch algorithm
-	  //   - add all 4 line segments into the new arraylist
-	  // Step 3: Return the new arraylist and it becomes the list of line segments for the structure
-	  
-	  // As we do this over and over again, each line gets broken into 4 lines, which gets broken into 4 lines, and so on. . . 
-	  public ArrayList iterate(ArrayList<KochLine> before) {
-	    ArrayList now = new ArrayList<KochLine>();    // Create emtpy list
-	    for(KochLine l : before) {
-	      // Calculate 5 koch PVectors (done for us by the line object)
-	      PVector a = l.start();                 
-	      PVector b = l.kochleft();
-	      PVector c = l.kochmiddle();
-	      PVector d = l.kochright();
-	      PVector e = l.end();
-	      // Make line segments between all the PVectors and add them
-	      now.add(new KochLine(a,b));
-	      now.add(new KochLine(b,c));
-	      now.add(new KochLine(c,d));
-	      now.add(new KochLine(d,e));
-	    }
-	    return now;
-	  }
-
-	}
-	// The Nature of Code
-	// Daniel Shiffman
-	// http://natureofcode.com
-
-	// Koch Curve
-	// A class to describe one line segment in the fractal
-	// Includes methods to calculate midPVectors along the line according to the Koch algorithm
-
-	class KochLine {
-
-	  // Two PVectors,
-	  // a is the "left" PVector and 
-	  // b is the "right PVector
-	  PVector a;
-	  PVector b;
-
-	  KochLine(PVector start, PVector end) {
-	    a = start.get();
-	    b = end.get();
-	  }
-
-	  public void display() {
-	    stroke(255);
-	    line(a.x, a.y, b.x, b.y);
-	  }
-
-	  public PVector start() {
-	    return a.get();
-	  }
-
-	  public PVector end() {
-	    return b.get();
-	  }
-
-	  // This is easy, just 1/3 of the way
-	  public PVector kochleft() {
-	    PVector v = PVector.sub(b, a);
-	    v.div(3);
-	    v.add(a);
-	    return v;
-	  }    
-
-	  // More complicated, have to use a little trig to figure out where this PVector is!
-	  public PVector kochmiddle() {
-	    PVector v = PVector.sub(b, a);
-	    v.div(3);
-	    
-	    PVector p = a.get();
-	    p.add(v);
-	    
-	    v.rotate(-radians(60));
-	    p.add(v);
-	    
-	    return p;
-	  }    
-
-	  // Easy, just 2/3 of the way
-	  public PVector kochright() {
-	    PVector v = PVector.sub(a, b);
-	    v.div(3);
-	    v.add(b);
-	    return v;
-	  }
-	}
-
 	public void DynamicRadiusP(){
 		 // -- limit radius
 	     if (AtDynamicR>=latheRadiusAt)	{AtDynamicR = latheRadiusAt; }          
@@ -443,6 +299,30 @@ public class ProcessingWave extends PApplet {
 	     
 	}
 	
+	public void AttAccDeceleration(){
+		 // -- limit radius
+	     if (AtDynamicAccDec>=3)	{AtDynamicAccDec = 3; }          
+	     if (AtDynamicAccDec<=0 )	{AtDynamicAccDec = 0; }
+	     
+	     float ClusterLeftY = 50; float ClusterRightY = 70;  float ClusterDeltaY = 0;
+	     float graviton = 0.0025f;
+	     if(At_pr >= ClusterLeftY-ClusterDeltaY &&	At_pr <= ClusterRightY+ClusterDeltaY) 
+	         				{ AtDynamicAccDec = AtDynamicAccDec ; }
+	         else {
+	             if (At_pr > ClusterRightY+ClusterDeltaY )
+	             			{ AtDynamicAccDec = AtDynamicAccDec + graviton; } 
+	             else {
+	             	if (At_pr < ClusterLeftY-ClusterDeltaY )
+	             			{ AtDynamicAccDec = AtDynamicAccDec - graviton;  }
+	             }                    
+	         }
+	     
+	     RotationSpeed = RotationSpeed - AtDynamicAccDec;
+	     if (RotationSpeed<=0) {iterrationN = 1; RotationSpeed=0;}
+	     if (RotationSpeed>=3) {iterrationN = 0; RotationSpeed=3;}
+	     
+	}
+	
 	public void triangleSier(float x1, float y1, float x2, float y2, float x3, float y3, int n) {
 		  // 'n' is the number of iteration.
 		  if ( n > 0 ) {
@@ -465,32 +345,43 @@ public class ProcessingWave extends PApplet {
 		}
 
 	public void createPath() {
-		  // calculate length of base top
+		  // -- calculate length (in points) of base top
 		  baseLength1 = PVector.dist(vert1, vert2);
 		  baseLength2 = PVector.dist(vert1, vert3);
 		  baseLength3 = PVector.dist(vert2, vert3);
+		  totalLength = baseLength1 + baseLength2 + baseLength3 ;
 
 		  // fill base top coordinate array
+		  int k = 0;
+		  allCoords = new PVector[ceil(totalLength)];
 		  coords1 = new PVector[ceil(baseLength3)];
 		  for (int i=0; i<coords1.length; i++) {
 		    coords1[i] = new PVector();
 		    coords1[i].x = vert1.x + ((vert2.x-vert1.x)/baseLength1)*i;
 		    coords1[i].y = vert1.y + ((vert2.y-vert1.y)/baseLength1)*i;
+		    allCoords[k] = coords1[i];
+		    k = k +1;
 		    }
+		  		  
+		  coords3 = new PVector[ceil(baseLength3)];
+		  for (int i=0; i<coords3.length; i++) {
+		    coords3[i] = new PVector();
+		    coords3[i].x = vert2.x + ((vert3.x-vert2.x)/baseLength3)*i;
+		    coords3[i].y = vert2.y + ((vert3.y-vert2.y)/baseLength3)*i;
+		    allCoords[k] = coords3[i];
+		    k = k +1;
+		  }
 		  
 		  coords2 = new PVector[ceil(baseLength3)];
 		  for (int i=0; i<coords2.length; i++) {
 		    coords2[i] = new PVector();
 		    coords2[i].x = vert3.x + ((vert1.x-vert3.x)/baseLength2)*i;
 		    coords2[i].y = vert3.y + ((vert1.y-vert3.y)/baseLength2)*i;
+		    allCoords[k] = coords2[i];
+		    k = k +1;
 		  }
 		  
-		  coords3 = new PVector[ceil(baseLength3)];
-		  for (int i=0; i<coords3.length; i++) {
-		    coords3[i] = new PVector();
-		    coords3[i].x = vert2.x + ((vert3.x-vert2.x)/baseLength3)*i;
-		    coords3[i].y = vert2.y + ((vert3.y-vert2.y)/baseLength3)*i;
-		  }
+		  totalLength = k-2;
 		}
 
 	
