@@ -7,6 +7,7 @@ import processing.opengl.*;
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
+import java.util.Random;
 import java.io.File; 
 import java.io.BufferedReader; 
 import java.io.PrintWriter; 
@@ -15,12 +16,14 @@ import java.io.OutputStream;
 import java.io.IOException; 
 
 import android.view.KeyEvent;
-/** activity for Seirpinski Fractal link to Att algorithm2*/
-public class ProcessingAttVividF extends PApplet{
+/** activity for Network Game Sample        */
+public class ProcessingNewtorkGame extends PApplet{
 		// -- local EEG variables
-		int pAt=0; int pMed=0; int pS=0; int pP=0;
+		int pAt=0; int pMed=0; int pS=0; int pP=0; int pAtRndNorm=0;
 		// -- variables to manipulate torroids colors dynamics
 		int AtR; int AtG; int AtB; 	int MedR; int MedG; int MedB;
+		Random r = new Random(); private long mLastTime; int rndUpdDelay = 20;
+		int GameLevel = 0;
 		
 		// -- toroids setting
 		int pts = 10; 	 int segments = 40;
@@ -34,26 +37,14 @@ public class ProcessingAttVividF extends PApplet{
 		boolean isHelix = false;	float helixOffset = 5.0f;
 			// -- toroids vertices
 		PVector vertices[], vertices2[];
-
-		
-		// -- mainGUI (3 icons moving on the triangle)
-		PVector vert1, vert2, vert3;
-		PVector[] coords1, coords2, coords3, allCoords;
-		float baseLength1, baseLength2, baseLength3, totalLength;
-		int count1, count2, count3, countAll;
-		float [] f1; 	float [] f2;	float [] f3; float [] fAllCoords;
-			// -- speed of the moving icons in points
-		float RotationSpeed = 5; int trSideLength = 1000;
-		
-		// -- Sierpinski fractal iteration (from 0 to 7)
-		int SierpF_iterN = 0; float DynamicIterrN=SierpF_iterN;
-		
+	
 		// --processing algorithm
-		float TimeToSelectMax = 70; float TimeToSelect = TimeToSelectMax;  float TimeToSelectItt = 0.5f;
-		float accel_alphaMax = 10; float accel_alpha = 0; float accel_alphaDeviation = 0.5f;
-		boolean FirstRun = true; boolean action_cancel_flag = false;
+//		float TimeToSelectMax = 70; float TimeToSelect = TimeToSelectMax;  float TimeToSelectItt = 0.5f;
+//		float accel_alphaMax = 10; float accel_alpha = 0; float accel_alphaDeviation = 0.5f;
+//		boolean FirstRun = true; boolean action_cancel_flag = false;
 		
 		float AtDynamicAccDec = 0;
+		float Pl1Accel = 0; float Pl2Accel = 0;
 		
 
 		
@@ -63,66 +54,76 @@ public class ProcessingAttVividF extends PApplet{
 			  smooth();
 			 // noStroke();
 			 // colorMode(HSB, 8, 100, 100);
-			  
-			  // -- setup vertices coordinates for triangle
-			  vert1 = new PVector(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
-			  vert2 = new PVector(displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
-			  vert3 = new PVector (displayWidth/2, displayHeight/2 - 2*displayHeight/10);
 		  
 		}
 
 		public void draw(){
-			  // -- draw background
-			  background(0);
-			  // -- basic lighting setup
-			  lights(); 
-					 // directionalLight(mouseX/4, 0, mouseY/3, 1, 1, -1);
-					 // ambientLight(0, 0, mouseY/5, 1, 1, -1);
+			  // -- draw background and setup basic lighting setup
+			  background(0);  lights(); 
 			  
+			  // -- check game status
+			  if (Pl2Accel>Pl1Accel && Pl2Accel==(displayHeight - 1*displayHeight/10))
+			  	{Pl1Accel = 0; Pl2Accel = 0; GameLevel = GameLevel + 1;} 
+			  if (Pl1Accel>Pl2Accel && Pl1Accel==(displayHeight - 1*displayHeight/10))
+			  	{Pl1Accel = 0; Pl2Accel = 0; GameLevel = GameLevel - 1;} 
+			  if (GameLevel<0)	{GameLevel = 0;} 
+			  
+			  for(int i=0; i<GameLevel; i++){
+				  pushMatrix();
+				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.5f*displayHeight/10);
+	//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+				  thoroid(0,0, 0, 255, 0, false, (latheRadiusMed-10)/10, latheRadiusMed/10);
+				  popMatrix();
+			  }
+			  
+			  // -- get EEG data
 			  getEEG();
-			  
-			  // -- directly link At to torroid color	
-			  		// -At- blue(0)-violete(50)-red(100) 
-			  AtR = (255 * pAt) / 100;
-			  AtG = 0;
-			  AtB = (255 * (100 - pAt)) / 100 ;
-			  		// -- create dynamic ts based on pS	
-			  AtDynamicR = CreateDynamic(pP, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 85, 150, 0);
-		  		// -- create dynamic ts based on pMed: the bigger torroid the bigger Med	
-//			  AtDynamicR = CreateDynamic(pMed, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 40, 60, 0);
+			  			  
+			  	
+			  // -- At(random) Player1
+//			  AtR = (255 * pAtRndNorm) / 100;  AtG = 0;  AtB = (255 * (100 - pAtRndNorm)) / 100 ;
 			  		// -- center and spin toroid for At (left)
-			  pushMatrix();
-			  translate(displayWidth/2 - 0*displayWidth/10, displayHeight - 9*displayHeight/10);
-			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-			  thoroid(0,0, AtR, AtG, AtB, true, AtDynamicR, latheRadiusAt);
-			  popMatrix();			  
+//			  pushMatrix();
+//			  translate(displayWidth/2 - 4f*displayWidth/10, displayHeight - 9*displayHeight/10);
+//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+//			  thoroid(0,0, AtR, AtG, AtB, true, AtDynamicR, latheRadiusAt);
+//			  popMatrix();			  
 			  
-//			  // -- Med torroid
-//			  		// --Med blue(0)-violete(50)-red(100) 
-//			  MedR = (255 * pMed) / 100;
-//			  MedG = 0 ;
-//			  MedB = (255 * (100 - pMed)) / 100;
-//			  		// -- create dynamic ts based on pS
-//			  MedDynamicR = CreateDynamic(pS, MedDynamicR, radiusMed, latheRadiusMed, 0.5f, -30, 30, 0);		 		 
+			  // -- At Player2
+//			  AtR = (255 * pAt) / 100;  AtG = 0;  AtB = (255 * (100 - pAt)) / 100 ;	 		 
 //			  		// -- center and spin toroid Med (right)
 //			  pushMatrix();
-//			  translate(displayWidth/2 + 3.5f*displayWidth/10,displayHeight - 9*displayHeight/10);
+//			  translate(displayWidth/2 + 4f*displayWidth/10,displayHeight - 9*displayHeight/10);
 //			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-//			  thoroid(0,0, MedR, MedG, MedB, true, MedDynamicR, latheRadiusMed);
+//			  thoroid(0,0, AtR, AtG, AtB, true, MedDynamicR, latheRadiusMed);
 //			  popMatrix();
 			 		  
+			  // ===============================================
+			  // ===============================================
+			  // -- Player1((random, network) torroid
+			  AtR = (255 * pAtRndNorm) / 100; AtG = 0;  AtB = (255 * (100 - pAtRndNorm)) / 100 ;
+			  		// -- create dynamic ts based on pS
+			  Pl1Accel = CreateDynamic(pAtRndNorm, Pl1Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);		 		 
+			  		// -- center and spin toroid Med (right)
+			  pushMatrix();
+			  translate(displayWidth/2 - 2f*displayWidth/10, displayHeight - 1*displayHeight/10 - Pl1Accel);
+//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+			  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
+			  thoroid(0,0, AtR, AtG, AtB, true, latheRadiusMed-10, latheRadiusMed);
+			  popMatrix();
 			  
-			  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
-//			  DynamicIterrN = CreateDynamic(pAt, DynamicIterrN, 0, 7, 0.005f, 40, 60, 0);
-			  DynamicIterrN = StoDynamicMovement(pAt, DynamicIterrN, 0, 7, 0.005f, 40, 60, 0);
-			  SierpF_iterN= (int)DynamicIterrN;
-			  
-			  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
-					  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
-					  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
-					  	   SierpF_iterN);
-			  
-			
+			  // -- Player2 torroid
+			  AtR = (255 * pAt) / 100; AtG = 0;  AtB = (255 * (100 - pAt)) / 100 ;
+			  		// -- create dynamic ts based on pS
+			  Pl2Accel = CreateDynamic(pAt, Pl2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+			  		// -- center and spin toroid Med (right)	
+			  pushMatrix();
+			  translate(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - Pl2Accel);
+//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+			  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
+			  thoroid(0,0, AtR, AtG, AtB, true, latheRadiusMed-10, latheRadiusMed);
+			  popMatrix();
+			 
 		  
 		}
 
@@ -187,34 +188,25 @@ public class ProcessingAttVividF extends PApplet{
 		  
 		}
 		
-		public void triangleSier(float x1, float y1, float x2, float y2, float x3, float y3, int n) {
-			  // 'n' is the number of iteration.
-			  if ( n > 0 ) {
-			    fill(255/n, 0, 0);
-			    triangle(x1, y1, x2, y2, x3, y3);
-			     
-			    // Calculating the midpoints of all segments.
-			    float h1 = (x1+x2)/2.0f;
-			    float w1 = (y1+y2)/2.0f;
-			    float h2 = (x2+x3)/2.0f;
-			    float w2 = (y2+y3)/2.0f;
-			    float h3 = (x3+x1)/2.0f;
-			    float w3 = (y3+y1)/2.0f;
-			     
-			    // Trace the triangle with the new coordinates.
-			    triangleSier(x1, y1, h1, w1, h3, w3, n-1);
-			    triangleSier(h1, w1, x2, y2, h2, w2, n-1);
-			    triangleSier(h3, w3, h2, w2, x3, y3, n-1);
-			  }
-			}
-
 		/** get EEG data from MainActivity and calculate S,P */
 		public void getEEG(){
 			  pAt = MainActivity.At;
 			  pMed = MainActivity.Med;
 			  pS = pAt - pMed;
 			  pP = pAt + pMed;
+			   
 			  
+			  // -- create Randomly distributed At
+				  mLastTime = mLastTime +1;
+				  if (mLastTime < rndUpdDelay) return; 
+				  double val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 30 (standard deviation) - 70% of data
+
+				 // double val = r.nextGaussian() * 25 + 100; // 50 (mean); 30 (standard deviation) - 70% of data
+				  pAtRndNorm = (int) Math.round(val);
+				  if (pAtRndNorm>100) {pAtRndNorm=100;} if (pAtRndNorm<0) {pAtRndNorm=0;}	           
+				  if (mLastTime>rndUpdDelay){mLastTime=0;}
+			  
+			  // -- take EEG data directly from service wo interaction with activity
 			  //pAt = eegService.At;
 		}
 		/** create dynamic time-series from rapid changing time-series 
@@ -267,30 +259,6 @@ public class ProcessingAttVividF extends PApplet{
 		     return DynamicTS;
 		}
 
-		
-		public void AttAccDeceleration(){
-			 // -- limit radius
-		     if (AtDynamicAccDec>=3)	{AtDynamicAccDec = 3; }          
-		     if (AtDynamicAccDec<=0 )	{AtDynamicAccDec = 0; }
-		     
-		     float ClusterLeftY = 50; float ClusterRightY = 70;  float ClusterDeltaY = 0;
-		     float graviton = 0.0025f;
-		     if(pAt >= ClusterLeftY-ClusterDeltaY &&	pAt <= ClusterRightY+ClusterDeltaY) 
-		         				{ AtDynamicAccDec = AtDynamicAccDec ; }
-		         else {
-		             if (pAt > ClusterRightY+ClusterDeltaY )
-		             			{ AtDynamicAccDec = AtDynamicAccDec + graviton; } 
-		             else {
-		             	if (pAt < ClusterLeftY-ClusterDeltaY )
-		             			{ AtDynamicAccDec = AtDynamicAccDec - graviton;  }
-		             }                    
-		         }
-		     
-		     RotationSpeed = RotationSpeed - AtDynamicAccDec;
-		     if (RotationSpeed<=0) {SierpF_iterN = 1; RotationSpeed=0;}
-		     if (RotationSpeed>=3) {SierpF_iterN = 0; RotationSpeed=3;}
-		     
-		}
 		
 		
 		public void keyPressed(){

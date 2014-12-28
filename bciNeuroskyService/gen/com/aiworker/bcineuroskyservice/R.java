@@ -33,18 +33,19 @@ public final class R {
         public static final int mindhackme_logo=0x7f020008;
     }
     public static final class id {
-        public static final int Att_label=0x7f060009;
-        public static final int Med_lable=0x7f06000a;
-        public static final int NeuroskyStatus=0x7f060008;
-        public static final int TextCurrentActivityInfo=0x7f06000b;
-        public static final int editTextCurrentActivity=0x7f06000c;
-        public static final int send_message=0x7f060006;
+        public static final int Att_label=0x7f06000a;
+        public static final int Med_lable=0x7f06000b;
+        public static final int NeuroskyStatus=0x7f060009;
+        public static final int TextCurrentActivityInfo=0x7f06000c;
+        public static final int editTextCurrentActivity=0x7f06000d;
+        public static final int send_message=0x7f060007;
         public static final int start_AttSierpF=0x7f060001;
         public static final int start_AttVividF=0x7f060003;
         public static final int start_MindOS=0x7f060002;
-        public static final int start_activity_apps=0x7f060007;
-        public static final int start_service=0x7f060005;
-        public static final int stop_service=0x7f060004;
+        public static final int start_NetworkGame=0x7f060004;
+        public static final int start_activity_apps=0x7f060008;
+        public static final int start_service=0x7f060006;
+        public static final int stop_service=0x7f060005;
         public static final int text_view_header=0x7f060000;
     }
     public static final class layout {

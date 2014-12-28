@@ -33,10 +33,17 @@ public class AppsActivity extends Activity {
 	}
 	
 	
-	//s -- start mindOS
+	// -- start mindOS
 	public void onClickStart_MindOS (View v)
 	{
 		Intent intent = new Intent(this, ProcessingWave.class);
+		startActivity(intent);
+	}
+	
+	// -- start network game sample
+	public void onClickStart_NetworkGame (View v)
+	{
+		Intent intent = new Intent(this, ProcessingNewtorkGame.class);
 		startActivity(intent);
 	}
 	

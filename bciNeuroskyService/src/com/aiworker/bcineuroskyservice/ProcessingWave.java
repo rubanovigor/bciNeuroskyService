@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException;  
 
+import android.util.Log;
+
 public class ProcessingWave extends PApplet {
 	// -- local EEG variables
 	int pAt=0; int pMed=0; int pS=0; int pP=0;
@@ -41,7 +43,7 @@ public class ProcessingWave extends PApplet {
 	int count1, count2, count3, countAll;
 	float [] f1; 	float [] f2;	float [] f3; float [] fAllCoords;
 		// -- speed of the moving icons in points
-	float RotationSpeed = 5;
+	float RotationSpeed = 5; int trSideLength = 1000;
 	
 	// -- Sierpinski fractal iteration (from 0 to 7)
 	int SierpF_iterN = 0;
@@ -67,13 +69,17 @@ public class ProcessingWave extends PApplet {
 		  vert2 = new PVector(displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
 		  vert3 = new PVector (displayWidth/2, displayHeight/2 - 2*displayHeight/10);
 
-		  calculateTrianglePath();
+		  calculatePathOnTriangle();
+		  
 		  count1 = 0; count2 = 0;  count3 = 0; countAll = 0;
 		  f1 = coords1[count1].array(); 
 		  f2 = coords2[count2].array();
 		  f3 = coords3[count3].array();
 		  fAllCoords = allCoords[countAll].array();
 		  
+		  // -- setup initial coordinates of the icons
+//		  count1 = 0; count2 = count1 + trSideLength;  count3 = count2+ trSideLength; 
+		  count1 = trSideLength/2; count2 = count1 + trSideLength;  count3 = count2+ trSideLength; 
 	}
 
 	public void draw(){
@@ -128,13 +134,13 @@ public class ProcessingWave extends PApplet {
 		  
 		  // -- setup coordinates for 3 icons		  
 		  if (count1 >=totalLength ){   count1 = 0;   }
-		  f3 = allCoords[count1].array();
+		  f1 = allCoords[count1].array();
 		  
-		  if (count2+baseLength1 >=totalLength ){   count2=(int) (-1*baseLength1);   }
-		  f1 = allCoords[(int) (count2+baseLength1)].array(); 
-		  
-		  if (count3+2*baseLength1 >=totalLength ){   count3 = (int) (-2*baseLength1);   }
-		  f2 = allCoords[(int) (count3+2*baseLength1)].array();
+		  if (count2 >=totalLength ){   count2=0;   }
+		  f2 = allCoords[(int) (count2)].array(); 
+	  
+		  if (count3 >=totalLength ){   count3 = 0; }
+		  f3 = allCoords[(int) (count3)].array();
 		  
 		  // -- processing algorithm
 		  ProcessingAlgorithm();
@@ -246,44 +252,59 @@ public class ProcessingWave extends PApplet {
 		}
 
 	/** calculate number of point inside vertices of the triangle and they coordinates	 */
-	public void calculateTrianglePath() {
-		  // -- calculate length (in points) of base top
-		  baseLength1 = PVector.dist(vert1, vert2);
-		  baseLength2 = PVector.dist(vert1, vert3);
-		  baseLength3 = PVector.dist(vert2, vert3);
-		  totalLength = baseLength1 + baseLength2 + baseLength3 ;
-
+	public void calculatePathOnTriangle() {
+		  // -- calculate length (in points) between vertices
+//		  baseLength1 = PVector.dist(vert1, vert2);
+//		  baseLength2 = PVector.dist(vert1, vert3) - 1;
+//		  baseLength3 = PVector.dist(vert2, vert3) - 2;
+//		  totalLength = baseLength1 + (baseLength2) + (baseLength3) ;
+//
+//		  Log.d(getString(R.string.app_name), "ir_d calculatePathOnTriangle()"+baseLength1);
+//		  Log.d(getString(R.string.app_name), "ir_d calculatePathOnTriangle()"+baseLength2);
+//		  Log.d(getString(R.string.app_name), "ir_d calculatePathOnTriangle()"+baseLength3);
+//		  Log.d(getString(R.string.app_name), "ir_d calculatePathOnTriangle()"+totalLength);
+		  
 		  // fill base top coordinate array
+		  totalLength = trSideLength + (trSideLength-1) + (trSideLength-2);
+		  Log.d(getString(R.string.app_name), "ir_d calculatePathOnTriangle()"+totalLength);
 		  int k = 0;
 		  allCoords = new PVector[ceil(totalLength)];
-		  coords1 = new PVector[ceil(baseLength3)];
+		  
+		  coords1 = new PVector[ceil(trSideLength)];
 		  for (int i=0; i<coords1.length; i++) {
 		    coords1[i] = new PVector();
-		    coords1[i].x = vert1.x + ((vert2.x-vert1.x)/baseLength1)*i;
-		    coords1[i].y = vert1.y + ((vert2.y-vert1.y)/baseLength1)*i;
+		    coords1[i].x = vert1.x + i*(vert2.x-vert1.x)/trSideLength;
+		    coords1[i].y = vert1.y + i*(vert2.y-vert1.y)/trSideLength; // -- 0 for horizontal side
+		    // --
+		    allCoords[k] = new PVector();
 		    allCoords[k] = coords1[i];
 		    k = k +1;
 		    }
-		  		  
-		  coords3 = new PVector[ceil(baseLength3)];
-		  for (int i=0; i<coords3.length; i++) {
-		    coords3[i] = new PVector();
-		    coords3[i].x = vert2.x + ((vert3.x-vert2.x)/baseLength3)*i;
-		    coords3[i].y = vert2.y + ((vert3.y-vert2.y)/baseLength3)*i;
-		    allCoords[k] = coords3[i];
-		    k = k +1;
-		  }
 		  
-		  coords2 = new PVector[ceil(baseLength3)];
+		  coords2 = new PVector[ceil(trSideLength-1)];
 		  for (int i=0; i<coords2.length; i++) {
 		    coords2[i] = new PVector();
-		    coords2[i].x = vert3.x + ((vert1.x-vert3.x)/baseLength2)*i;
-		    coords2[i].y = vert3.y + ((vert1.y-vert3.y)/baseLength2)*i;
+		    coords2[i].x = vert2.x - (i+1)*(vert2.x-vert3.x)/trSideLength;
+		    coords2[i].y = vert2.y + (i+1)*(vert3.y-vert2.y)/trSideLength;
+		    // --
+		    allCoords[k] = new PVector();
 		    allCoords[k] = coords2[i];
 		    k = k +1;
 		  }
-		  
-		  totalLength = k-2;
+		  		  
+		  coords3 = new PVector[ceil(trSideLength-2)];
+		  for (int i=0; i<coords3.length; i++) {
+		    coords3[i] = new PVector();
+		    coords3[i].x = vert3.x - (i+1)*(vert3.x-vert1.x)/trSideLength;
+		    coords3[i].y = vert3.y - (i+1)*(vert3.y-vert1.y)/trSideLength;
+		    
+		    // --
+		    allCoords[k] = new PVector();
+		    allCoords[k] = coords3[i];
+		    k = k + 1;
+		  }
+		 		  
+//		  totalLength = k-1;
 		}
 	/** get EEG data from MainActivity and calculate S,P */
 	public void getEEG(){
@@ -291,6 +312,8 @@ public class ProcessingWave extends PApplet {
 		  pMed = MainActivity.Med;
 		  pS = pAt - pMed;
 		  pP = pAt + pMed;
+		  
+		  //pAt = eegService.At;
 	}
 	/** create dynamic time-series from rapid changing time-series 
 	 * @return DynamicTS */
@@ -310,6 +333,9 @@ public class ProcessingWave extends PApplet {
 						if (TS < ClusterX1-ClusterDeltaX ) { DynamicTS = DynamicTS - graviton;  }
 					}                    
 				}
+		 // -- limit time-series
+	     if (DynamicTS>=tsMax)	{DynamicTS = tsMax; }          
+	     if (DynamicTS<=tsMin )	{DynamicTS = tsMin; }
 	     
 	     return DynamicTS;
 	}
@@ -339,8 +365,8 @@ public class ProcessingWave extends PApplet {
 	    if (TimeToSelect == TimeToSelectMax && accel_alpha>accel_alphaDeviation){ FirstRun = false;}	
 	    if (accel_alpha>accel_alphaDeviation){
    		 		 SierpF_iterN = 0; 
-   		 		TimeToSelect = TimeToSelectMax;
-   		 		 }
+   		 		 TimeToSelect = TimeToSelectMax;
+   		 	}
 	   
 	}
 	
@@ -423,6 +449,6 @@ public class ProcessingWave extends PApplet {
 	
 	public int sketchWidth() { return displayWidth; }
 	public int sketchHeight() { return displayHeight; }
-	public String sketchRenderer() { return P3D; }
-
+	public String sketchRenderer() { return P3D; }	
+	
 }
