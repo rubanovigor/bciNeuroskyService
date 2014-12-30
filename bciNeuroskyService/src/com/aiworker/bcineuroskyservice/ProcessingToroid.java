@@ -39,7 +39,6 @@ public class ProcessingToroid extends PApplet{
 
 	
 	// -- mainGUI (3 icons moving on the triangle)
-	PVector vert1, vert2, vert3;
 	PVector[] coords1, coords2, coords3, allCoords;
 	float baseLength1, baseLength2, baseLength3, totalLength;
 	int count1, count2, count3, countAll;
@@ -48,6 +47,7 @@ public class ProcessingToroid extends PApplet{
 	float RotationSpeed = 5; int trSideLength = 1000;
 	
 	// -- Sierpinski fractal iteration (from 0 to 7)
+	PVector vert1, vert2, vert3;
 	int SierpF_iterN = 0; float DynamicIterrN=SierpF_iterN;
 	
 	// --processing algorithm

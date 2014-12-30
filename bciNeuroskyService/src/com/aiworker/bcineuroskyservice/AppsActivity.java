@@ -47,5 +47,12 @@ public class AppsActivity extends Activity {
 		startActivity(intent);
 	}
 	
+	// -- start network game sample
+	public void onClickStart_rndNGame (View v)
+	{
+		Intent intent = new Intent(this, ProcessingRNDgame.class);
+		startActivity(intent);
+	}
+	
 	
 }

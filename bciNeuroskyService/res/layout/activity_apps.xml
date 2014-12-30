@@ -58,6 +58,19 @@
           android:textSize="17sp" 
           android:visibility="visible" />
       
+      <Button
+          android:id="@+id/start_rndNGame"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerHorizontal="true"
+          android:layout_below="@+id/start_NetworkGame"    
+          android:gravity="center"
+          android:onClick="onClickStart_rndNGame"
+          android:text="start\nAt vs rndGaus"
+          android:textColor="#0F0F00"
+          android:textSize="17sp" 
+          android:visibility="visible" />
+      
       <ImageButton
           android:id="@+id/start_MindOS"
           android:layout_width="wrap_content"
