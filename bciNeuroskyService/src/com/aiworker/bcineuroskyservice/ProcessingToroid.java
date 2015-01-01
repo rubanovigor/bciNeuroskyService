@@ -89,7 +89,7 @@ public class ProcessingToroid extends PApplet{
 		  AtG = 0;
 		  AtB = (255 * (100 - pAt)) / 100 ;
 		  		// -- create dynamic ts based on pS	
-		  AtDynamicR = CreateDynamic(pP, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 85, 150, 0);
+		  AtDynamicR = Algorithm.CreateDynamic(pP, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 85, 150, 0);
 	  		// -- create dynamic ts based on pMed: the bigger torroid the bigger Med	
 //		  AtDynamicR = CreateDynamic(pMed, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 40, 60, 0);
 		  		// -- center and spin toroid for At (left)
@@ -115,7 +115,7 @@ public class ProcessingToroid extends PApplet{
 		 		  
 		  
 		  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
-		  DynamicIterrN = CreateDynamic(pAt, DynamicIterrN, 0, 7, 0.005f, 40, 60, 0);
+		  DynamicIterrN = Algorithm.CreateDynamic(pAt, DynamicIterrN, 0, 7, 0.005f, 40, 60, 0);
 //		  DynamicIterrN = StoDynamicMovement(pAt, DynamicIterrN, 0, 7, 0.005f, 40, 60, 0);
 		  SierpF_iterN= (int)DynamicIterrN;
 		  

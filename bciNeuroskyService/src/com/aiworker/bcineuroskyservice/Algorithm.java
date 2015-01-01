@@ -51,5 +51,11 @@ public class Algorithm {
 	     
 	     return DynamicTS;
 	}
+	
+	/** convert S to dynamic movement*/
+	public static float CircularMovement(float acceleration, float accMin, float accMax){
+		float accelAlpha = (float) Math.toDegrees(acceleration);
+		return accelAlpha;
+	}
 
 }

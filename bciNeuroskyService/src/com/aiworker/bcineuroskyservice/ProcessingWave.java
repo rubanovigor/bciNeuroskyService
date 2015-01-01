@@ -37,7 +37,6 @@ public class ProcessingWave extends PApplet {
 
 	
 	// -- mainGUI (3 icons moving on the triangle)
-	PVector vert1, vert2, vert3;
 	PVector[] coords1, coords2, coords3, allCoords;
 	float baseLength1, baseLength2, baseLength3, totalLength;
 	int count1, count2, count3, countAll;
@@ -46,11 +45,16 @@ public class ProcessingWave extends PApplet {
 	float RotationSpeed = 5; int trSideLength = 1000;
 	
 	// -- Sierpinski fractal iteration (from 0 to 7)
-	int SierpF_iterN = 0;
+	PVector vert1, vert2, vert3;
+	int SierpF_iterN = 1; float DynamicIterrN=SierpF_iterN;
+		// -- coordinates of triangle vertices
+	float SVx1, SVy1, SVx2, SVy2, SVx3, SVy3;
+	float d = 0;
 	
 	// --processing algorithm
 	float TimeToSelectMax = 70; float TimeToSelect = TimeToSelectMax;  float TimeToSelectItt = 0.5f;
-	float accel_alphaMax = 10; float accel_alpha = 0; float accel_alphaDeviation = 0.5f;
+	float accelerationMax = 10; float acceleration = 0; float accelerationDeviation = 0.5f;
+	float accelAlpha = 0;
 	boolean FirstRun = true; boolean action_cancel_flag = false;
 	
 	float AtDynamicAccDec = 0;
@@ -58,17 +62,26 @@ public class ProcessingWave extends PApplet {
 
 	
 	public void setup(){	 
-		 // frameRate(1);  // Animate slowly
+//		  frameRate(15);  // Animate slowly
 
 		  smooth();
 		 // noStroke();
 		 // colorMode(HSB, 8, 100, 100);
-		  
 		  // -- setup vertices coordinates for triangle
+//		  SVx1 = displayWidth/2 + 0*displayWidth/10;		SVy1 = displayHeight/2 + 3*displayHeight/10;
+//		  SVx2 = displayWidth/2 + 4*displayWidth/10;		SVy2 = displayHeight/2 + 3*displayHeight/10;
+//		  SVx3 = displayWidth/2 + 2f*displayWidth/10;		SVy3 = displayHeight/2 + 1*displayHeight/10;
+		  SVx1 = displayWidth/2 - 3*displayWidth/10;		SVy1 = displayHeight/2 + 1.5f*displayHeight/10;
+		  SVx2 = displayWidth/2 + 3*displayWidth/10;		SVy2 = displayHeight/2 + 1.5f*displayHeight/10;
+		  SVx3 = displayWidth/2;							SVy3 = displayHeight/2 - 1.5f*displayHeight/10;
+		  
+		  d = displayWidth/10;
+		  
+		  // -- setup vertices coordinates for drawing icons
 		  vert1 = new PVector(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
 		  vert2 = new PVector(displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
 		  vert3 = new PVector (displayWidth/2, displayHeight/2 - 2*displayHeight/10);
-
+		  
 		  calculatePathOnTriangle();
 		  
 		  count1 = 0; count2 = 0;  count3 = 0; countAll = 0;
@@ -98,7 +111,7 @@ public class ProcessingWave extends PApplet {
 		  AtG = 0;
 		  AtB = (255 * (100 - pAt)) / 100 ;
 		  		// -- create dynamic ts based on pS	
-		  AtDynamicR = CreateDynamic(pP, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 85, 150, 0);
+		  AtDynamicR = Algorithm.CreateDynamic(pP, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 85, 150, 0);
 		  		// -- center and spin toroid At (left)
 		  pushMatrix();
 		  translate(displayWidth/2 - 3.5f*displayWidth/10, displayHeight - 9*displayHeight/10);
@@ -112,60 +125,77 @@ public class ProcessingWave extends PApplet {
 		  MedG = 0 ;
 		  MedB = (255 * (100 - pMed)) / 100;
 		  		// -- create dynamic ts based on pS
-		  MedDynamicR = CreateDynamic(pS, MedDynamicR, radiusMed, latheRadiusMed, 0.5f, -30, 30, 0);		 		 
+		  MedDynamicR = Algorithm.CreateDynamic(pS, MedDynamicR, radiusMed, latheRadiusMed, 0.5f, -30, 30, 0);		 		 
 		  		// -- center and spin toroid Med (right)
 		  pushMatrix();
 		  translate(displayWidth/2 + 3.5f*displayWidth/10,displayHeight - 9*displayHeight/10);
 		  rotateZ(0);		  rotateY(0);		  rotateX(0);
 		  thoroid(0,0, MedR, MedG, MedB, true, MedDynamicR, latheRadiusMed);
 		  popMatrix();
-		 
-		  // -- Draws the SierFractal2DColor
+		 		  
+		  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
 //		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
 //				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
 //				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
-//				  	   pAt/15);
+//				  	   SierpF_iterN);
+		  		// -- main triangle
+		  triangleSier(SVx1, SVy1, SVx2, SVy2, SVx3, SVy3, SierpF_iterN, 0,0,0);
+	  			// -- 3 small one located on Vertices of main triangle
+		  triangleSier(SVx1-d/2, SVy1+d/2, SVx1+d/2, SVy1+d/2, SVx1, SVy1-d/2, 1, 255,255,0);
+		  triangleSier(SVx2-d/2, SVy2+d/2, SVx2+d/2, SVy2+d/2, SVx2, SVy2-d/2, 1, 0,255,0);
+		  triangleSier(SVx3-d/2, SVy3+d/2, SVx3+d/2, SVy3+d/2, SVx3, SVy3-d/2, 1, 0,0,255);
 		  
-		  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
-		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
-				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
-				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
-				  	   SierpF_iterN);
+		  // -- calculate acceleration
+//		  acceleration = Algorithm.StoDynamicMovement(pS, acceleration, 0, accelerationMax, 0.05f, -30, 30, 0);
+		  acceleration = acceleration + 0.01f;
+		  // -- convert acceleration to angle
+//		  accelAlpha = Algorithm.CircularMovement(acceleration, 0, accelerationMax);
+		  accelAlpha = accelAlpha + 0.5f;
+		  if (accelAlpha>=360){accelAlpha=0;}
+		  SierpF_iterN = (int) (7*accelAlpha/360+1);
+		  int r = 300;
+		  SVx1  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(accelAlpha)) );
+		  SVy1  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(accelAlpha)) );
+		  SVx2  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(accelAlpha+120)) );
+		  SVy2  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(accelAlpha+120)) );
+		  SVx3  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(accelAlpha+240)) );
+		  SVy3  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(accelAlpha+240)) );
+	    	 
 		  
 		  // -- setup coordinates for 3 icons		  
-		  if (count1 >=totalLength ){   count1 = 0;   }
-		  f1 = allCoords[count1].array();
-		  
-		  if (count2 >=totalLength ){   count2=0;   }
-		  f2 = allCoords[(int) (count2)].array(); 
-	  
-		  if (count3 >=totalLength ){   count3 = 0; }
-		  f3 = allCoords[(int) (count3)].array();
+//		  if (count1 >=totalLength ){   count1 = 0;   }
+//		  f1 = allCoords[count1].array();
+//		  
+//		  if (count2 >=totalLength ){   count2=0;   }
+//		  f2 = allCoords[(int) (count2)].array(); 
+//	  
+//		  if (count3 >=totalLength ){   count3 = 0; }
+//		  f3 = allCoords[(int) (count3)].array();
 		  
 		  // -- processing algorithm
-		  ProcessingAlgorithm();
+//		  ProcessingAlgorithm();
 		  
 		  
 		  // -- speed of sphere movement	
-		  // AttAccDeceleration();
-		  count1=(int) (count1+RotationSpeed); 
-		  count2=(int) (count2+RotationSpeed);  
-		  count3=(int) (count3+RotationSpeed);
+//		   //AttAccDeceleration();
+//		  count1=(int) (count1+RotationSpeed); 
+//		  count2=(int) (count2+RotationSpeed);  
+//		  count3=(int) (count3+RotationSpeed);
 		  		//countAll = countAll + 3;
 		    
 		  // -- draw 3 icons
 		  		// -- icon 1 (left-bottom vertices)
-		  pushMatrix();	translate(f1[0], f1[1],0);
-		  stroke(0,0,255);	fill (255,0,0);
-		  sphere(50);		popMatrix();	   
-		   		// -- icon 2  
-		  pushMatrix();	translate(f2[0], f2[1],0);
-		  stroke(0,0,255);	fill (0,255,0);
-		  sphere(50);		popMatrix();		   
-		   		// -- icon 3
-		  pushMatrix();	translate(f3[0],f3[1],0);
-		  stroke(0,255,0);	fill (0,0,255);
-		  sphere(50);		popMatrix();
+//		  pushMatrix();	translate(f1[0], f1[1],0);
+//		  stroke(0,0,255);	fill (255,0,0);
+//		  sphere(50);		popMatrix();	   
+//		   		// -- icon 2  
+//		  pushMatrix();	translate(f2[0], f2[1],0);
+//		  stroke(0,0,255);	fill (0,255,0);
+//		  sphere(50);		popMatrix();		   
+//		   		// -- icon 3
+//		  pushMatrix();	translate(f3[0],f3[1],0);
+//		  stroke(0,255,0);	fill (0,0,255);
+//		  sphere(50);		popMatrix();
 	  
 	}
 
@@ -230,10 +260,12 @@ public class ProcessingWave extends PApplet {
 	  
 	}
 	
-	public void triangleSier(float x1, float y1, float x2, float y2, float x3, float y3, int n) {
+	public void triangleSier(float x1, float y1, float x2, float y2, float x3, float y3,
+							 int n, int cR, int cG, int cB) {
 		  // 'n' is the number of iteration.
 		  if ( n > 0 ) {
-		    fill(255/n, 0, 0);
+//		    fill(255/n, 0, 0);
+		    fill(cR, cG, cB);
 		    triangle(x1, y1, x2, y2, x3, y3);
 		     
 		    // Calculating the midpoints of all segments.
@@ -245,9 +277,9 @@ public class ProcessingWave extends PApplet {
 		    float w3 = (y3+y1)/2.0f;
 		     
 		    // Trace the triangle with the new coordinates.
-		    triangleSier(x1, y1, h1, w1, h3, w3, n-1);
-		    triangleSier(h1, w1, x2, y2, h2, w2, n-1);
-		    triangleSier(h3, w3, h2, w2, x3, y3, n-1);
+		    triangleSier(x1, y1, h1, w1, h3, w3, n-1, cR,cG,cB);
+		    triangleSier(h1, w1, x2, y2, h2, w2, n-1, cR,cG,cB);
+		    triangleSier(h3, w3, h2, w2, x3, y3, n-1, cR,cG,cB);
 		  }
 		}
 
@@ -315,85 +347,38 @@ public class ProcessingWave extends PApplet {
 		  
 		  //pAt = eegService.At;
 	}
-	/** create dynamic time-series from rapid changing time-series 
-	 * @return DynamicTS */
-	public float CreateDynamic(int TS, float DynamicTS,
-			float tsMin, float tsMax, float graviton,
-			float ClusterX1, float ClusterX2, float ClusterDeltaX){
-		 // -- limit time-series
-	     if (DynamicTS>=tsMax)	{DynamicTS = tsMax; }          
-	     if (DynamicTS<=tsMin )	{DynamicTS = tsMin; }
-	     
-	     // -- update DynamicTS depending on TS value
-	     if(TS >= ClusterX1-ClusterDeltaX &&	TS <= ClusterX2+ClusterDeltaX) 
-														   { DynamicTS = DynamicTS ; }
-		 	else {
-			 	if (TS > ClusterX2+ClusterDeltaX )		   { DynamicTS = DynamicTS + graviton; } 
-				else {
-						if (TS < ClusterX1-ClusterDeltaX ) { DynamicTS = DynamicTS - graviton;  }
-					}                    
-				}
-		 // -- limit time-series
-	     if (DynamicTS>=tsMax)	{DynamicTS = tsMax; }          
-	     if (DynamicTS<=tsMin )	{DynamicTS = tsMin; }
-	     
-	     return DynamicTS;
-	}
 	/** Processing Algorithm of the user activity */
 	public void ProcessingAlgorithm(){
 	    // update RotationSpeed based on S
-	    accel_alpha = StoDynamicMovement(pS, accel_alpha, 0, accel_alphaMax, 0.05f, -30, 30, 0);
-	    RotationSpeed = accel_alpha/2;
+	    acceleration = Algorithm.StoDynamicMovement(pS, acceleration, 0, accelerationMax, 0.05f, -30, 30, 0);
+	    RotationSpeed = acceleration/2;
 	    
 		// check if user want to send command
     		// -- check if rotational speed = 0 
-	    if (accel_alpha<=0f && FirstRun!=true){
+	    if (acceleration<=0f && FirstRun!=true){
 	    	action_cancel_flag = false;
 	    	TimeToSelect = TimeToSelect - TimeToSelectItt;
 	    	if (TimeToSelect<0f){ TimeToSelect = 0f;}
 	    	SierpF_iterN = (int) (7 - TimeToSelect/10);
 	    	}
 	    else { // -- cancel command selection if rotational speed are not 0
-	    	 if (TimeToSelect>0f && TimeToSelect<TimeToSelectMax && accel_alpha>0f){
+	    	 if (TimeToSelect>0f && TimeToSelect<TimeToSelectMax && acceleration>0f){
 	    		 action_cancel_flag = true;
 	    		 TimeToSelect = TimeToSelectMax;
 	    		 SierpF_iterN = 0;
 	    		 FirstRun = true;
 	    	 }
 	    }
-//	    if (TimeToSelect == TimeToSelectMax && accel_alpha>accel_alphaDeviation){ action_cancel_flag = false;}	
-	    if (TimeToSelect == TimeToSelectMax && accel_alpha>accel_alphaDeviation){ FirstRun = false;}	
-	    if (accel_alpha>accel_alphaDeviation){
+//	    if (TimeToSelect == TimeToSelectMax && acceleration>accelerationDeviation){ action_cancel_flag = false;}	
+	    if (TimeToSelect == TimeToSelectMax && acceleration>accelerationDeviation){ FirstRun = false;}	
+	    if (acceleration>accelerationDeviation){
    		 		 SierpF_iterN = 0; 
    		 		 TimeToSelect = TimeToSelectMax;
    		 	}
 	   
 	}
 	
-	public float StoDynamicMovement(int TS, float DynamicTS,
-			float tsMin, float tsMax, float graviton,
-			float ClusterX1, float ClusterX2, float ClusterDeltaX){
-		 // -- limit time-series
-	     if (DynamicTS>=tsMax)	{DynamicTS = tsMax; }          
-	     if (DynamicTS<=tsMin )	{DynamicTS = tsMin; }
-	     
-	     // -- update DynamicTS depending on TS value
-	     if(TS >= ClusterX1-ClusterDeltaX &&	TS <= ClusterX2+ClusterDeltaX)
-	     												   { DynamicTS = DynamicTS - graviton; }
-		 	else {
-			 	if (TS > ClusterX2+ClusterDeltaX )		   { DynamicTS = DynamicTS + graviton; } 
-				else {
-						if (TS < ClusterX1-ClusterDeltaX ) { DynamicTS = DynamicTS + graviton; }
-					}                    
-				}
-	     
-	     if (DynamicTS>=tsMax)	{DynamicTS = tsMax; }          
-	     if (DynamicTS<=tsMin )	{DynamicTS = tsMin; }
-	     
-	     return DynamicTS;
-	}
-	
-	
+		
 	public void AttAccDeceleration(){
 		 // -- limit radius
 	     if (AtDynamicAccDec>=3)	{AtDynamicAccDec = 3; }          
