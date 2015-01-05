@@ -49,7 +49,9 @@ public class ProcessingWave extends PApplet {
 	int SierpF_iterN = 1; float DynamicIterrN=SierpF_iterN;
 		// -- coordinates of triangle vertices
 	float SVx1, SVy1, SVx2, SVy2, SVx3, SVy3;
-	float d = 0;
+	float IL_SVx1, IL_SVy1, IL_SVx2, IL_SVy2, IL_SVx3, IL_SVy3;
+	float IL_SVx1_1, IL_SVy1_1, IL_SVx1_2, IL_SVy1_2, IL_SVx1_3, IL_SVy1_3;
+	float d = 0;  int r = 500; int IL_r = r/2;
 	
 	// --processing algorithm
 	float TimeToSelectMax = 70; float TimeToSelect = TimeToSelectMax;  float TimeToSelectItt = 0.5f;
@@ -59,6 +61,8 @@ public class ProcessingWave extends PApplet {
 	
 	float AtDynamicAccDec = 0;
 	
+	// -- Setting up an background and icons images
+	PImage imgBack, imgMusic, imgCamera, imgTerminal, imgMusicPlay, imgMusicStop, imgMusicNext; 
 
 	
 	public void setup(){	 
@@ -93,17 +97,36 @@ public class ProcessingWave extends PApplet {
 		  // -- setup initial coordinates of the icons
 //		  count1 = 0; count2 = count1 + trSideLength;  count3 = count2+ trSideLength; 
 		  count1 = trSideLength/2; count2 = count1 + trSideLength;  count3 = count2+ trSideLength; 
+		  
+		  // -- using Processing's loadImage method to import an image and store it in the variable imgBack
+//		  imgBack = loadImage("b1_big.png");
+//		  imgBack = loadImage("b3_big.png");
+//		  imgBack = loadImage("b4_big.png");
+		  imgBack = loadImage("b5_1.png");
+//		  imgBack = loadImage("b8_big.png");
+//		  imgBack = loadImage("b11_big.png");
+		  		// -- icons
+//		  imgMusic, imgCamera, imgTerminal, imgPlay, imgStop, imgNext; 
+		  imgMusic = loadImage("icon_musicplayer.png");
+		  		imgMusicPlay = loadImage("icon_play_white.png");
+		  		imgMusicStop = loadImage("icon_stop.png");
+		  		imgMusicNext = loadImage("icon_next_white.png");
+		  imgCamera = loadImage("icon_cam.png");
+		  imgTerminal = loadImage("icon_console.png");
 	}
 
 	public void draw(){
 		  // -- draw background
-		  background(0);
+		 // background(0);
 		  // -- basic lighting setup
 		  lights(); 
 				 // directionalLight(mouseX/4, 0, mouseY/3, 1, 1, -1);
 				 // ambientLight(0, 0, mouseY/5, 1, 1, -1);
 		  
 		  getEEG();
+		  
+//		  image(imgBack, 0, 1.5f*displayHeight/10);
+		  image(imgBack, 0, 0);
 		  
 		  // -- At torroid	
 		  		// -At- blue(0)-violete(50)-red(100) 
@@ -131,36 +154,54 @@ public class ProcessingWave extends PApplet {
 		  translate(displayWidth/2 + 3.5f*displayWidth/10,displayHeight - 9*displayHeight/10);
 		  rotateZ(0);		  rotateY(0);		  rotateX(0);
 		  thoroid(0,0, MedR, MedG, MedB, true, MedDynamicR, latheRadiusMed);
-		  popMatrix();
-		 		  
-		  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
-//		  triangleSier(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
-//				  	   displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10,
-//				  	   displayWidth/2, displayHeight/2 - 2*displayHeight/10,
-//				  	   SierpF_iterN);
-		  		// -- main triangle
-		  triangleSier(SVx1, SVy1, SVx2, SVy2, SVx3, SVy3, SierpF_iterN, 0,0,0);
-	  			// -- 3 small one located on Vertices of main triangle
-		  triangleSier(SVx1-d/2, SVy1+d/2, SVx1+d/2, SVy1+d/2, SVx1, SVy1-d/2, 1, 255,255,0);
-		  triangleSier(SVx2-d/2, SVy2+d/2, SVx2+d/2, SVy2+d/2, SVx2, SVy2-d/2, 1, 0,255,0);
-		  triangleSier(SVx3-d/2, SVy3+d/2, SVx3+d/2, SVy3+d/2, SVx3, SVy3-d/2, 1, 0,0,255);
+		  popMatrix();		  
 		  
 		  // -- calculate acceleration
 //		  acceleration = Algorithm.StoDynamicMovement(pS, acceleration, 0, accelerationMax, 0.05f, -30, 30, 0);
 		  acceleration = acceleration + 0.01f;
 		  // -- convert acceleration to angle
 //		  accelAlpha = Algorithm.CircularMovement(acceleration, 0, accelerationMax);
-		  accelAlpha = accelAlpha + 0.5f;
+		  accelAlpha = accelAlpha + 1f;
 		  if (accelAlpha>=360){accelAlpha=0;}
-		  SierpF_iterN = (int) (7*accelAlpha/360+1);
-		  int r = 300;
+		  SierpF_iterN = (int) (7*accelAlpha/360-1);
+		  		// -- main triangle
 		  SVx1  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(accelAlpha)) );
 		  SVy1  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(accelAlpha)) );
 		  SVx2  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(accelAlpha+120)) );
 		  SVy2  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(accelAlpha+120)) );
 		  SVx3  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(accelAlpha+240)) );
 		  SVy3  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(accelAlpha+240)) );
-	    	 
+		  		// -- icons layer
+		  IL_SVx1  = (float) (displayWidth/2 + IL_r * Math.sin(Math.toRadians(accelAlpha)) );
+		  IL_SVy1  = (float) (displayHeight/2 + IL_r * Math.cos(Math.toRadians(accelAlpha)) );
+		  IL_SVx2  = (float) (displayWidth/2 + IL_r * Math.sin(Math.toRadians(accelAlpha+120)) );
+		  IL_SVy2  = (float) (displayHeight/2 + IL_r * Math.cos(Math.toRadians(accelAlpha+120)) );
+		  IL_SVx3  = (float) (displayWidth/2 + IL_r * Math.sin(Math.toRadians(accelAlpha+240)) );
+		  IL_SVy3  = (float) (displayHeight/2 + IL_r * Math.cos(Math.toRadians(accelAlpha+240)) );
+
+		  IL_SVx1_1 = (float) (displayWidth/2 + (IL_r+125) * Math.sin(Math.toRadians(accelAlpha)) );
+		  IL_SVy1_1 = (float) (displayHeight/2 + (IL_r+100) * Math.cos(Math.toRadians(accelAlpha)) );
+		  IL_SVx1_2 = (float) (displayWidth/2 + (IL_r-45) * Math.sin(Math.toRadians(accelAlpha+30)) );
+		  IL_SVy1_2 = (float) (displayHeight/2 + (IL_r-45) * Math.cos(Math.toRadians(accelAlpha+30)) );
+		  IL_SVx1_3 = (float) (displayWidth/2 + (IL_r-50) * Math.sin(Math.toRadians(accelAlpha-30)) );
+		  IL_SVy1_3 = (float) (displayHeight/2 + (IL_r-50) * Math.cos(Math.toRadians(accelAlpha-30)) );
+		  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
+		  		// -- main triangle
+//		  triangleSier(SVx1, SVy1, SVx2, SVy2, SVx3, SVy3, SierpF_iterN, 0,0,0);
+		  triangleSier(SVx1, SVy1, SVx2, SVy2, SVx3, SVy3, 4, 0,0,0);
+		  
+		  // -- draw icons
+		  image(imgMusic, IL_SVx1, IL_SVy1);
+			  image(imgMusicPlay, IL_SVx1_1, IL_SVy1_1);
+			  image(imgMusicStop, IL_SVx1_2, IL_SVy1_2); 
+			  image(imgMusicNext, IL_SVx1_3, IL_SVy1_3);
+		  image(imgCamera, IL_SVx2, IL_SVy2); image(imgTerminal, IL_SVx3, IL_SVy3);
+		  
+	  			// -- 3 small one located on Vertices of main triangle
+//		  triangleSier(SVx1-d/2, SVy1+d/2, SVx1+d/2, SVy1+d/2, SVx1, SVy1-d/2, 1, 255,255,0);
+//		  triangleSier(SVx2-d/2, SVy2+d/2, SVx2+d/2, SVy2+d/2, SVx2, SVy2-d/2, 1, 0,255,0);
+//		  triangleSier(SVx3-d/2, SVy3+d/2, SVx3+d/2, SVy3+d/2, SVx3, SVy3-d/2, 1, 0,0,255);
+		  	    	 
 		  
 		  // -- setup coordinates for 3 icons		  
 //		  if (count1 >=totalLength ){   count1 = 0;   }
@@ -171,33 +212,52 @@ public class ProcessingWave extends PApplet {
 //	  
 //		  if (count3 >=totalLength ){   count3 = 0; }
 //		  f3 = allCoords[(int) (count3)].array();
-		  
+//		  
 		  // -- processing algorithm
 //		  ProcessingAlgorithm();
 		  
 		  
 		  // -- speed of sphere movement	
 //		   //AttAccDeceleration();
-//		  count1=(int) (count1+RotationSpeed); 
-//		  count2=(int) (count2+RotationSpeed);  
-//		  count3=(int) (count3+RotationSpeed);
+		  count1=(int) (count1+RotationSpeed); 
+		  count2=(int) (count2+RotationSpeed);  
+		  count3=(int) (count3+RotationSpeed);
 		  		//countAll = countAll + 3;
 		    
 		  // -- draw 3 icons
 		  		// -- icon 1 (left-bottom vertices)
-//		  pushMatrix();	translate(f1[0], f1[1],0);
+//		  pushMatrix();	//	translate(f1[0], f1[1],0);
+//		  translate(IL_SVx1, IL_SVy1);
 //		  stroke(0,0,255);	fill (255,0,0);
-//		  sphere(50);		popMatrix();	   
-//		   		// -- icon 2  
-//		  pushMatrix();	translate(f2[0], f2[1],0);
+//		  sphere(30);		popMatrix();	
+		  
+//		  pushMatrix();  translate(IL_SVx1, IL_SVy1);
+////		  rotateZ(accelAlpha/4);		  rotateY(accelAlpha/4);		  rotateX(accelAlpha/4);
+//		  thoroid(0,0, 255,255,255, true, 20,30);  popMatrix();
+		  
+//		  pushMatrix();  translate(IL_SVx1_1, IL_SVy1_1);
+//		  thoroid(0,0, 255,255,255, true, 10,15);	  popMatrix();
+//		  
+//		  pushMatrix();  translate(IL_SVx1_2, IL_SVy1_2);
+//		  thoroid(0,0, 255,255,255, true, 10,15);	  popMatrix();
+//		  
+//		  pushMatrix();  translate(IL_SVx1_3, IL_SVy1_3);
+//		  thoroid(0,0, 255,255,255, true, 10,15);	  popMatrix();
+		  
+		  
+		   		// -- icon 2  
+//		  pushMatrix();	// translate(f2[0], f2[1],0);
+//		  translate(IL_SVx2, IL_SVy2);
 //		  stroke(0,0,255);	fill (0,255,0);
 //		  sphere(50);		popMatrix();		   
-//		   		// -- icon 3
-//		  pushMatrix();	translate(f3[0],f3[1],0);
+		   		// -- icon 3
+//		  pushMatrix();	//translate(f3[0],f3[1],0);
+//		  translate(IL_SVx3, IL_SVy3);
 //		  stroke(0,255,0);	fill (0,0,255);
 //		  sphere(50);		popMatrix();
 	  
 	}
+	
 
 
 	public void thoroid (int _positionX, int _positionY, int _R, int _G, int _B, boolean isWireFrame_l,
@@ -265,6 +325,7 @@ public class ProcessingWave extends PApplet {
 		  // 'n' is the number of iteration.
 		  if ( n > 0 ) {
 //		    fill(255/n, 0, 0);
+//			stroke (255,255,255);
 		    fill(cR, cG, cB);
 		    triangle(x1, y1, x2, y2, x3, y3);
 		     
@@ -277,8 +338,11 @@ public class ProcessingWave extends PApplet {
 		    float w3 = (y3+y1)/2.0f;
 		     
 		    // Trace the triangle with the new coordinates.
+		    stroke (255,0,0);
 		    triangleSier(x1, y1, h1, w1, h3, w3, n-1, cR,cG,cB);
+		    stroke (0,255,0);
 		    triangleSier(h1, w1, x2, y2, h2, w2, n-1, cR,cG,cB);
+		    stroke (0,0,255);
 		    triangleSier(h3, w3, h2, w2, x3, y3, n-1, cR,cG,cB);
 		  }
 		}
