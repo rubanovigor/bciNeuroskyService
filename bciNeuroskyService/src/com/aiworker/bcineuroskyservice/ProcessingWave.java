@@ -47,11 +47,9 @@ public class ProcessingWave extends PApplet {
 	// -- Sierpinski fractal iteration (from 0 to 7)
 //	PVector vert1, vert2, vert3;
 	int SierpF_iterN = 1; float DynamicIterrN=SierpF_iterN;
-		// -- coordinates of triangle vertices
-	float SVx1, SVy1, SVx2, SVy2, SVx3, SVy3;
-//	float IL_SVx1, IL_SVy1, IL_SVx2, IL_SVy2, IL_SVx3, IL_SVy3;
-//	float IL_SVx1_1, IL_SVy1_1, IL_SVx1_2, IL_SVy1_2, IL_SVx1_3, IL_SVy1_3;
-	float d = 0;  int r = 500; int IL_r = r/2; int IL1_r = r/4;
+	// -- array for coordinates of Main Sierpinski triangle vertices
+	float [] SierpTrV = new float [6];
+	float d = 0;  int r = 500; int rt = 0;
 	
 	// -- processing algorithm
 	float TimeToSelectMax = 70; float TimeToSelect = TimeToSelectMax;  float TimeToSelectItt = 0.5f;
@@ -82,60 +80,71 @@ public class ProcessingWave extends PApplet {
 	
 	public void setup(){	 
 //		  frameRate(15);  // Animate slowly
-
+		noFill();
 		  smooth();
 		 // noStroke();
 		 // colorMode(HSB, 8, 100, 100);
-		  SVx1 = displayWidth/2 - 3*displayWidth/10;		SVy1 = displayHeight/2 + 1.5f*displayHeight/10;
-		  SVx2 = displayWidth/2 + 3*displayWidth/10;		SVy2 = displayHeight/2 + 1.5f*displayHeight/10;
-		  SVx3 = displayWidth/2;							SVy3 = displayHeight/2 - 1.5f*displayHeight/10;
+		  	 background(0,0,0); 
+		  	 
+		  SierpTrV[0] = displayWidth/2 - 3*displayWidth/10;		SierpTrV[1] = displayHeight/2 + 1.5f*displayHeight/10;
+		  SierpTrV[2] = displayWidth/2 + 3*displayWidth/10;		SierpTrV[3] = displayHeight/2 + 1.5f*displayHeight/10;
+		  SierpTrV[4] = displayWidth/2;							SierpTrV[5] = displayHeight/2 - 1.5f*displayHeight/10;
 		  
 		  d = displayWidth/10;
 		  
-		  // -- setup vertices coordinates for drawing icons
-//		  vert1 = new PVector(displayWidth/2 - 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
-//		  vert2 = new PVector(displayWidth/2 + 4*displayWidth/10, displayHeight/2 + 2*displayHeight/10);
-//		  vert3 = new PVector (displayWidth/2, displayHeight/2 - 2*displayHeight/10);
-		  		  
-//		  calculatePathOnTriangle();
-		  
-//		  count1 = 0; count2 = 0;  count3 = 0; countAll = 0;
-//		  f1 = coords1[count1].array(); 
-//		  f2 = coords2[count2].array();
-//		  f3 = coords3[count3].array();
-//		  fAllCoords = allCoords[countAll].array();
-		  
-		  // -- setup initial coordinates of the icons
-//		  count1 = 0; count2 = count1 + trSideLength;  count3 = count2+ trSideLength; 
-//		  count1 = trSideLength/2; count2 = count1 + trSideLength;  count3 = count2+ trSideLength; 
-		  
 		  // -- using Processing's loadImage method to import an image and store it in the variable imgBack
-		  imgBack = loadImage("b5_1.png"); // imgBack = loadImage("b11_big.png");
+//		  imgBack = loadImage("b5_1.png"); 
+//		  imgBack = loadImage("b11_big.png");
+		  imgBack = loadImage("b3_big.png");
 		  		// -- icons
-		  imgMusic = loadImage("icon_musicplayer.png");
-				  imgMusicPlay = loadImage("icon_play_white.png");
-				  imgMusicStop = loadImage("icon_stop_white.png");
-				  imgMusicNext = loadImage("icon_next_white.png");
-		  imgCamera = loadImage("icon_cam.png");
+//		  imgMusic = loadImage("icon_musicplayer.png");
+//				  imgMusicPlay = loadImage("icon_play_white.png");
+//				  imgMusicStop = loadImage("icon_stop_white.png");
+//				  imgMusicNext = loadImage("icon_next_white.png");
+//		  imgCamera = loadImage("icon_cam.png");
+//				  imgCameraPicture = loadImage("icon_picture.png");
+//				  imgCameraShare = loadImage("icon_video.png");
+//				  imgCameraPrtSc = loadImage("icon_printscreen.png");
+//		  imgTerminal = loadImage("icon_console.png");
+//				  imgTerminalA = loadImage("icon_a.png");
+//				  imgTerminalC = loadImage("icon_c.png");
+//				  imgTerminalT = loadImage("icon_t.png");
+				
+	  		// -- icons Colors
+		  imgMusic = loadImage("play_music.png");
+//				  imgMusicPlay = loadImage("play.png");
+//				  imgMusicStop = loadImage("stop.png");
+//				  imgMusicNext = loadImage("next.png");
+				  imgMusicPlay = loadImage("play_blue.png");
+				  imgMusicStop = loadImage("stop_blue.png");
+				  imgMusicNext = loadImage("next_blue.png");
+		  imgCamera = loadImage("camera.png");
 				  imgCameraPicture = loadImage("icon_picture.png");
-				  imgCameraShare = loadImage("icon_video.png");
-				  imgCameraPrtSc = loadImage("icon_printscreen.png");
-		  imgTerminal = loadImage("icon_console.png");
-				  imgTerminalA = loadImage("icon_a.png");
-				  imgTerminalC = loadImage("icon_c.png");
-				  imgTerminalT = loadImage("icon_t.png");
+				  imgCameraShare = loadImage("twitter.png");
+				  imgCameraPrtSc = loadImage("facebook.png");
+		  imgTerminal = loadImage("google_search.png");
+				  imgTerminalA = loadImage("google.png");
+				  imgTerminalC = loadImage("gmail.png");
+				  imgTerminalT = loadImage("hangouts.png");
+				  
+//		  imgTerminal = loadImage("settings1.png");
+//				  imgTerminalA = loadImage("lightbulb.png");
+//				  imgTerminalC = loadImage("car.png"); 
+//				  imgTerminalT = loadImage("settings.png");
 		  
 	}
 
 	public void draw(){
-		  // -- draw background
-		  // background(0);
+		  // -- setup background color (when wo image)
+//		  	 background(160,160,160); 
 		  // -- basic lighting setup
-		  lights(); 
+		  lights();  noFill();
 		  
-		  getEEG();
+		  // -- setup background image
+//		  image(imgBack, 0, 0);
 		  
-		  image(imgBack, 0, 0);
+		  // -- get EEG data from service/MainActivity
+		  getEEG();	  
 		  
 		  // -- At torroid	
 		  		// -At- blue(0)-violete(50)-red(100) 
@@ -145,11 +154,10 @@ public class ProcessingWave extends PApplet {
 		  		// -- create dynamic ts based on pS	
 		  AtDynamicR = Algorithm.CreateDynamic(pP, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 85, 150, 0);
 		  		// -- center and spin toroid At (left)
-		  pushMatrix();
+		  pushMatrix(); strokeWeight(1);
 		  translate(displayWidth/2 - 3.5f*displayWidth/10, displayHeight - 9*displayHeight/10);
 		  rotateZ(0);		  rotateY(0);		  rotateX(0);
-		  thoroid(0,0, AtR, AtG, AtB, true, AtDynamicR, latheRadiusAt);
-		  popMatrix();			  
+		  thoroid(0,0, AtR, AtG, AtB, true, AtDynamicR, latheRadiusAt);		  popMatrix();			  
 		  
 		  // -- Med torroid
 		  		// --Med blue(0)-violete(50)-red(100) 
@@ -159,11 +167,10 @@ public class ProcessingWave extends PApplet {
 		  		// -- create dynamic ts based on pS
 		  MedDynamicR = Algorithm.CreateDynamic(pS, MedDynamicR, radiusMed, latheRadiusMed, 0.5f, -30, 30, 0);		 		 
 		  		// -- center and spin toroid Med (right)
-		  pushMatrix();
+		  pushMatrix();   strokeWeight(1);
 		  translate(displayWidth/2 + 3.5f*displayWidth/10,displayHeight - 9*displayHeight/10);
 		  rotateZ(0);		  rotateY(0);		  rotateX(0);
-		  thoroid(0,0, MedR, MedG, MedB, true, MedDynamicR, latheRadiusMed);
-		  popMatrix();		  
+		  thoroid(0,0, MedR, MedG, MedB, true, MedDynamicR, latheRadiusMed);   popMatrix();		  
 		  
 		  // -- calculate acceleration
 //		  acceleration = Algorithm.StoDynamicMovement(pS, acceleration, 0, accelerationMax, 0.05f, -30, 30, 0);
@@ -193,39 +200,26 @@ public class ProcessingWave extends PApplet {
 
 		  }
 
-		  
-//		  if (rotationAngleDemo>=360){mindOSlayer=2;}
-		  
-		  
-//		  SierpF_iterN = (int) (7*rotationAngle/360-1) + 1;
-//		  SierpF_iterN = 3;
-		  		// -- main triangle
-		  SVx1  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(rotationAngle)) );
-		  SVy1  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(rotationAngle)) );
-		  SVx2  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(rotationAngle+120)) );
-		  SVy2  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(rotationAngle+120)) );
-		  SVx3  = (float) (displayWidth/2 + r * Math.sin(Math.toRadians(rotationAngle+240)) );
-		  SVy3  = (float) (displayHeight/2 + r * Math.cos(Math.toRadians(rotationAngle+240)) );
+		   		// -- main Sierpinski triangle
+		  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, r, 0, 0);
 		  
 		  		// -- icons of the first layer
-		  iconFirstLayer = getIconsFirstLayerCoordinates(rotationAngle, r/2, iconW, iconH);
+		  iconFirstLayer = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, r/2, iconW/2, iconH/2);
 
-		  		// -- icons of the second layer
-		  icon01SecondLayer = getIconsSecondLayerCoordinates(rotationAngle, r/4, iconW, iconH, iconFirstLayer[0], iconFirstLayer[1]);
-		  icon23SecondLayer = getIconsSecondLayerCoordinates(rotationAngle, r/4, iconW, iconH, iconFirstLayer[2], iconFirstLayer[3]);
-		  icon45SecondLayer = getIconsSecondLayerCoordinates(rotationAngle, r/4, iconW, iconH, iconFirstLayer[4], iconFirstLayer[5]);
-
-		  // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
-		  		// -- main triangle
-		  triangleSier(SVx1, SVy1, SVx2, SVy2, SVx3, SVy3, SierpF_iterN, 0,0,0);
-//		  triangleSier(SVx1, SVy1, SVx2, SVy2, SVx3, SVy3, 3, 0,0,0);
+		  		// -- icons of the second layer // centerX+iW/2
+		  icon01SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[0]+iconW/2, iconFirstLayer[1]+iconH/2, r/4, iconW/4, iconH/4);
+		  icon23SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[2]+iconW/2, iconFirstLayer[3]+iconH/2, r/4, iconW/4, iconH/4);
+		  icon45SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[4]+iconW/2, iconFirstLayer[5]+iconH/2, r/4, iconW/4, iconH/4);
 		  
-		  // -- draw icons
+	  
+		  // -- draw user interface (SierpTriangle, Icons, Animations)
 		  if(mindOSlayer==1){
-			  if(SierpF_iterN>=1 && SierpF_iterN<6){
-			  image(imgMusic, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
-			  image(imgCamera, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
-			  image(imgTerminal, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
+			  if(SierpF_iterN>=1 && SierpF_iterN<7){
+				  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
+						  SierpF_iterN, 0,0,0,false, 0,127,255,10);
+				  image(imgMusic, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
+				  image(imgCamera, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
+				  image(imgTerminal, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
 			  
 				  	if(SierpF_iterN>=3){		
 					  image(imgMusicPlay, icon01SecondLayer[0], icon01SecondLayer[1], iconW/2, iconH/2);
@@ -239,85 +233,56 @@ public class ProcessingWave extends PApplet {
 					  image(imgTerminalA, icon45SecondLayer[0], icon45SecondLayer[1], iconW/2, iconH/2);
 					  image(imgTerminalC, icon45SecondLayer[2], icon45SecondLayer[3], iconW/2, iconH/2); 
 					  image(imgTerminalT, icon45SecondLayer[4], icon45SecondLayer[5], iconW/2, iconH/2);
+					  
+				  	}
+				  	if(SierpF_iterN>=4 && SierpF_iterN<=6 ){
+					   // -- draw SierpFractal in different color to highlight selected item
+				  		int r_temp =500;
+					  	SierpTrV = getTriangleVertCoord(rotationAngle, iconFirstLayer[0]+iconW/2, iconFirstLayer[1]+iconH/2, r_temp/2, 0, 0);
+					  	triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
+							   SierpF_iterN-1, 0,0,0,true, 192,0,0,10);
 				  	}
 			  }
-			  if(SierpF_iterN>=6){
-			  		image(imgMusic, displayWidth/2-1.5f*iconW/2, displayHeight/2-1.5f*iconH/2, iconW*1.5f, iconH*1.5f);
-					  image(imgMusicPlay, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
-					  image(imgMusicStop, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
-					  image(imgMusicNext, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
+			  if(SierpF_iterN>=7){
+				  	// -- decrease radius of active triangle (fade out)
+					  r = r - 30;  if (r<=0){r = 0;}
+					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, r, 0, 0);
+					  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
+							  SierpF_iterN, 47,47,79,false, 0,127,255,r/100);
+					  
+					  rt = rt + 30;  if (rt>=500){rt = 500;}
+					  // -- zoom in fractal
+					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rt, 0, 0);
+					  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
+							  3, 0,0,0,false, 0,127,255,10);
+					  
+					  if (rt==500){
+//						  background(0,0,0); 
+//				  	  image(imgMusic, displayWidth/2-1.5f*iconW/2, displayHeight/2-1.5f*iconH/2, iconW*1.5f, iconH*1.5f);
+				      iconFirstLayer = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rt/2, iconW/2, iconH/2);
+					   image(imgMusicPlay, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
+					   image(imgMusicStop, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
+					   image(imgMusicNext, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
+					  }
 			  }
 		  }
 		  
 		  if(mindOSlayer==2){
+			  r=500;
 			  if(SierpF_iterN>=1){
-			  image(imgMusicPlay, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
-			  image(imgMusicStop, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
-			  image(imgMusicNext, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
+				  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
+						  SierpF_iterN, 0,0,0,false, 0,127,255,10);
+				  image(imgMusicPlay, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
+				  image(imgMusicStop, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
+				  image(imgMusicNext, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
 			  
 			  }
 		  }
 		  
-			
-	  			// -- 3 small one located on Vertices of main triangle
-//		  triangleSier(SVx1-d/2, SVy1+d/2, SVx1+d/2, SVy1+d/2, SVx1, SVy1-d/2, 1, 255,255,0);
-//		  triangleSier(SVx2-d/2, SVy2+d/2, SVx2+d/2, SVy2+d/2, SVx2, SVy2-d/2, 1, 0,255,0);
-//		  triangleSier(SVx3-d/2, SVy3+d/2, SVx3+d/2, SVy3+d/2, SVx3, SVy3-d/2, 1, 0,0,255);
-		  	    	 
-		  
-		  // -- setup coordinates for 3 icons		  
-//		  if (count1 >=totalLength ){   count1 = 0;   }
-//		  f1 = allCoords[count1].array();
-//		  
-//		  if (count2 >=totalLength ){   count2=0;   }
-//		  f2 = allCoords[(int) (count2)].array(); 
-//	  
-//		  if (count3 >=totalLength ){   count3 = 0; }
-//		  f3 = allCoords[(int) (count3)].array();
-//		  
+		  	  
 		  // -- processing algorithm
 //		  ProcessingAlgorithm();
-		  
-		  
-		  // -- speed of sphere movement	
-//		   //AttAccDeceleration();
-//		  count1=(int) (count1+RotationSpeed); 
-//		  count2=(int) (count2+RotationSpeed);  
-//		  count3=(int) (count3+RotationSpeed);
-		  		//countAll = countAll + 3;
-		    
-		  // -- draw 3 icons
-		  		// -- icon 1 (left-bottom vertices)
-//		  pushMatrix();	//	translate(f1[0], f1[1],0);
-//		  translate(IL_SVx1, IL_SVy1);
-//		  stroke(0,0,255);	fill (255,0,0);
-//		  sphere(30);		popMatrix();	
-		  
-//		  pushMatrix();  translate(IL_SVx1, IL_SVy1);
-////		  rotateZ(rotationAngle/4);		  rotateY(rotationAngle/4);		  rotateX(rotationAngle/4);
-//		  thoroid(0,0, 255,255,255, true, 20,30);  popMatrix();
-		  
-//		  pushMatrix();  translate(IL_SVx1_1, IL_SVy1_1);
-//		  thoroid(0,0, 255,255,255, true, 10,15);	  popMatrix();
-//		  
-//		  pushMatrix();  translate(IL_SVx1_2, IL_SVy1_2);
-//		  thoroid(0,0, 255,255,255, true, 10,15);	  popMatrix();
-//		  
-//		  pushMatrix();  translate(IL_SVx1_3, IL_SVy1_3);
-//		  thoroid(0,0, 255,255,255, true, 10,15);	  popMatrix();
-		  
-		  
-		   		// -- icon 2  
-//		  pushMatrix();	// translate(f2[0], f2[1],0);
-//		  translate(IL_SVx2, IL_SVy2);
-//		  stroke(0,0,255);	fill (0,255,0);
-//		  sphere(50);		popMatrix();		   
-		   		// -- icon 3
-//		  pushMatrix();	//translate(f3[0],f3[1],0);
-//		  translate(IL_SVx3, IL_SVy3);
-//		  stroke(0,255,0);	fill (0,0,255);
-//		  sphere(50);		popMatrix();
-	  
+		  	  
 	}
 	
 
@@ -382,14 +347,16 @@ public class ProcessingWave extends PApplet {
 	}
 	/** build and draw Sierpinski fractals based on provided SierpF_iterN */
 	public void triangleSier(float x1, float y1, float x2, float y2, float x3, float y3,
-							 int n, int cR, int cG, int cB) {
+							 int n, int fR, int fG, int fB, boolean flagTransparent,
+							 int sR, int sG, int sB, int sW) {
 		  // 'n' is the number of iteration.
 		  if ( n > 0 ) {
-//		    fill(255/n, 0, 0);
-//			stroke (255,255,255);
-		    fill(cR, cG, cB);
+//		    fill(255/n, 0, 0); // fill(0, 0, 0); 
+			if (flagTransparent){ noFill();} else {fill(fR, fG, fB);}
+			stroke(sR, sG, sB);
+		    strokeWeight(sW); // strokeCap(ROUND);
 		    triangle(x1, y1, x2, y2, x3, y3);
-		     
+
 		    // Calculating the midpoints of all segments.
 		    float h1 = (x1+x2)/2.0f;
 		    float w1 = (y1+y2)/2.0f;
@@ -399,12 +366,16 @@ public class ProcessingWave extends PApplet {
 		    float w3 = (y3+y1)/2.0f;
 		     
 		    // Trace the triangle with the new coordinates.
-//		    stroke (255,0,0);
-		    triangleSier(x1, y1, h1, w1, h3, w3, n-1, cR,cG,cB);
-//		    stroke (0,255,0);
-		    triangleSier(h1, w1, x2, y2, h2, w2, n-1, cR,cG,cB);
-//		    stroke (0,0,255);
-		    triangleSier(h3, w3, h2, w2, x3, y3, n-1, cR,cG,cB);
+//		    fill(255, 0, 0);
+//		    stroke (0, 40, 217);
+		    triangleSier(x1, y1, h1, w1, h3, w3, n-1, fR,fG,fB,flagTransparent, sR,sG,sB,sW);
+//		    noFill();
+//		    stroke (0, 60, 217);
+		    triangleSier(h1, w1, x2, y2, h2, w2, n-1, fR,fG,fB,flagTransparent, sR,sG,sB,sW);
+//		    noFill();
+//		    stroke (0, 80, 217);
+		    triangleSier(h3, w3, h2, w2, x3, y3, n-1, fR,fG,fB,flagTransparent, sR,sG,sB,sW);
+		    
 		  }
 		}
 
@@ -475,38 +446,17 @@ public class ProcessingWave extends PApplet {
 	}
 	
 	/** get array of coordinates of the FIRST Layer icons*/
-	public float[] getIconsFirstLayerCoordinates(float alphaL, float radius, int iW, int iH){
+	public float[] getTriangleVertCoord(float alphaL, float centerX, float centerY, float radius, int iW, int iH){
 		float[] iconsCoordinates = new float[6];
-		iconsCoordinates[0]  = (float) (displayWidth/2  + radius * Math.sin(Math.toRadians(alphaL)) ) 	- iW/2;
-		iconsCoordinates[1]  = (float) (displayHeight/2 + radius * Math.cos(Math.toRadians(alphaL)) ) 	- iH/2;
-		iconsCoordinates[2]  = (float) (displayWidth/2  + radius * Math.sin(Math.toRadians(alphaL+120)) )- iW/2;
-		iconsCoordinates[3]  = (float) (displayHeight/2 + radius * Math.cos(Math.toRadians(alphaL+120)) )- iH/2;
-		iconsCoordinates[4]  = (float) (displayWidth/2  + radius * Math.sin(Math.toRadians(alphaL+240)) )- iW/2;
-		iconsCoordinates[5]  = (float) (displayHeight/2 + radius * Math.cos(Math.toRadians(alphaL+240)) )- iH/2;
-		  
-		return iconsCoordinates;
-	}
-	
-	/** get array of coordinates of the SECOND Layer icons*/
-	public float[] getIconsSecondLayerCoordinates(float alphaL, float radius, int iW, int iH, float centerX, float centerY){
-		float[] iconsCoordinates = new float[6];
-		iconsCoordinates[0] = (float) (centerX+iW/2 + radius * Math.sin(Math.toRadians(alphaL)) ) - iW/4;
-		iconsCoordinates[1] = (float) (centerY+iH/2 + radius * Math.cos(Math.toRadians(alphaL)) ) - iH/4;
-		iconsCoordinates[2] = (float) (centerX+iW/2 + radius * Math.sin(Math.toRadians(alphaL+120)) ) - iW/4;
-		iconsCoordinates[3] = (float) (centerY+iH/2 + radius * Math.cos(Math.toRadians(alphaL+120)) ) - iH/4;
-		iconsCoordinates[4] = (float) (centerX+iW/2 + radius * Math.sin(Math.toRadians(alphaL+240)) ) - iW/4;
-		iconsCoordinates[5] = (float) (centerY+iH/2 + radius * Math.cos(Math.toRadians(alphaL+240)) ) - iH/4;
-		  
-//		  icon01SecondLayer[0] = (float) (iconFirstLayer[0]+iconW/2 + (r/4) * Math.sin(Math.toRadians(rotationAngle)) ) - iconW/4;
-//		  icon01SecondLayer[1] = (float) (iconFirstLayer[1]+iconH/2 + (r/4) * Math.cos(Math.toRadians(rotationAngle)) ) - iconH/4;
-//		  icon01SecondLayer[2] = (float) (iconFirstLayer[0]+iconW/2 + (r/4) * Math.sin(Math.toRadians(rotationAngle+120)) ) - iconW/4;
-//		  icon01SecondLayer[3] = (float) (iconFirstLayer[1]+iconH/2 + (r/4) * Math.cos(Math.toRadians(rotationAngle+120)) ) - iconH/4;
-//		  icon01SecondLayer[4] = (float) (iconFirstLayer[0]+iconW/2 + (r/4) * Math.sin(Math.toRadians(rotationAngle+240)) ) - iconW/4;
-//		  icon01SecondLayer[5] = (float) (iconFirstLayer[1]+iconH/2 + (r/4) * Math.cos(Math.toRadians(rotationAngle+240)) ) - iconH/4;
+		iconsCoordinates[0]  = (float) (centerX + radius * Math.sin(Math.toRadians(alphaL)) )		- iW;
+		iconsCoordinates[1]  = (float) (centerY + radius * Math.cos(Math.toRadians(alphaL)) )		- iH;
+		iconsCoordinates[2]  = (float) (centerX + radius * Math.sin(Math.toRadians(alphaL+120)) )	- iW;
+		iconsCoordinates[3]  = (float) (centerY + radius * Math.cos(Math.toRadians(alphaL+120)) )	- iH;
+		iconsCoordinates[4]  = (float) (centerX + radius * Math.sin(Math.toRadians(alphaL+240)) )	- iW;
+		iconsCoordinates[5]  = (float) (centerY + radius * Math.cos(Math.toRadians(alphaL+240)) )	- iH;
 		
 		return iconsCoordinates;
 	}
-	
 	
 	
 	
