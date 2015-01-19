@@ -130,6 +130,16 @@
            android:layout_marginBottom="16dp"
            android:ems="10"  />
 
+       <Switch
+           android:id="@+id/switch_backend"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_below="@+id/NeuroskyStatus"
+           android:layout_centerHorizontal="true"
+           android:textOff="backend"
+		   android:textOn="backend" 
+		   android:onClick="onSwitchClicked"	/>
+
 </RelativeLayout>
 
 

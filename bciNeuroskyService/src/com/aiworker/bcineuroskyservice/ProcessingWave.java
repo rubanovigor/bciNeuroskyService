@@ -14,7 +14,10 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException;  
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ProcessingWave extends PApplet {
 	// -- local EEG variables
@@ -47,27 +50,39 @@ public class ProcessingWave extends PApplet {
 	// -- Sierpinski fractal iteration (from 0 to 7)
 //	PVector vert1, vert2, vert3;
 	int SierpF_iterN = 1; float DynamicIterrN=SierpF_iterN;
-	// -- array for coordinates of Main Sierpinski triangle vertices
-	float [] SierpTrV = new float [6];
-	float d = 0;  int r = 500; int rt = 0;
+	/** array for vertices coordinates of main Sierpinski triangle */	  float [] SierpTrV = new float [6];
+	/** icons width/hieght linked to main Sierpinski triangle radius */   int iconW, iconH; 
+	int rMainF, rFixed, rSelectionF;
 	
 	// -- processing algorithm
 	float TimeToSelectMax = 70; float TimeToSelect = TimeToSelectMax;  float TimeToSelectItt = 0.5f;
 	float accelerationMax = 10; float acceleration = 0; float accelerationDeviation = 0.5f;
 		// -- rotational angle and acceleration 
-	float rotationAngle = 0; float rotationAccel = 0.5f;
+	float rotationAngle = 90; float rotationAccel = 0.5f;
 	float rotationAngleDemo = 0; float demoTT = 5f; float demoTTd = 0.025f;
 	
 	boolean FirstRun = true; boolean action_cancel_flag = false;
 	int mindOSlayer = 1;
-	
 	float AtDynamicAccDec = 0;
+	/** -- index of selected items [0;2;4] */ 	int sItem = 0;
+	/** -- index of L2 items to show [0;3;6] */   int Icon2DisplIndex=0;
+	int temp=0;
 	
 	// -- Setting up a background and icons images
-	PImage imgBack, imgMusic, imgCamera, imgTerminal;
-	PImage imgMusicPlay, imgMusicStop, imgMusicNext; 
-	PImage imgTerminalA, imgTerminalC, imgTerminalT; 
-	PImage imgCameraPicture, imgCameraShare, imgCameraPrtSc; 
+	PImage imgBack; 
+	/** array for storing icons of the layer1*/ PImage[] imgL1 = new PImage[3]; 
+	/** array for storing icons of the layer2*/ PImage[] imgL1L2 = new PImage[9]; 
+	PImage imgMusic;
+		PImage imgMusicPlay, imgMusicStop, imgMusicNext; 		
+	PImage imgTerminal;
+		PImage imgTerminalA, imgTerminalC, imgTerminalT; 
+	PImage imgCamera;
+//		PImage imgCameraPicture, imgCameraShare, imgCameraPrtSc; 
+		PImage imgCameraPicture, imgCameraTwitter, imgCameraFB; 
+	
+	PImage imgApps;
+		PImage imgAppsGoogle, imgAppsTerminal, imgAppsSettings; 
+		
 	// -- array for coordinates of the fist layer icons
 	float [] iconFirstLayer = new float [6];  	
 	// -- arrays for coordinates of the second layer icons
@@ -75,23 +90,25 @@ public class ProcessingWave extends PApplet {
 	float [] icon23SecondLayer = new float [6];
 	float [] icon45SecondLayer = new float [6];
 
-	int iconW = 100, iconH = 100; 
+	float [] res = new float [6]; 
 
 	
 	public void setup(){	 
 //		  frameRate(15);  // Animate slowly
-		noFill();
+//		  noFill();
 		  smooth();
 		 // noStroke();
 		 // colorMode(HSB, 8, 100, 100);
-		  	 background(0,0,0); 
-		  	 
+		  background(0,0,0); 
+		  rFixed = displayWidth/2 - 1*displayWidth/20;
+		  rMainF = rFixed;	rSelectionF = 0;
+		  
+		  iconW = rFixed/5; iconH = rFixed/5;
+		  
 		  SierpTrV[0] = displayWidth/2 - 3*displayWidth/10;		SierpTrV[1] = displayHeight/2 + 1.5f*displayHeight/10;
 		  SierpTrV[2] = displayWidth/2 + 3*displayWidth/10;		SierpTrV[3] = displayHeight/2 + 1.5f*displayHeight/10;
 		  SierpTrV[4] = displayWidth/2;							SierpTrV[5] = displayHeight/2 - 1.5f*displayHeight/10;
-		  
-		  d = displayWidth/10;
-		  
+		  		  
 		  // -- using Processing's loadImage method to import an image and store it in the variable imgBack
 //		  imgBack = loadImage("b5_1.png"); 
 //		  imgBack = loadImage("b11_big.png");
@@ -118,28 +135,35 @@ public class ProcessingWave extends PApplet {
 				  imgMusicPlay = loadImage("play_blue.png");
 				  imgMusicStop = loadImage("stop_blue.png");
 				  imgMusicNext = loadImage("next_blue.png");
+				  
 		  imgCamera = loadImage("camera.png");
 				  imgCameraPicture = loadImage("icon_picture.png");
-				  imgCameraShare = loadImage("twitter.png");
-				  imgCameraPrtSc = loadImage("facebook.png");
-		  imgTerminal = loadImage("google_search.png");
-				  imgTerminalA = loadImage("google.png");
-				  imgTerminalC = loadImage("gmail.png");
-				  imgTerminalT = loadImage("hangouts.png");
+				  imgCameraTwitter = loadImage("twitter.png");
+				  imgCameraFB = loadImage("facebook.png");
+//		  imgTerminal = loadImage("google_search.png");
+//				  imgTerminalA = loadImage("google.png");
+//				  imgTerminalC = loadImage("gmail.png");
+//				  imgTerminalT = loadImage("hangouts.png");
 				  
-//		  imgTerminal = loadImage("settings1.png");
-//				  imgTerminalA = loadImage("lightbulb.png");
-//				  imgTerminalC = loadImage("car.png"); 
-//				  imgTerminalT = loadImage("settings.png");
+		  imgApps = loadImage("icon_apps.png");
+		  		  imgAppsGoogle = loadImage("google_search.png");
+		  		  imgAppsTerminal = loadImage("icon_console.png"); 
+		  		  imgAppsSettings = loadImage("settings1.png");
 		  
+		  		  // -- using arrays
+		  imgL1[0] = imgMusic; imgL1[1] = imgCamera;  imgL1[2] = imgApps;
+		  
+		  imgL1L2[0] = imgMusicPlay; imgL1L2[1] = imgMusicStop;  imgL1L2[2] = imgMusicNext;
+		  imgL1L2[3] = imgCameraPicture; imgL1L2[4] = imgCameraTwitter;  imgL1L2[5] = imgCameraFB;
+		  imgL1L2[6] = imgAppsGoogle; imgL1L2[7] = imgAppsTerminal;  imgL1L2[8] = imgAppsSettings;
 	}
 
 	public void draw(){
 		  // -- setup background color (when wo image)
-//		  	 background(160,160,160); 
+//		  background(0,0,0); 
 		  // -- basic lighting setup
-		  lights();  noFill();
-		  
+		  lights(); 
+		  noFill();		  
 		  // -- setup background image
 //		  image(imgBack, 0, 0);
 		  
@@ -148,9 +172,7 @@ public class ProcessingWave extends PApplet {
 		  
 		  // -- At torroid	
 		  		// -At- blue(0)-violete(50)-red(100) 
-		  AtR = (255 * pAt) / 100;
-		  AtG = 0;
-		  AtB = (255 * (100 - pAt)) / 100 ;
+		  AtR = (255 * pAt) / 100;		  AtG = 0;		  AtB = (255 * (100 - pAt)) / 100 ;
 		  		// -- create dynamic ts based on pS	
 		  AtDynamicR = Algorithm.CreateDynamic(pP, AtDynamicR, radiusAt, latheRadiusAt, 0.5f, 85, 150, 0);
 		  		// -- center and spin toroid At (left)
@@ -161,9 +183,7 @@ public class ProcessingWave extends PApplet {
 		  
 		  // -- Med torroid
 		  		// --Med blue(0)-violete(50)-red(100) 
-		  MedR = (255 * pMed) / 100;
-		  MedG = 0 ;
-		  MedB = (255 * (100 - pMed)) / 100;
+		  MedR = (255 * pMed) / 100;	  MedG = 0 ;	  MedB = (255 * (100 - pMed)) / 100;
 		  		// -- create dynamic ts based on pS
 		  MedDynamicR = Algorithm.CreateDynamic(pS, MedDynamicR, radiusMed, latheRadiusMed, 0.5f, -30, 30, 0);		 		 
 		  		// -- center and spin toroid Med (right)
@@ -177,106 +197,156 @@ public class ProcessingWave extends PApplet {
 //		  acceleration = acceleration + 0.01f;
 		  // -- convert acceleration to angle
 //		  rotationAngle = Algorithm.CircularMovement(acceleration, 0, accelerationMax);
-		  rotationAngle = rotationAngle + rotationAccel;		  if (rotationAngle>=360){rotationAngle=0;}
+		  if (rotationAccel>0){  if (rotationAngle>=360){rotationAngle=0;}
+			  rotationAngle = rotationAngle + rotationAccel;	
+		  }
 		  
 		  // -- for Demo
 		  rotationAngleDemo = rotationAngleDemo + rotationAccel;
-		  if (rotationAngleDemo>=190){rotationAccel = rotationAccel -0.001f;}
-		  if (rotationAccel<=0){rotationAccel = 0;}
+	  			// -- camera
+//		  	  if (rotationAngleDemo>=50){rotationAccel = rotationAccel -0.001f;}
+			  	// -- music
+//			  if (rotationAngleDemo>=150){rotationAccel = rotationAccel -0.001f;}
+		  		// -- apps
+			  if (rotationAngleDemo>=270){rotationAccel = rotationAccel -0.001f;}
 		 
-		  if (rotationAccel>=0.4f){SierpF_iterN = 2;}
-			  if (rotationAccel>=0.2f && rotationAccel<0.4f){SierpF_iterN = 3;}
-			  if (rotationAccel>0.0f && rotationAccel<0.2f){SierpF_iterN = 3;}
-			  
-			  
-		  if (rotationAccel==0){
-			  demoTT = demoTT - demoTTd;
-			  if (demoTT<=0){demoTT = 0;}
-			  if (demoTT>=4f && demoTT<4.5f){SierpF_iterN = 4;}
-			  if (demoTT>=3f && demoTT<4f){SierpF_iterN = 5;}
-			  if (demoTT>=2f && demoTT<3f){SierpF_iterN = 6;}
-			  if (demoTT>=1f && demoTT<2f){SierpF_iterN = 7;}
-			  if (demoTT>=0f && demoTT<1f){SierpF_iterN = 8; mindOSlayer=2; rotationAccel = 0.5f; demoTT=5f;}
-
-		  }
-
-		   		// -- main Sierpinski triangle
-		  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, r, 0, 0);
+//		  res = IndexesOfSelectedIcons(rotationAngle, rotationAccel, SierpF_iterN, mindOSlayer, Icon2DisplIndex, sItem);
+//		  rotationAccel = res[0]; SierpF_iterN = (int) res[1]; 
+//		  mindOSlayer = (int) res[2]; Icon2DisplIndex = (int) res[3]; sItem = (int) res[4];
+//			
 		  
-		  		// -- icons of the first layer
-		  iconFirstLayer = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, r/2, iconW/2, iconH/2);
+		  // -- main Sierpinski triangle
+		  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rFixed, 0, 0);
+		  
+		  // -- icons of the first layer
+		  iconFirstLayer = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rFixed/2, iconW/2, iconH/2);
 
-		  		// -- icons of the second layer // centerX+iW/2
-		  icon01SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[0]+iconW/2, iconFirstLayer[1]+iconH/2, r/4, iconW/4, iconH/4);
-		  icon23SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[2]+iconW/2, iconFirstLayer[3]+iconH/2, r/4, iconW/4, iconH/4);
-		  icon45SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[4]+iconW/2, iconFirstLayer[5]+iconH/2, r/4, iconW/4, iconH/4);
+		  // -- icons of the second layer // centerX+iW/2
+		  icon01SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[0]+iconW/2, iconFirstLayer[1]+iconH/2, rFixed/4, iconW/4, iconH/4);
+		  icon23SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[2]+iconW/2, iconFirstLayer[3]+iconH/2, rFixed/4, iconW/4, iconH/4);
+		  icon45SecondLayer = getTriangleVertCoord(rotationAngle, iconFirstLayer[4]+iconW/2, iconFirstLayer[5]+iconH/2, rFixed/4, iconW/4, iconH/4);
 		  
 	  
 		  // -- draw user interface (SierpTriangle, Icons, Animations)
 		  if(mindOSlayer==1){
+			  res = IndexesOfSelectedIcons(rotationAngle, rotationAccel, SierpF_iterN, mindOSlayer, Icon2DisplIndex, sItem);
+			  rotationAccel = res[0]; SierpF_iterN = (int) res[1]; 
+			  mindOSlayer = (int) res[2]; Icon2DisplIndex = (int) res[3]; sItem = (int) res[4];
+				
+			  
 			  if(SierpF_iterN>=1 && SierpF_iterN<7){
+				  rMainF=rFixed;
 				  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
 						  SierpF_iterN, 0,0,0,false, 0,127,255,10);
-				  image(imgMusic, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
-				  image(imgCamera, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
-				  image(imgTerminal, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
+				  
+//				  drawFirstLayerIcons(imgMusic, imgCamera, imgApps);
+				  drawFirstLayerIcons(imgL1[0], imgL1[1], imgL1[2]);
 			  
 				  	if(SierpF_iterN>=3){		
-					  image(imgMusicPlay, icon01SecondLayer[0], icon01SecondLayer[1], iconW/2, iconH/2);
-					  image(imgMusicStop, icon01SecondLayer[2], icon01SecondLayer[3], iconW/2, iconH/2); 
-					  image(imgMusicNext, icon01SecondLayer[4], icon01SecondLayer[5], iconW/2, iconH/2);
-					  
-					  image(imgCameraPicture, icon23SecondLayer[0], icon23SecondLayer[1], iconW/2, iconH/2);
-					  image(imgCameraShare, icon23SecondLayer[2], icon23SecondLayer[3], iconW/2, iconH/2); 
-					  image(imgCameraPrtSc, icon23SecondLayer[4], icon23SecondLayer[5], iconW/2, iconH/2);
-					  
-					  image(imgTerminalA, icon45SecondLayer[0], icon45SecondLayer[1], iconW/2, iconH/2);
-					  image(imgTerminalC, icon45SecondLayer[2], icon45SecondLayer[3], iconW/2, iconH/2); 
-					  image(imgTerminalT, icon45SecondLayer[4], icon45SecondLayer[5], iconW/2, iconH/2);
-					  
+				  		drawSecondLayerIcons(imgL1L2[0], imgL1L2[1], imgL1L2[2],
+				  							 imgL1L2[3], imgL1L2[4], imgL1L2[5],
+				  						     imgL1L2[6], imgL1L2[7], imgL1L2[8]);		
+				  		
 				  	}
 				  	if(SierpF_iterN>=4 && SierpF_iterN<=6 ){
 					   // -- draw SierpFractal in different color to highlight selected item
-				  		int r_temp =500;
-					  	SierpTrV = getTriangleVertCoord(rotationAngle, iconFirstLayer[0]+iconW/2, iconFirstLayer[1]+iconH/2, r_temp/2, 0, 0);
+					  	SierpTrV = getTriangleVertCoord(rotationAngle,iconFirstLayer[sItem]+iconW/2,iconFirstLayer[sItem+1]+iconH/2,rFixed/2,0,0);
 					  	triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
-							   SierpF_iterN-1, 0,0,0,true, 192,0,0,10);
-				  	}
+					  				 SierpF_iterN-1, 0,0,0,true, 192,0,0,10);
+					}
+				  	
+				  	if(SierpF_iterN>=2 && SierpF_iterN<5){ drawSectorLines();  	}
 			  }
+			  // -- transition to next level (animation)
 			  if(SierpF_iterN>=7){
 				  	// -- decrease radius of active triangle (fade out)
-					  r = r - 30;  if (r<=0){r = 0;}
-					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, r, 0, 0);
+					  rMainF = rMainF - 30;  if (rMainF<=0){rMainF = 0;}
+					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rMainF, 0, 0);
 					  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
-							  SierpF_iterN, 47,47,79,false, 0,127,255,r/100);
+							  SierpF_iterN, 47,47,79,false, 0,127,255,rMainF/100);
 					  
-					  rt = rt + 30;  if (rt>=500){rt = 500;}
+					  rSelectionF = rSelectionF + 30;  if (rSelectionF>=rFixed){rSelectionF = rFixed;}
 					  // -- zoom in fractal
-					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rt, 0, 0);
+					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rSelectionF, 0, 0);
 					  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
-							  3, 0,0,0,false, 0,127,255,10);
+							  2, 0,0,0,false, 0,127,255,10);
 					  
-					  if (rt==500){
-//						  background(0,0,0); 
-//				  	  image(imgMusic, displayWidth/2-1.5f*iconW/2, displayHeight/2-1.5f*iconH/2, iconW*1.5f, iconH*1.5f);
-				      iconFirstLayer = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rt/2, iconW/2, iconH/2);
-					   image(imgMusicPlay, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
-					   image(imgMusicStop, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
-					   image(imgMusicNext, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
+					  if (rSelectionF==rFixed){
+					      iconFirstLayer = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rSelectionF/2, iconW/2, iconH/2);
+					      // -- draw selected icons from second layer
+					      drawFirstLayerIcons(imgL1L2[Icon2DisplIndex+0],imgL1L2[Icon2DisplIndex+1],imgL1L2[Icon2DisplIndex+2]);
 					  }
 			  }
+			  
+//			  if(SierpF_iterN==7){	
+//				  launchApp("com.aiworkereeg.launcher");
+//				  
+//			  }
+			  
 		  }
-		  
+		  //===================================================================
+		  //===================================================================
+		  // -- next layer
 		  if(mindOSlayer==2){
-			  r=500;
-			  if(SierpF_iterN>=1){
+			  res = IndexesOfSelectedIcons(rotationAngle, rotationAccel, SierpF_iterN, mindOSlayer, Icon2DisplIndex, sItem);
+			  rotationAccel = res[0]; SierpF_iterN = (int) res[1]; 
+			  mindOSlayer = (int) res[2]; Icon2DisplIndex = (int) res[3]; sItem = (int) res[4];
+			  
+//			//  launchApp("com.facebook.katana");
+			  if(SierpF_iterN>=1 && SierpF_iterN<7){
+				  rMainF=rFixed;
+				  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rFixed, 0, 0);
 				  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
 						  SierpF_iterN, 0,0,0,false, 0,127,255,10);
-				  image(imgMusicPlay, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
-				  image(imgMusicStop, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
-				  image(imgMusicNext, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH);
-			  
+				  
+//				  drawFirstLayerIcons(imgMusicPlay, imgMusicStop, imgMusicNext);
+				  drawFirstLayerIcons(imgL1L2[Icon2DisplIndex+0],imgL1L2[Icon2DisplIndex+1],imgL1L2[Icon2DisplIndex+2]);
+
+//				  	if(SierpF_iterN>=3){		
+////				  		drawSecondLayerIcons(imgL1L2[0], imgL1L2[1], imgL1L2[2],
+////				  							 imgL1L2[3], imgL1L2[4], imgL1L2[5],
+////				  						     imgL1L2[6], imgL1L2[7], imgL1L2[8]);	
+//				  		drawFirstLayerIcons(imgL1L2[Icon2DisplIndex+0],imgL1L2[Icon2DisplIndex+1],imgL1L2[Icon2DisplIndex+2]);
+//			  		}
+				  	if(SierpF_iterN>=4 && SierpF_iterN<=6 ){
+					   // -- draw SierpFractal in different color to highlight selected item
+					  	SierpTrV = getTriangleVertCoord(rotationAngle,iconFirstLayer[sItem]+iconW/2,iconFirstLayer[sItem+1]+iconH/2,rFixed/2,0,0);
+					  	triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
+					  				 SierpF_iterN-1, 0,0,0,true, 192,0,0,10);
+					}
+				  	
+				  	if(SierpF_iterN>=2 && SierpF_iterN<5){ drawSectorLines();  	}
+			  	
+			  }			  		  
+			  				
+
+			  // -- transition to next level (animation)
+			  if(SierpF_iterN>=7){
+				  	// -- decrease radius of active triangle (fade out)
+					  rMainF = rMainF - 30;  if (rMainF<=0){rMainF = 0;}
+					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rMainF, 0, 0);
+					  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
+							  SierpF_iterN, 47,47,79,false, 0,127,255,rMainF/100);
+					  
+					  rSelectionF = rSelectionF + 30;  if (rSelectionF>=rFixed){rSelectionF = rFixed;}
+					  // -- zoom in fractal
+					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rSelectionF, 0, 0);
+					  triangleSier(SierpTrV[0],SierpTrV[1],SierpTrV[2],SierpTrV[3],SierpTrV[4],SierpTrV[5],
+							  1, 0,0,0,false, 0,127,255,10);
+					  
+//					  if (rSelectionF==rFixed){
+////					      iconFirstLayer = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rSelectionF/2, iconW/2, iconH/2);
+//					      // -- draw selected icons from second layer
+////					      drawFirstLayerIcons(imgL1L2[Icon2DisplIndex+0],imgL1L2[Icon2DisplIndex+1],imgL1L2[Icon2DisplIndex+2]);
+//					      image(imgL1L2[Icon2DisplIndex+temp], displayWidth/2-iconW, displayHeight/2-iconH, 2*iconW, 2*iconH);
+//					  }
 			  }
+			  
+			  if(SierpF_iterN==8){	
+//				  launchApp("com.aiworkereeg.launcher");
+				  image(imgL1L2[Icon2DisplIndex+temp], displayWidth/2-iconW, displayHeight/2-iconH, 2*iconW, 2*iconH);
+			  }
+
 		  }
 		  
 		  	  
@@ -458,6 +528,30 @@ public class ProcessingWave extends PApplet {
 		return iconsCoordinates;
 	}
 	
+	/** draw icons of the first layer */
+	public void drawFirstLayerIcons(PImage icon1, PImage icon2, PImage icon3){
+		  image(icon1, iconFirstLayer[0], iconFirstLayer[1], iconW, iconH);
+		  image(icon2, iconFirstLayer[2], iconFirstLayer[3], iconW, iconH);
+		  image(icon3, iconFirstLayer[4], iconFirstLayer[5], iconW, iconH); 
+	}
+
+	/** draw icons of the second layer */
+	public void drawSecondLayerIcons(PImage icon11, PImage icon12, PImage icon13,
+									 PImage icon21, PImage icon22, PImage icon23,
+									 PImage icon31, PImage icon32, PImage icon33){
+		
+		  image(icon11, icon01SecondLayer[0], icon01SecondLayer[1], iconW/2, iconH/2);
+		  image(icon12, icon01SecondLayer[2], icon01SecondLayer[3], iconW/2, iconH/2); 
+		  image(icon13, icon01SecondLayer[4], icon01SecondLayer[5], iconW/2, iconH/2);
+		  
+		  image(icon21, icon23SecondLayer[0], icon23SecondLayer[1], iconW/2, iconH/2);
+		  image(icon22, icon23SecondLayer[2], icon23SecondLayer[3], iconW/2, iconH/2); 
+		  image(icon23, icon23SecondLayer[4], icon23SecondLayer[5], iconW/2, iconH/2);
+		  
+		  image(icon31, icon45SecondLayer[0], icon45SecondLayer[1], iconW/2, iconH/2);
+		  image(icon32, icon45SecondLayer[2], icon45SecondLayer[3], iconW/2, iconH/2); 
+		  image(icon33, icon45SecondLayer[4], icon45SecondLayer[5], iconW/2, iconH/2); 
+	}
 	
 	
 	/** Processing Algorithm of the user activity */
@@ -491,6 +585,81 @@ public class ProcessingWave extends PApplet {
 	   
 	}
 			
+	
+	/** get indexes of selected items to properly display them */
+	public float[] IndexesOfSelectedIcons(float rAngle, float rAccel, int SierpFiterN, int mindOSlayerl,
+										  int Icon2DisplIndexl, int sIteml){
+		float[] resl = new float[6]; 
+		
+		if (rAccel<=0){rAccel = 0;}
+		if (rAccel>=0.4f){SierpFiterN = 2;}
+		if (rAccel>=0.0f && rAccel<0.4f){SierpFiterN = 3;}
+			  
+			  // -- process of selecting items when rotation stops
+		if (rAccel==0){		  
+			demoTT = demoTT - demoTTd;
+			if (demoTT<=0){demoTT = 0;}
+			if (demoTT>=4f && demoTT<4.5f){SierpFiterN = 4;}
+			if (demoTT>=3f && demoTT<4f){SierpFiterN = 5;}
+			if (demoTT>=2f && demoTT<3f){SierpFiterN = 6;}
+			if (demoTT>=1f && demoTT<2f){SierpFiterN = 7;}
+//			if (demoTT>=0f && demoTT<1f){SierpFiterN = 8; mindOSlayerl=2; rAccel = 0.5f; demoTT=5f;}
+		  
+
+			if(mindOSlayerl==1){
+				if (demoTT>=0f && demoTT<1f){SierpFiterN = 8; mindOSlayerl=2; rAccel = 0.5f; demoTT=5f;}
+				
+				if (rAngle>300 || rAngle<=60){Icon2DisplIndexl = 0;  sIteml = 0;}
+				if (rAngle>60 && rAngle<=180){Icon2DisplIndexl = 6;  sIteml = 4;}
+				if (rAngle>180 && rAngle<=300){Icon2DisplIndexl = 3; sIteml = 2;}
+			}
+			
+			if(mindOSlayerl==2){
+				if (demoTT>=0f && demoTT<1f){SierpFiterN = 8; mindOSlayerl=3; rAccel = 0.5f; demoTT=5f;}
+				
+				if (rAngle>300 || rAngle<=60){sIteml = 0;  temp = 0; }
+				if (rAngle>180 && rAngle<=300){sIteml = 2; temp = 1;}
+				if (rAngle>60 && rAngle<=180){sIteml = 4; temp = 2;}
+				
+			}
+			
+		}
+		resl[0]= rAccel; resl[1]= SierpFiterN; resl[2]= mindOSlayerl; 
+		resl[3] = Icon2DisplIndexl; resl[4] = sIteml;
+		return resl;
+	   
+	}
+	
+	/** draw sector lines for selected items */
+	public void drawSectorLines(){
+	  	// -- draw sector lines
+	  	stroke(176,48,96);    strokeWeight(10);  strokeCap(ROUND);
+	  	line((float) (displayWidth/2 + (rFixed-displayWidth/20) * Math.sin(Math.toRadians(60)) ), 
+	  		 (float) (displayHeight/2 + (rFixed-displayWidth/20) * Math.cos(Math.toRadians(60)) ), 
+	  		 (float) (displayWidth/2 + rFixed * Math.sin(Math.toRadians(60)) ), 
+	  		 (float) (displayHeight/2 + rFixed * Math.cos(Math.toRadians(60)) ));
+	  	
+//	  	stroke(255, 0, 0);    strokeWeight(10);  strokeCap(ROUND);
+	  	line((float) (displayWidth/2 + (rFixed-displayWidth/20) * Math.sin(Math.toRadians(300)) ), 
+	  		 (float) (displayHeight/2 + (rFixed-displayWidth/20) * Math.cos(Math.toRadians(300)) ), 
+	  		 (float) (displayWidth/2 + rFixed * Math.sin(Math.toRadians(300)) ), 
+	  		 (float) (displayHeight/2 + rFixed * Math.cos(Math.toRadians(300)) ));
+	}
+	
+	protected void launchApp(String packageName) {
+		        Intent mIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+		        if (mIntent != null) {
+		        	try {
+		                startActivity(mIntent);
+		            } catch (ActivityNotFoundException err) {
+		                Toast t = Toast.makeText(getApplicationContext(),
+		                        "app not found", Toast.LENGTH_SHORT);
+		                t.show();
+		            }
+		        }
+	}
+
+
 	public void AttAccDeceleration(){
 		 // -- limit radius
 	     if (AtDynamicAccDec>=3)	{AtDynamicAccDec = 3; }          
@@ -514,6 +683,7 @@ public class ProcessingWave extends PApplet {
 	     if (RotationSpeed>=3) {SierpF_iterN = 0; RotationSpeed=3;}
 	     
 	}
+	
 	
 	
 	public void keyPressed(){

@@ -255,8 +255,8 @@ public class eegService extends Service{
 			                    //tv.append("Heart rate: " + msg.arg1 + "\n");
 			                    break;
 			                case TGDevice.MSG_ATTENTION:
-			                    // -- First send Attention data to the backend in async way
-			                	//APIClient.collectAttention(null, msg.arg1);
+			                    // -- send Attention data to the backend in async way
+			                	if(MainActivity.backend){ APIClient.collectAttention(null, msg.arg1);}
 			                	
 			                		 	               
 			                    At = msg.arg1;  
@@ -287,7 +287,8 @@ public class eegService extends Service{
 			                    break;
 			                    
 			                case TGDevice.MSG_MEDITATION:
-			                	//APIClient.collectMeditation(null, msg.arg1);
+			                	// -- First send Meditation data to the backend in async way
+			                	if(MainActivity.backend){APIClient.collectMeditation(null, msg.arg1);}
 
 			                    Med = msg.arg1;
 			                    msgToActivity.what = 2; // -- sending At/Med  
@@ -320,7 +321,8 @@ public class eegService extends Service{
 			                	break;
 			                case TGDevice.MSG_EEG_POWER:
 			                    TGEegPower eegPower = (TGEegPower) msg.obj;
-			                    //APIClient.collectEEGPower(null, eegPower);
+			                    // -- First send eegPower data to the backend in async way
+			                    if(MainActivity.backend){APIClient.collectEEGPower(null, eegPower);}
 			                    
 			                    delta = eegPower.delta;
 			                    high_alpha = eegPower.highAlpha;

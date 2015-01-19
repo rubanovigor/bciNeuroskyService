@@ -47,6 +47,7 @@ public final class R {
         public static final int start_rndNGame=0x7f060005;
         public static final int start_service=0x7f060007;
         public static final int stop_service=0x7f060006;
+        public static final int switch_backend=0x7f06000f;
         public static final int text_view_header=0x7f060000;
     }
     public static final class layout {

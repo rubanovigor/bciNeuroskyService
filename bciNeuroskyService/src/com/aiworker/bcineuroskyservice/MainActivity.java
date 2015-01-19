@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class MainActivity extends Activity{
 	public static int At=42; public static int Med=42;
 	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
 	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
-	
+	public static boolean backend = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -213,6 +214,16 @@ public class MainActivity extends Activity{
 		startActivity(intent);
 	}
 		
+	public void onSwitchClicked(View view) {
+	    // Is the toggle on?
+	    boolean on = ((Switch) view).isChecked();
+	    
+	    if (on) {
+	    	backend = true;
+	    } else {
+	        backend = false;
+	    }
+	}
 	
 //	//s -- start wave
 //	public void onClickStart_wave (View v)
