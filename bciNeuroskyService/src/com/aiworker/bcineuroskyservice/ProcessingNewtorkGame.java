@@ -20,6 +20,7 @@ import android.view.KeyEvent;
 public class ProcessingNewtorkGame extends PApplet{
 		// -- local EEG variables
 		int pAt=0; int pMed=0; int pS=0; int pP=0; int pAtRndNorm=0;
+		int pAt_pl2=0; int pMed_pl2=0; int pS_pl2=0; int pP_pl2=0;
 		// -- variables to manipulate torroids colors dynamics
 		int AtR; int AtG; int AtB; 	int MedR; int MedG; int MedB;
 		Random r = new Random(); private long mLastTime; int rndUpdDelay = 20;
@@ -101,6 +102,7 @@ public class ProcessingNewtorkGame extends PApplet{
 			  // ===============================================
 			  // ===============================================
 			  // -- Player1((random, network) torroid
+			  pAtRndNorm = pAt_pl2;
 			  AtR = (255 * pAtRndNorm) / 100; AtG = 0;  AtB = (255 * (100 - pAtRndNorm)) / 100 ;
 			  		// -- create dynamic ts based on pS
 			  Pl1Accel = CreateDynamic(pAtRndNorm, Pl1Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);		 		 
@@ -190,11 +192,13 @@ public class ProcessingNewtorkGame extends PApplet{
 		
 		/** get EEG data from MainActivity and calculate S,P */
 		public void getEEG(){
-			  pAt = MainActivity.At;
-			  pMed = MainActivity.Med;
-			  pS = pAt - pMed;
-			  pP = pAt + pMed;
+//			  pAt = MainActivity.At;  pMed = MainActivity.Med;
+			 pAt = eegService.At;  pMed = eegService.Med;
+			 pS = pAt - pMed;   pP = pAt + pMed;
 			   
+			  // -- take EEG data directly from service wo interaction with activity
+			  pAt_pl2 = eegService.At_pl2;  pMed_pl2 = eegService.Med_pl2;
+			  pS_pl2 = pAt_pl2 - pMed_pl2;  pP_pl2 = pAt_pl2 + pMed_pl2;
 			  
 			  // -- create Randomly distributed At
 				  mLastTime = mLastTime +1;
@@ -205,10 +209,9 @@ public class ProcessingNewtorkGame extends PApplet{
 				  pAtRndNorm = (int) Math.round(val);
 				  if (pAtRndNorm>100) {pAtRndNorm=100;} if (pAtRndNorm<0) {pAtRndNorm=0;}	           
 				  if (mLastTime>rndUpdDelay){mLastTime=0;}
-			  
-			  // -- take EEG data directly from service wo interaction with activity
-			  //pAt = eegService.At;
+			 			  
 		}
+		
 		/** create dynamic time-series from rapid changing time-series 
 		 * @return DynamicTS */
 		public float CreateDynamic(int TS, float DynamicTS,
@@ -234,6 +237,7 @@ public class ProcessingNewtorkGame extends PApplet{
 		     
 		     return DynamicTS;
 		}
+		
 		/** convert S to dynamic movement*/
 		public float StoDynamicMovement(int TS, float DynamicTS,
 				float tsMin, float tsMax, float graviton,

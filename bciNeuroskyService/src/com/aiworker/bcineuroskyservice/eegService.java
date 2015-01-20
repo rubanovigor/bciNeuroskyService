@@ -42,6 +42,7 @@ public class eegService extends Service{
 	private BluetoothAdapter bluetoothAdapter;	TGDevice tgDevice;
 	private static final boolean RAW_ENABLED = false; // false by default	
 	public static int At=0; public static int Med=0;
+	public static int At_pl2=0; public static int Med_pl2=0;
 	private int delta = 0; private int high_alpha = 0; private int high_beta = 0; private int low_alpha = 0;
 	private int low_beta = 0; private int low_gamma = 0; private int mid_gamma = 0; private int theta = 0;
 	private String CurrentActivity = "default";
@@ -258,7 +259,13 @@ public class eegService extends Service{
 			                    // -- send Attention data to the backend in async way
 			                	if(MainActivity.backend){ APIClient.collectAttention(null, msg.arg1);}
 			                	
-			                		 	               
+			                	int[] iam={0, 0};
+			                	if(MainActivity.backend){ iam = APIClient.getData();}
+			                	At_pl2 = iam[0]; 
+			                	Med_pl2 = iam[1];
+			                	Log.e("ir_Response Att", String.valueOf(iam[0]));	
+//			                	Log.e("ir_Response Med", String.valueOf(iam[1]));	
+			                	
 			                    At = msg.arg1;  
 			                    
 			                    msgToActivity.what = 2; // -- sending At/Med  

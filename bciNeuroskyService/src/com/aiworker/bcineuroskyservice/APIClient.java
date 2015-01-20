@@ -1,6 +1,7 @@
 package com.aiworker.bcineuroskyservice;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +20,12 @@ import java.util.Map;
 
 import com.neurosky.thinkgear.TGEegPower;
 
+
+import com.loopj.android.http.AsyncHttpClient;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+
+
 public class APIClient {
     // NOTE: Fill 3 constants below with right values and build the application
     private static int profileId = 11;
@@ -27,6 +34,12 @@ public class APIClient {
     private static String host = "neuro-backend.herokuapp.com";
     private static boolean backendEnabled = true;
     private static boolean backendConfigured = true;
+    public static String msgFromBackend;
+	public static int[] indexes = {0, 0};
+	public static String lastTS1;
+    
+    
+//    "http://" + "neuro-backend.herokuapp.com" + "/profiles/" + 11 + "/exercises_data.json?auth_token=" + "hY1C-Lrbi7wZSMW7os9x";
 
     private static final AsyncHttpClient client = new AsyncHttpClient();
 
@@ -135,15 +148,55 @@ public class APIClient {
         lastTS = ts;
     }
     
-    public static void getData() {
-//        try {
-//            StringEntity entity = new StringEntity(generateJSONString());
-//            client.post(null, getAPIURL(), entity, "application/json", new AsyncHttpResponseHandler() {});
-//        } catch (IOException ioEx) {
-//            System.out.println(ioEx.toString());
-//        }
-        
-//        AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://www.google.com", new AsyncHttpResponseHandler() {  });
+    // ====================================
+    public static int[] getData() {
+//	     String ts1 = getCurrentTimeUTC();
+//	     if (lastTS1 != null && !lastTS1.equals(ts1)) {
+	//      AsyncHttpClient client = new AsyncHttpClient();
+            client.get(null, getPartnerLatestDataURL(), null, null, new AsyncHttpResponseHandler(){
+                @Override
+                public void onSuccess(String response) {
+                	msgFromBackend = response;
+                	indexes = parseMsg(msgFromBackend);
+                	Log.e("ir_Response", response);               
+                }
+
+               @Override
+                 public void onFailure(Throwable e) {
+            	   Log.e("error","ir_OnFailure!", e);
+                 }
+            });
+//	      }
+//	      lastTS1 = ts1;   
+//        	Log.e("ir_Response Att:", String.valueOf(indexes[0]));
+//        	Log.e("ir_Response Med:", String.valueOf(indexes[1]));
+          return indexes;
     }
+
+    public static String getPartnerLatestDataURL() {
+    	return "http://" + host + "/profiles/" + profileId + "/exercises/" + exerciseId +
+    			"/statistics/latest_stat.json?auth_token=" + token;
+    }
+    
+    public static int[] parseMsg(String msg) {
+    	String[] separatedMsg = msg.split(",");
+    	int[] indexes_l = {0, 0};
+    	String[] separatedMsgAtt = separatedMsg[4].split(":");
+    	indexes_l[0] = Integer.valueOf(separatedMsgAtt[1]);
+    	String[] separatedMsgMed = separatedMsg[5].split(":");
+    	indexes_l[1] = Integer.valueOf(separatedMsgMed[1]);
+    	
+//    	Log.e("ir_Response Att:", String.valueOf(indexes_l[0]));
+//    	Log.e("ir_Response Med:", String.valueOf(indexes_l[1]));
+    	return indexes_l;
+    }
+    
+    
+//    01-20 15:27:36.675: E/ir_Response(31244): 
+//    {"id":199254,"profile_id":11,"exercise_id":16,"timestamp":"2015-01-20T18:27:34.000Z",
+//    	"attention":21,"meditation":64,
+//    	"high_alpha":-32626.0,"low_alpha":-22455.0,"high_beta":-30498.0,"low_beta":18124.0,
+//    	"mid_gamma":8504.0,"low_gamma":3788.0,"delta":7886.0,"theta":-28942.0}
+ 
+    
 }
