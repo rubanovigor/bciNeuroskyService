@@ -100,7 +100,6 @@ public class eegService extends Service{
 		//Toast.makeText(this, "eegService Stopped", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onDestroy");
 		
-		
 		tgDevice.close();
 		Message msgToActivityDestroyed = new Message();
 		msgToActivityDestroyed.what = 3; // -- disconnected 		    						
@@ -171,10 +170,21 @@ public class eegService extends Service{
         	Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
             //finish();
             return;
-        } else { // create the TGDevice 
-            tgDevice = new TGDevice(bluetoothAdapter, handler);
-           // updateNotification("disconnected");
-            StartEEG();
+        } else {
+            if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_OFF) {
+            	Message msgToActivity = new Message();
+            	msgToActivity.what = 4; // -- Bluetooth is OFF
+			    msgToActivity.obj  = "Bluetooth is OFF\n turn Bluetooth ON first!"; 		    						
+				MainActivity.mUiHandler.sendMessage(msgToActivity);  
+				NeuroskyCurrentStatus = "Bluetooth is OFF, turn it ON to start!";
+				displayNotification();
+                return;
+            }
+            if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
+            	// -- create the TGDevice 
+                tgDevice = new TGDevice(bluetoothAdapter, handler);
+            	StartEEG();
+            }
         	// Toast.makeText(this, "Bluetooth available", Toast.LENGTH_SHORT).show();
              
         }
@@ -217,8 +227,14 @@ public class eegService extends Service{
 		    						NeuroskyCurrentStatus = "Neurosky connected";
 		    						displayNotification();
 			                        break;
+			                    case TGDevice.STATE_DISCONNECTED:
+				    				msgToActivity.what = 1; // -- connecting 
+			    					msgToActivity.obj  = "neurosky mindwave mobile\ndisconnected"; 		    						
+			    					MainActivity.mUiHandler.sendMessage(msgToActivity);  
+			    					NeuroskyCurrentStatus = "Neurosky mindwave mobile disconnected";
+			    					displayNotification();
+			                    	break;
 			                    case TGDevice.STATE_NOT_FOUND:
-			                    	//Toast.makeText(this, "neurosky mindwave mobile was not found", Toast.LENGTH_SHORT).show();
 		    						msgToActivity.what = 1; // -- connecting 
 		    					    msgToActivity.obj  = "neurosky mindwave mobile\nwas not found"; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity); 
@@ -233,14 +249,7 @@ public class eegService extends Service{
 		    						NeuroskyCurrentStatus = "Neurosky mindwave mobile not paired";
 		    						displayNotification();
 			                        break;
-			                    case TGDevice.STATE_DISCONNECTED:
-			                    	//Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show();
-			    					msgToActivity.what = 1; // -- connecting 
-		    					    msgToActivity.obj  = "neurosky mindwave mobile\ndisconnected"; 		    						
-		    						MainActivity.mUiHandler.sendMessage(msgToActivity);  
-		    						NeuroskyCurrentStatus = "Neurosky mindwave mobile disconnected";
-		    						displayNotification();
-			                    	break;
+
 			                    }
 
 			                    break;

@@ -52,7 +52,7 @@
           android:onClick="onClickSendMessage"
           android:text="Submit Current Activity"
           android:textColor="#000000" 
-          android:visibility="visible"/>
+          android:visibility="invisible"/>
     
       <ImageButton
           android:id="@+id/start_activity_apps"
@@ -65,7 +65,7 @@
           android:text="apps"
           android:textColor="#000000" 
           android:background="@drawable/icon_apps"
-          android:visibility="visible" />
+          android:visibility="invisible" />
       
 
 
@@ -116,7 +116,8 @@
            android:layout_centerHorizontal="true"
            android:layout_above="@+id/editTextCurrentActivity"
            android:textColor="#ffffff"
-           android:textSize="12sp" />
+           android:textSize="12sp" 
+           android:visibility="invisible" />
 
        <EditText
            android:id="@+id/editTextCurrentActivity"
@@ -128,7 +129,8 @@
            android:layout_alignParentBottom="true"
            android:layout_centerHorizontal="true"
            android:layout_marginBottom="16dp"
-           android:ems="10"  />
+           android:ems="10"  
+           android:visibility="invisible"  />
 
        <Switch
            android:id="@+id/switch_backend"
