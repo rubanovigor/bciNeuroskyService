@@ -15,32 +15,9 @@
         android:layout_height="wrap_content"
   		android:gravity="center_horizontal"
   		android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:text="mindhack.me\nservice for collecting data" />
+        android:textSize="10sp"
+        android:text="mindhack.me service for collecting data" />
 
-
-	 <Button
-         android:id="@+id/stop_service"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/text_view_header"
-         android:layout_centerHorizontal="true"
-         android:gravity="center"
-         android:onClick="onClickStopService"
-         android:text="Stop Service" 
-         android:textColor="#000000"
-         android:visibility="invisible"/>
-
-     <Button
-         android:id="@+id/start_service"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/text_view_header"
-         android:layout_centerHorizontal="true"
-         android:onClick="onClickStartServie"
-         android:textColor="#000000"
-         android:text="Start Service"
-         android:visibility="invisible" />    
       
      <Switch
            android:id="@+id/switch_backend"
@@ -103,9 +80,6 @@
 		   android:layout_alignParentRight="true"
            android:textColor="#ffffff"
            android:textSize="12sp" />
-
-
-
 
 
         <ToggleButton
