@@ -19,7 +19,7 @@
         android:text="mindhack.me service for collecting data" />
 
       
-     <Switch
+     <ToggleButton
            android:id="@+id/switch_backend"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
 		   android:onClick="onSwitchClickedBackEnd"
 		   android:visibility="invisible"	/>
           
-     <Switch
+     <ToggleButton
            android:id="@+id/switch_service"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"

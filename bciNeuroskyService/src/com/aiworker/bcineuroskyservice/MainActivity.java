@@ -32,6 +32,9 @@ import processing.opengl.*;
 public class MainActivity extends Activity{
 //public class MainActivity extends PApplet{
 	public static Handler mUiHandler = null;
+	public final static String EXTRA_MESSAGE = "com.aiworker.bcineuroskyservice.MESSAGE";
+	public static String userName="";
+	public static String userActivity="";
 	private static final String TAG = "MainActivity";
 	public static final String tA1 = "toggleButtonActivity1";
 	public static final String tA2 = "toggleButtonActivity2";
@@ -58,7 +61,8 @@ public class MainActivity extends Activity{
 	String Key_State_toggleActivity1, Key_State_toggleActivity2, Key_State_toggleActivity3;
 	String Key_State_toggleUser1, Key_State_toggleUser2, Key_State_toggleUser3, Key_State_toggleUser4;
 	
-	Switch serviceOnOff, backendOnOff;
+//	Switch serviceOnOff, backendOnOff;
+	ToggleButton serviceOnOff, backendOnOff;
 	public static boolean State_serviceOnOff, State_backendOnOff;
 	String Key_State_serviceOnOff, Key_State_backendOnOff;
 	public static boolean backend = false;
@@ -95,8 +99,11 @@ public class MainActivity extends Activity{
         toggleUser2 = (ToggleButton) findViewById(R.id.toggleUser2);
         toggleUser3 = (ToggleButton) findViewById(R.id.toggleUser3);
         toggleUser4 = (ToggleButton) findViewById(R.id.toggleUser4);
-        serviceOnOff = (Switch) findViewById(R.id.switch_service);
-        backendOnOff = (Switch) findViewById(R.id.switch_backend);
+        serviceOnOff = (ToggleButton) findViewById(R.id.switch_service);
+        backendOnOff = (ToggleButton) findViewById(R.id.switch_backend);
+        
+//        serviceOnOff = (Switch) findViewById(R.id.switch_service);
+//        backendOnOff = (Switch) findViewById(R.id.switch_backend);
 		
         
         // Restore preferences
@@ -218,7 +225,7 @@ public class MainActivity extends Activity{
 	          			
 	          		case 1:
 	          			NeuroskyStatus = msg.obj.toString();
-//	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
+	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
 
 	          			if(NeuroskyStatus.equals("connected") ){
 //	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
@@ -341,8 +348,14 @@ public class MainActivity extends Activity{
 	    State_serviceOnOff = serviceOnOff.isChecked();
 	    
 	    if (State_serviceOnOff) {
-			startService(new Intent(this, eegService.class));
+//			startService(new Intent(this, eegService.class));
 			ServiceRunningFlag = "running";
+			
+			Intent serviceIntent = new Intent(this, eegService.class);
+			serviceIntent.putExtra("UserName", userName);
+			serviceIntent.putExtra("UserActivity", userActivity);
+			startService(serviceIntent);
+			  
 	    } else { //Service will only stop if it is already running
 			stopService(new Intent(this, eegService.class));
 			ServiceRunningFlag = "stoped";
@@ -378,6 +391,7 @@ public class MainActivity extends Activity{
 		State_toggleActivity1 = toggleActivity1.isChecked();
 	    
 	    if (State_toggleActivity1) {
+	    	userActivity = "running";
 	    	toggleActivity2.setChecked(false); State_toggleActivity2 = false;
 	    	toggleActivity3.setChecked(false); State_toggleActivity3 = false;
 	    	if (State_toggleUser1 || State_toggleUser2 || State_toggleUser3 || State_toggleUser4)
@@ -396,6 +410,7 @@ public class MainActivity extends Activity{
 		State_toggleActivity2 = toggleActivity2.isChecked();
 	    
 	    if (State_toggleActivity2) {
+	    	userActivity = "basketball";
 	    	toggleActivity1.setChecked(false); State_toggleActivity1 = false;
 	    	toggleActivity3.setChecked(false); State_toggleActivity3 = false;
 	    	if (State_toggleUser1 || State_toggleUser2 || State_toggleUser3 || State_toggleUser4)
@@ -413,6 +428,7 @@ public class MainActivity extends Activity{
 		State_toggleActivity3 = toggleActivity3.isChecked();
 	    
 	    if (State_toggleActivity3) {
+	    	userActivity = "pingpong";
 	    	toggleActivity1.setChecked(false); State_toggleActivity1 = false;
 	    	toggleActivity2.setChecked(false); State_toggleActivity2 = false;
 	    	if (State_toggleUser1 || State_toggleUser2 || State_toggleUser3 || State_toggleUser4)
@@ -430,6 +446,7 @@ public class MainActivity extends Activity{
 		State_toggleUser1 = toggleUser1.isChecked();
 	    
 	    if (State_toggleUser1) {
+	    	userName = "SkinnerLayne";
 	    	toggleUser2.setChecked(false); State_toggleUser2 = false;
 	    	toggleUser3.setChecked(false); State_toggleUser3 = false;
 	    	toggleUser4.setChecked(false); State_toggleUser4 = false;
@@ -448,6 +465,7 @@ public class MainActivity extends Activity{
 		State_toggleUser2 = toggleUser2.isChecked();
 	    
 	    if (State_toggleUser2) {
+	    	userName = "EzequielDjeredjian";
 	    	toggleUser1.setChecked(false); State_toggleUser1 = false;
 	    	toggleUser3.setChecked(false); State_toggleUser3 = false;
 	    	toggleUser4.setChecked(false); State_toggleUser4 = false;
@@ -466,6 +484,7 @@ public class MainActivity extends Activity{
 		State_toggleUser3 = toggleUser3.isChecked();
 	    
 	    if (State_toggleUser3) {
+	    	userName = "NiccoloViviani";
 	    	toggleUser2.setChecked(false); State_toggleUser2 = false;
 	    	toggleUser1.setChecked(false); State_toggleUser1 = false;
 	    	toggleUser4.setChecked(false); State_toggleUser4 = false;
@@ -484,6 +503,7 @@ public class MainActivity extends Activity{
 		State_toggleUser4 = toggleUser4.isChecked();
 	    
 	    if (State_toggleUser4) {
+	    	userName = "AntonioManno";
 	    	toggleUser2.setChecked(false); State_toggleUser2 = false;
 	    	toggleUser3.setChecked(false); State_toggleUser3 = false;
 	    	toggleUser1.setChecked(false); State_toggleUser1 = false;

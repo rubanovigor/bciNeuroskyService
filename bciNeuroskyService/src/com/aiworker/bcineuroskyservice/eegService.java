@@ -30,7 +30,7 @@ import com.neurosky.thinkgear.TGEegPower;
 
 public class eegService extends Service{
 	private static final String TAG = "eegService";
-	public String userName = "ihar";
+	public String userName = "";
 	public String appName;
 	
 	// -- used for getting the handler from other class for sending messages
@@ -73,6 +73,9 @@ public class eegService extends Service{
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+	   userName = intent.getStringExtra("UserName");
+	   CurrentActivity = intent.getStringExtra("UserActivity");
+		
 	   processStartTG();
 		 
 	   MyThread myThread = new MyThread();
