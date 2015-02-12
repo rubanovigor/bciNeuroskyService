@@ -105,7 +105,7 @@
             android:textOff=""
 		    android:textOn=""
 		    android:textSize="30sp" 
-		    android:drawableStart="@drawable/basketball50"
+		    android:drawableStart="@drawable/beach_ball50"
 		    android:onClick="onClicktoggleActivity2"  />
               
         <ToggleButton
@@ -128,10 +128,10 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="51dp"
-            android:layout_marginRight="10dp"
-            android:textOff=""
-		    android:textOn=""
-		    android:drawableStart="@drawable/skinner50"
+            android:layout_marginRight="2dp"
+            android:textOff="Gerson"
+		    android:textOn="Gerson"
+		    android:drawableStart="@drawable/user50"
 		    android:onClick="onClicktoggleUser1" />
                 
         <ToggleButton
@@ -141,7 +141,7 @@
             android:layout_toRightOf="@+id/toggleUser1"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="51dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="2dp"
             android:textOff=""
 		    android:textOn=""
 		    android:drawableStart="@drawable/ezequiel50" 
@@ -154,7 +154,7 @@
             android:layout_toLeftOf="@+id/toggleUser4"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="51dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="2dp"
             android:textOff=""
 		    android:textOn=""
 		    android:drawableStart="@drawable/niccolo50"
@@ -167,9 +167,9 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="51dp"
-            android:textOff=""
-		    android:textOn=""
-		    android:drawableStart="@drawable/antonio50"
+            android:textOff="Moritz"
+		    android:textOn="Moritz"
+		    android:drawableStart="@drawable/gardener50"
 		    android:onClick="onClicktoggleUser4" />
         
 </RelativeLayout>

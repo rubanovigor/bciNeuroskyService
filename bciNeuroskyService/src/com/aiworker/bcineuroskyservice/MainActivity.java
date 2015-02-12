@@ -19,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,15 +37,7 @@ public class MainActivity extends Activity{
 	public static String userName="";
 	public static String userActivity="";
 	private static final String TAG = "MainActivity";
-	public static final String tA1 = "toggleButtonActivity1";
-	public static final String tA2 = "toggleButtonActivity2";
-	public static final String tA3 = "toggleButtonActivity3";
-	
-	public static final String tU1 = "toggleButtonUser1";
-	public static final String tU2 = "toggleButtonUser2";
-	public static final String tU3 = "toggleButtonUser3";
-	public static final String tU4 = "toggleButtonUser4";
-	
+	public static int layer = 1;
 	public static final String tService = "toggleButtonService";
 	public static final String tBackEnd = "toggleButtonBackEnd";
 	
@@ -52,151 +45,41 @@ public class MainActivity extends Activity{
 	public static int At=42; public static int Med=42;
 	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
 	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
-	
-	// -- toggle/switch buttons
-	ToggleButton toggleActivity1, toggleActivity2, toggleActivity3;
-	ToggleButton toggleUser1, toggleUser2, toggleUser3, toggleUser4;
-	public static boolean State_toggleActivity1=false, State_toggleActivity2=false, State_toggleActivity3=false;
-	public static boolean State_toggleUser1, State_toggleUser2, State_toggleUser3, State_toggleUser4;
-	String Key_State_toggleActivity1, Key_State_toggleActivity2, Key_State_toggleActivity3;
-	String Key_State_toggleUser1, Key_State_toggleUser2, Key_State_toggleUser3, Key_State_toggleUser4;
-	
+		
 //	Switch serviceOnOff, backendOnOff;
 	ToggleButton serviceOnOff, backendOnOff;
 	public static boolean State_serviceOnOff, State_backendOnOff;
 	String Key_State_serviceOnOff, Key_State_backendOnOff;
 	public static boolean backend = false;
 	
+	ImageButton ibAtt, ibMed, ibS, ibInfo, ibmOS, ibToroid, ibBack, imOneToroid, ibTwoToroids;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		setContentView(R.layout.activity_main);
-		setContentView(R.layout.service_main);
+		setContentView(R.layout.app_ui_main);
 		Log.v(TAG, "inside onCreate");
 		
         tv_Att = (TextView) findViewById(R.id.Att_label);
         tv_Med = (TextView) findViewById(R.id.Med_lable);       
         tv_NeuroskyStatus = (TextView) findViewById(R.id.NeuroskyStatus);
 		
-        
-	    // Check whether we're recreating a previously destroyed instance
-	 /*   if (savedInstanceState != null) {
-	    	Log.v(TAG, "new");
-	        // Restore value of members from saved state
-//	        mCurrentScore = savedInstanceState.getInt(STATE_SCORE);
-//	        mCurrentLevel = savedInstanceState.getInt(STATE_LEVEL);
-	        tv_NeuroskyStatus.setText("000");
-	    } else {
-	        // Probably initialize members with default values for a new instance
-	    	Log.v(TAG, "old");
-	    	 tv_NeuroskyStatus.setText("111");
-	    }*/
-        
-        toggleActivity1 = (ToggleButton) findViewById(R.id.toggleActivity1);
-        toggleActivity2 = (ToggleButton) findViewById(R.id.toggleActivity2);
-        toggleActivity3 = (ToggleButton) findViewById(R.id.toggleActivity3);
-        toggleUser1 = (ToggleButton) findViewById(R.id.toggleUser1);
-        toggleUser2 = (ToggleButton) findViewById(R.id.toggleUser2);
-        toggleUser3 = (ToggleButton) findViewById(R.id.toggleUser3);
-        toggleUser4 = (ToggleButton) findViewById(R.id.toggleUser4);
+                     
         serviceOnOff = (ToggleButton) findViewById(R.id.switch_service);
-        backendOnOff = (ToggleButton) findViewById(R.id.switch_backend);
-        
+        backendOnOff = (ToggleButton) findViewById(R.id.switch_backend);       
 //        serviceOnOff = (Switch) findViewById(R.id.switch_service);
 //        backendOnOff = (Switch) findViewById(R.id.switch_backend);
-		
-        
-        // Restore preferences
-     /*   SharedPreferences settings = getSharedPreferences(tA1, 0);
-        State_toggleActivity1 = settings.getBoolean(Key_State_toggleActivity1,false);
-        	toggleActivity1.setChecked(State_toggleActivity1); */
-        
-        	//tv_NeuroskyStatus.setText(String.valueOf(State_toggleActivity1));	
-       /* SharedPreferences settings2 = getSharedPreferences(tA1, 0);
-        State_toggleActivity2 =  settings2.getBoolean(Key_State_toggleActivity2, false);
-        	toggleActivity2.setChecked(State_toggleActivity2);*/
-        	
-        /*State_toggleActivity3 =  settings.getBoolean(Key_State_toggleActivity3, false);
-        	toggleActivity3.setChecked(State_toggleActivity3);
-        	
-        State_toggleUser1 =  settings.getBoolean(Key_State_toggleUser1, false);
-        	toggleUser1.setChecked(State_toggleUser1);*/
-       /* State_toggleUser2 =  settings.getBoolean(Key_State_toggleUser2, false);
-        	toggleUser2.setChecked(State_toggleUser2);
-        State_toggleUser3 =  settings.getBoolean(Key_State_toggleUser3, false);
-        	toggleUser3.setChecked(State_toggleUser3);
-        State_toggleUser4 = settings.getBoolean(Key_State_toggleUser4, false);
-        	toggleUser4.setChecked(State_toggleUser4);
-        	
-        State_serviceOnOff =  settings.getBoolean(Key_State_serviceOnOff, false);
-        	serviceOnOff.setChecked(State_serviceOnOff);
-        State_backendOnOff =  settings.getBoolean(Key_State_backendOnOff, false);
-        	backendOnOff.setChecked(State_backendOnOff);*/
-        	
-        	
-        // -- get the between instance stored values (status of music player)
-//        tv_NeuroskyStatus.setText(NeuroskyStatus);
-//        tv_NeuroskyStatus.setText("test");
-        //tv_Att.setText(String.valueOf(ServiceRunningFlag));
-        /*SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        if (preferences.getString(Key_NeuroskyStatus, null) != null){
-        	NeuroskyStatus =  preferences.getString(Key_NeuroskyStatus, null);
-        	ServiceRunningFlag =  preferences.getString(Key_ServiceRunningFlag, "stoped");
-//        	tv_NeuroskyStatus.setText(NeuroskyStatus);
-        	
-        	// -- restore toogle/switch buttons state
-        	State_toggleActivity1 =  Boolean.valueOf(preferences.getString(Key_State_toggleActivity1, "false"));
-        	toggleActivity1.setChecked(State_toggleActivity1);
-//        	toggleActivity1.setChecked(true);
-        	tv_NeuroskyStatus.setText(preferences.getString(Key_State_toggleActivity1, "aa"));
-        	State_toggleActivity2 =  Boolean.valueOf(preferences.getString(Key_State_toggleActivity2, "false"));
-        	toggleActivity2.setChecked(State_toggleActivity2);
-        	State_toggleActivity3 =  Boolean.valueOf(preferences.getString(Key_State_toggleActivity3, "false"));
-        	toggleActivity3.setChecked(State_toggleActivity3);
-        	
-        	State_toggleUser1 =  Boolean.valueOf(preferences.getString(Key_State_toggleUser1, "false"));
-        	toggleUser1.setChecked(State_toggleUser1);
-        	State_toggleUser2 =  Boolean.valueOf(preferences.getString(Key_State_toggleUser2, "false"));
-        	toggleUser2.setChecked(State_toggleUser2);
-        	State_toggleUser3 =  Boolean.valueOf(preferences.getString(Key_State_toggleUser3, "false"));
-        	toggleUser3.setChecked(State_toggleUser3);
-        	State_toggleUser4 = Boolean.valueOf(preferences.getString(Key_State_toggleUser4, "false"));
-        	toggleUser4.setChecked(State_toggleUser4);
-        	
-        	State_serviceOnOff =  Boolean.valueOf(preferences.getString(Key_State_serviceOnOff, "false"));
-        	serviceOnOff.setChecked(State_serviceOnOff);
-        	State_backendOnOff =  Boolean.valueOf(preferences.getString(Key_State_backendOnOff, "false"));
-        	backendOnOff.setChecked(State_backendOnOff);
-        	
-        	//tv_Att.setText(String.valueOf(ServiceRunningFlag));
-        }*/
-        
-        // -- manage correct appearance of the start/stop buttons
-//        //tv_Att.setText(String.valueOf(eegService.mIsServiceRunning)); 
-//        //tv_Att.setText(String.valueOf(ServiceRunningFlag));
-//        //if(eegService.mIsServiceRunning == true){
-		/*if(ServiceRunningFlag.equals("running")){
-			Button StartServiceButton=(Button)findViewById(R.id.start_service);
-			StartServiceButton.setVisibility(View.INVISIBLE); 
-			Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-			StopServiceButton.setVisibility(View.VISIBLE); 
-		} else {
-			Button StartServiceButton=(Button)findViewById(R.id.start_service);
-			StartServiceButton.setVisibility(View.VISIBLE); 		
-			Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-			StopServiceButton.setVisibility(View.INVISIBLE); 
-		}
-		
-		if(NeuroskyStatus.equals("connected")){
-			Button StartServiceButton=(Button)findViewById(R.id.start_service);
-			StartServiceButton.setVisibility(View.INVISIBLE); 
-			Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-			StopServiceButton.setVisibility(View.VISIBLE); 
-		}
-	    if(NeuroskyStatus.equals("connecting . . .")){
-		    Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-		    StopServiceButton.setVisibility(View.INVISIBLE); 
-		} */
+
+        ibAtt = (ImageButton) findViewById(R.id.ib_att); 
+        ibMed = (ImageButton) findViewById(R.id.ib_med); 
+        ibS = (ImageButton) findViewById(R.id.ib_s);     
+        ibInfo = (ImageButton) findViewById(R.id.ib_info); 
+        ibmOS = (ImageButton) findViewById(R.id.ib_mOS);        
+        ibToroid = (ImageButton) findViewById(R.id.ib_toroid); 
+        ibBack = (ImageButton) findViewById(R.id.ib_back); 
+        imOneToroid = (ImageButton) findViewById(R.id.ib_onetoroid); 
+        ibTwoToroids = (ImageButton) findViewById(R.id.ib_twotoroids); 
+
         
 	    // -- for glass testing only
 	   /* Button StopServiceButton=(Button)findViewById(R.id.stop_service);
@@ -379,208 +262,38 @@ public class MainActivity extends Activity{
 	    }
 	}
 	
-//	//s -- start wave
-//	public void onClickStart_wave (View v)
-//	{
-//		Intent intent = new Intent(this, ProcessingWave.class);
-//		startActivity(intent);
+	
+//	public void onClicktoggleUser4(View view) {
+//	    // Is the toggle on?
+//		State_toggleUser4 = toggleUser4.isChecked();
+//	    
+//	    if (State_toggleUser4) {
+//	    	userName = "AntonioManno";
+//	    	toggleUser2.setChecked(false); State_toggleUser2 = false;
+//	    	toggleUser3.setChecked(false); State_toggleUser3 = false;
+//	    	toggleUser1.setChecked(false); State_toggleUser1 = false;
+//	    	if (State_toggleActivity1 || State_toggleActivity2 || State_toggleActivity3)
+//				{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
+//	    } else {
+//	    	if (!State_toggleUser1 && !State_toggleUser2 && !State_toggleUser3) {
+//	    		toggleUser4.setChecked(true);
+//	    		State_toggleUser4 = true;	
+//	    	}
+//	    }
 //	}
-		
-	public void onClicktoggleActivity1(View view) {
-	    // Is the toggle on?
-		State_toggleActivity1 = toggleActivity1.isChecked();
-	    
-	    if (State_toggleActivity1) {
-	    	userActivity = "running";
-	    	toggleActivity2.setChecked(false); State_toggleActivity2 = false;
-	    	toggleActivity3.setChecked(false); State_toggleActivity3 = false;
-	    	if (State_toggleUser1 || State_toggleUser2 || State_toggleUser3 || State_toggleUser4)
-	    		{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
-	    } else {
-	    	if (!State_toggleActivity2 && !State_toggleActivity3) {
-	    		toggleActivity1.setChecked(true);
-	    		State_toggleActivity1 = true;
-	    		//tv_NeuroskyStatus.setText(String.valueOf(State_toggleActivity1));
-	    	}
-	    }
-	}
-	
-	public void onClicktoggleActivity2(View view) {
-	    // Is the toggle on?
-		State_toggleActivity2 = toggleActivity2.isChecked();
-	    
-	    if (State_toggleActivity2) {
-	    	userActivity = "basketball";
-	    	toggleActivity1.setChecked(false); State_toggleActivity1 = false;
-	    	toggleActivity3.setChecked(false); State_toggleActivity3 = false;
-	    	if (State_toggleUser1 || State_toggleUser2 || State_toggleUser3 || State_toggleUser4)
-    			{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
-	    } else {
-	    	if (!State_toggleActivity1 && !State_toggleActivity3) {
-	    		toggleActivity2.setChecked(true);
-	    		State_toggleActivity2 = true;
-	    	}
-	    }
-	}
-	
-	public void onClicktoggleActivity3(View view) {
-	    // Is the toggle on?
-		State_toggleActivity3 = toggleActivity3.isChecked();
-	    
-	    if (State_toggleActivity3) {
-	    	userActivity = "pingpong";
-	    	toggleActivity1.setChecked(false); State_toggleActivity1 = false;
-	    	toggleActivity2.setChecked(false); State_toggleActivity2 = false;
-	    	if (State_toggleUser1 || State_toggleUser2 || State_toggleUser3 || State_toggleUser4)
-    			{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
-	    } else {
-	        if (!State_toggleActivity1 && !State_toggleActivity2) {
-	        	toggleActivity3.setChecked(true);
-	        	State_toggleActivity3 = true;	
-	        }
-	    }
-	}
-	
-	public void onClicktoggleUser1(View view) {
-	    // Is the toggle on?
-		State_toggleUser1 = toggleUser1.isChecked();
-	    
-	    if (State_toggleUser1) {
-	    	userName = "SkinnerLayne";
-	    	toggleUser2.setChecked(false); State_toggleUser2 = false;
-	    	toggleUser3.setChecked(false); State_toggleUser3 = false;
-	    	toggleUser4.setChecked(false); State_toggleUser4 = false;
-	    	if (State_toggleActivity1 || State_toggleActivity2 || State_toggleActivity3)
-    			{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
-	    } else {
-	    	if (!State_toggleUser2 && !State_toggleUser3 && !State_toggleUser4) {
-	    		toggleUser1.setChecked(true);
-	    		State_toggleUser1 = true;	
-	    	}
-	    }
-	}
-	
-	public void onClicktoggleUser2(View view) {
-	    // Is the toggle on?
-		State_toggleUser2 = toggleUser2.isChecked();
-	    
-	    if (State_toggleUser2) {
-	    	userName = "EzequielDjeredjian";
-	    	toggleUser1.setChecked(false); State_toggleUser1 = false;
-	    	toggleUser3.setChecked(false); State_toggleUser3 = false;
-	    	toggleUser4.setChecked(false); State_toggleUser4 = false;
-	    	if (State_toggleActivity1 || State_toggleActivity2 || State_toggleActivity3)
-				{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
-	    } else {
-	    	if (!State_toggleUser1 && !State_toggleUser3 && !State_toggleUser4) {
-	    		toggleUser2.setChecked(true);
-	    		State_toggleUser2 = true;
-	    	}
-	    }
-	}
-	
-	public void onClicktoggleUser3(View view) {
-	    // Is the toggle on?
-		State_toggleUser3 = toggleUser3.isChecked();
-	    
-	    if (State_toggleUser3) {
-	    	userName = "NiccoloViviani";
-	    	toggleUser2.setChecked(false); State_toggleUser2 = false;
-	    	toggleUser1.setChecked(false); State_toggleUser1 = false;
-	    	toggleUser4.setChecked(false); State_toggleUser4 = false;
-	    	if (State_toggleActivity1 || State_toggleActivity2 || State_toggleActivity3)
-				{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
-	    } else {
-	    	if (!State_toggleUser1 && !State_toggleUser2 && !State_toggleUser4) {
-	    		toggleUser3.setChecked(true);
-	    		State_toggleUser3 = true;	
-	    	}
-	    }
-	}
-	
-	public void onClicktoggleUser4(View view) {
-	    // Is the toggle on?
-		State_toggleUser4 = toggleUser4.isChecked();
-	    
-	    if (State_toggleUser4) {
-	    	userName = "AntonioManno";
-	    	toggleUser2.setChecked(false); State_toggleUser2 = false;
-	    	toggleUser3.setChecked(false); State_toggleUser3 = false;
-	    	toggleUser1.setChecked(false); State_toggleUser1 = false;
-	    	if (State_toggleActivity1 || State_toggleActivity2 || State_toggleActivity3)
-				{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
-	    } else {
-	    	if (!State_toggleUser1 && !State_toggleUser2 && !State_toggleUser3) {
-	    		toggleUser4.setChecked(true);
-	    		State_toggleUser4 = true;	
-	    	}
-	    }
-	}
 	
    
 	@Override
     public void onStop() {        
         super.onStop();
         Log.v(TAG, "inside onStop");
-        // We need an Editor object to make preference changes.
-        // All objects are from android.context.Context
-      /*  SharedPreferences settings = getSharedPreferences(tA1, 0);
-        SharedPreferences.Editor editor = settings.edit();    
-        editor.putBoolean(Key_State_toggleActivity1, State_toggleActivity1); editor.commit();
-        
-        SharedPreferences settings2 = getSharedPreferences(tA1, 0);
-        SharedPreferences.Editor editor2 = settings2.edit(); 
-        editor.putBoolean(Key_State_toggleActivity2, State_toggleActivity2); editor2.commit();*/
-        
-//        editor.putBoolean(Key_State_toggleActivity3, State_toggleActivity3); editor.commit();
-        
-//        editor.putBoolean(Key_State_toggleUser1, State_toggleUser1);
-       /* editor.putBoolean(Key_State_toggleUser2, State_toggleUser2);
-        editor.putBoolean(Key_State_toggleUser3, State_toggleUser3);
-        editor.putBoolean(Key_State_toggleUser4, State_toggleUser4); 
-        
-        editor.putBoolean(Key_State_serviceOnOff, State_serviceOnOff); 
-        editor.putBoolean(Key_State_backendOnOff, State_backendOnOff); */
-        
-        // Commit the edits!
-//        editor.commit();
 	}
 	
 	@Override
     public void onPause() {        
         super.onPause();
         Log.v(TAG, "inside onPause");    
-        // -- activity
-        SharedPreferences settings = getSharedPreferences(tA1, 0);
-//        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = settings.edit();    
-        editor.putBoolean(Key_State_toggleActivity1, State_toggleActivity1); editor.commit();
-        
-        SharedPreferences settings2 = getSharedPreferences(tA2, 0);
-        SharedPreferences.Editor editor2 = settings2.edit(); 
-        editor2.putBoolean(Key_State_toggleActivity2, State_toggleActivity2); editor2.commit();
-        
-        SharedPreferences settings3 = getSharedPreferences(tA3, 0);
-        SharedPreferences.Editor editor3 = settings3.edit(); 
-        editor3.putBoolean(Key_State_toggleActivity3, State_toggleActivity3); editor3.commit();
-
-        // -- user
-        SharedPreferences s1 = getSharedPreferences(tU1, 0);
-        SharedPreferences.Editor e1 = s1.edit(); 
-        e1.putBoolean(Key_State_toggleUser1, State_toggleUser1); e1.commit();
-        
-        SharedPreferences s2 = getSharedPreferences(tU2, 0);
-        SharedPreferences.Editor e2 = s2.edit(); 
-        e2.putBoolean(Key_State_toggleUser2, State_toggleUser2); e2.commit();
-        
-        SharedPreferences s3 = getSharedPreferences(tU3, 0);
-        SharedPreferences.Editor e3 = s3.edit(); 
-        e3.putBoolean(Key_State_toggleUser3, State_toggleUser3); e3.commit();
-        
-        SharedPreferences s4 = getSharedPreferences(tU4, 0);
-        SharedPreferences.Editor e4 = s4.edit(); 
-        e4.putBoolean(Key_State_toggleUser4, State_toggleUser4); e4.commit();
-        
+       
         // -- service
         SharedPreferences ss1 = getSharedPreferences(tService, 0);
         SharedPreferences.Editor ee1 = ss1.edit(); 
@@ -607,41 +320,7 @@ public class MainActivity extends Activity{
     public void onResume() {        
         super.onResume();
         Log.v(TAG, "inside onResume");  
-        
-        // -- activity
-        SharedPreferences settings = getSharedPreferences(tA1, 0);
-        State_toggleActivity1 = settings.getBoolean(Key_State_toggleActivity1,false);
-        	toggleActivity1.setChecked(State_toggleActivity1); 
-        
-        SharedPreferences settings2 = getSharedPreferences(tA2, 0);
-        State_toggleActivity2 = settings2.getBoolean(Key_State_toggleActivity2,false);
-            toggleActivity2.setChecked(State_toggleActivity2);
-            
-        SharedPreferences settings3 = getSharedPreferences(tA3, 0);
-        State_toggleActivity3 = settings3.getBoolean(Key_State_toggleActivity3,false);
-            toggleActivity3.setChecked(State_toggleActivity3);
-        	
-        // -- user
-        SharedPreferences s1 = getSharedPreferences(tU1, 0);
-        State_toggleUser1 =  s1.getBoolean(Key_State_toggleUser1, false);
-        	toggleUser1.setChecked(State_toggleUser1);
-        	
-        SharedPreferences s2 = getSharedPreferences(tU2, 0);
-        State_toggleUser2 =  s2.getBoolean(Key_State_toggleUser2, false);
-          	toggleUser2.setChecked(State_toggleUser2);
-            	
-        SharedPreferences s3 = getSharedPreferences(tU3, 0);
-        State_toggleUser3 =  s3.getBoolean(Key_State_toggleUser3, false);
-           	toggleUser3.setChecked(State_toggleUser3);
-        
-	    SharedPreferences s4 = getSharedPreferences(tU4, 0);
-	    State_toggleUser4 =  s4.getBoolean(Key_State_toggleUser4, false);
-	       	toggleUser4.setChecked(State_toggleUser4);  
-	       
-	    // -- change visibility   	
-	    if (State_toggleUser1 || State_toggleUser2 || State_toggleUser3 || State_toggleUser4)
-    		{serviceOnOff.setVisibility(View.VISIBLE); backendOnOff.setVisibility(View.VISIBLE);}
-	    
+           
 	    // -- service
 		SharedPreferences ss1 = getSharedPreferences(tService, 0);
 		State_serviceOnOff =  ss1.getBoolean(Key_State_serviceOnOff, false);
@@ -652,25 +331,96 @@ public class MainActivity extends Activity{
 		State_backendOnOff =  ss2.getBoolean(Key_State_backendOnOff, false);
         	backendOnOff.setChecked(State_backendOnOff);			
     }   
-	
-	/*@Override
-	protected void onSaveInstanceState(Bundle savedInstanceState) {
-	   super.onSaveInstanceState(savedInstanceState);
-	   savedInstanceState.putBoolean(Key_State_toggleActivity1, true);
-	   Log.v(TAG, "Inside of onSaveInstanceState");
-	   // Always call the superclass so it can save the view hierarchy state
-//	   super.onSaveInstanceState(savedInstanceState);
-	}*/
 
-	/*@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		// Always call the superclass so it can restore the view hierarchy
-		super.onRestoreInstanceState(savedInstanceState);
-		Log.v(TAG, "Inside of onRestoreInstanceState");
-		State_toggleActivity1 = savedInstanceState.getBoolean(Key_State_toggleActivity1);
-		toggleActivity1.setChecked(State_toggleActivity1);
-//		tv_NeuroskyStatus.setText("000");
-	}*/
+	
+	/** -- set S (A-M) flag for further use */
+	public void onImageButtonS_Clicked (View v)
+	{
+		switchToLayer2();
+		// set S flag
+	}
+	
+	/** -- set Attention flag for further use */
+	public void onImageButtonA_Clicked (View v)
+	{
+		switchToLayer2();
+		// set Att flag
+	}
+	
+	/** -- set Meditation flag for further use */
+	public void onImageButtonM_Clicked (View v)
+	{
+		switchToLayer2();
+		//set M flag
+	}
+	
+	/** -- proceed with back button, returning to layer 1 */
+	public void onImageButtonBack_Clicked (View v)
+	{
+		if(layer==2){switchToLayer1();}
+		if(layer==3){switchToLayer2from3();}
+	}
+	
+	/** -- proceed with toroid button */
+	public void onImageButtonToroid_Clicked (View v)
+	{
+		switchToLayer3from2();
+	}
+	
+	// -- start mindOS
+	public void onImageButtonMindOS_Clicked (View v)
+	{
+		Intent intent = new Intent(this, ProcessingWave.class);
+		startActivity(intent);
+	}
+	
+	/** -- proceed with onetoroid button */
+	public void onImageButtonOneToroid_Clicked (View v)
+	{
+		Intent intent = new Intent(this, ProcessingToroid.class);
+		startActivity(intent);
+	}
+	
+	/** -- proceed with twotoroids button */
+	public void onImageButtonTwoToroids_Clicked (View v)
+	{
+		Intent intent = new Intent(this, ProcessingRNDgame.class);
+		startActivity(intent);
+	}
+	
+	//=====================================
+	/** -- switch to layer 2 from layer 1 */
+	public void switchToLayer2 ()
+	{
+		layer = 2;
+		ibS.setVisibility(View.INVISIBLE); ibAtt.setVisibility(View.INVISIBLE); ibMed.setVisibility(View.INVISIBLE);
+		ibmOS.setVisibility(View.VISIBLE); ibToroid.setVisibility(View.VISIBLE); ibBack.setVisibility(View.VISIBLE);
+	}
+	
+	/** -- switch to layer 1 from layer 2*/
+	public void switchToLayer1 ()
+	{
+		layer = 1;
+		ibS.setVisibility(View.VISIBLE); ibAtt.setVisibility(View.VISIBLE); ibMed.setVisibility(View.VISIBLE);
+		ibmOS.setVisibility(View.INVISIBLE); ibToroid.setVisibility(View.INVISIBLE); ibBack.setVisibility(View.INVISIBLE);
+	}
+	
+	/** -- switch to layer 2 from layer 3 */
+	public void switchToLayer2from3 ()
+	{
+		layer = 2;
+		ibmOS.setVisibility(View.VISIBLE); ibToroid.setVisibility(View.VISIBLE); ibBack.setVisibility(View.VISIBLE);
+		imOneToroid.setVisibility(View.INVISIBLE); ibTwoToroids.setVisibility(View.INVISIBLE); 
+	}
+	
+	/** -- switch to layer 3 from layer 2 (toroid selection) */
+	public void switchToLayer3from2 ()
+	{
+		layer = 3;
+		imOneToroid.setVisibility(View.VISIBLE); ibTwoToroids.setVisibility(View.VISIBLE);  ibBack.setVisibility(View.VISIBLE);
+		ibmOS.setVisibility(View.INVISIBLE); ibToroid.setVisibility(View.INVISIBLE);
+	}
+	
 	
 	/*@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
