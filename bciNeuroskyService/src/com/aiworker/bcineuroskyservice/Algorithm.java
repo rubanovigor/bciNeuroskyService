@@ -1,6 +1,9 @@
 package com.aiworker.bcineuroskyservice;
 
+import java.util.Random;
+
 public class Algorithm {	
+	
 	/** create dynamic time-series from rapid changing time-series 
 	 * @return DynamicTS */
 	public static float CreateDynamic(int TS, float DynamicTS,

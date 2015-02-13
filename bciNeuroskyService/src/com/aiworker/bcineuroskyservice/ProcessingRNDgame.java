@@ -19,11 +19,14 @@ import android.view.KeyEvent;
 /** activity for Network Game Sample        */
 public class ProcessingRNDgame extends PApplet{
 		// -- local EEG variables
-		int pAt=0; int pMed=0; int pS=0; int pP=0; int pAtRndNorm=0;
-		// -- variables to manipulate torroids colors dynamics
-		int AtR; int AtG; int AtB; 	int MedR; int MedG; int MedB;
-		Random r = new Random(); private long mLastTime; int rndUpdDelay = 20;
-		int GameLevel = 0;
+		int pAt=0; int pMed=0; int pS=0; int pP=0;
+		int index=0; int indexPl2=0;
+			// -- variables to manipulate torroids colors dynamics
+		int indexR; int indexG; int indexB; 
+		int MedR; int MedG; int MedB;
+		
+		Random r = new Random(); private long mLastTime; int rndUpdDelay = 40;
+		int GameLevel = 0; int MaxGameLevel=9; String rndMean = "mean";
 		
 		// -- toroids setting
 		int pts = 10; 	 int segments = 40;
@@ -52,8 +55,9 @@ public class ProcessingRNDgame extends PApplet{
 //		boolean FirstRun = true; boolean action_cancel_flag = false;
 		
 		// -- network game play
-		float Pl1Accel = 0; float Pl2Accel = 0;
+		float Player2Accel = 0; float localPlayerAccel = 0;
 		
+		PFont f; 
 
 		
 		public void setup(){	 
@@ -62,7 +66,8 @@ public class ProcessingRNDgame extends PApplet{
 			  smooth();
 			 // noStroke();
 			 // colorMode(HSB, 8, 100, 100);
-		  
+			  f = createFont("Arial",16,true); // STEP 3 Create Font
+			  
 			  // -- setup vertices coordinates for triangle
 				SVx1 = displayWidth/2 + 0*displayWidth/10;
 				SVy1 = displayHeight/2 + 3*displayHeight/10;
@@ -81,79 +86,39 @@ public class ProcessingRNDgame extends PApplet{
 			  background(0);  lights(); 
 			  
 			  // -- check game status
-			  if (Pl2Accel>Pl1Accel && Pl2Accel==(displayHeight - 1*displayHeight/10))
-			  	{Pl1Accel = 0; Pl2Accel = 0; GameLevel = GameLevel + 1;} 
-			  if (Pl1Accel>Pl2Accel && Pl1Accel==(displayHeight - 1*displayHeight/10))
-			  	{Pl1Accel = 0; Pl2Accel = 0; GameLevel = GameLevel - 1;} 
+			  if (localPlayerAccel>Player2Accel && localPlayerAccel==(displayHeight - 1*displayHeight/10))
+			  	{Player2Accel = 0; localPlayerAccel = 0; GameLevel = GameLevel + 1;} 
+			  if (Player2Accel>localPlayerAccel && Player2Accel==(displayHeight - 1*displayHeight/10))
+			  	{Player2Accel = 0; localPlayerAccel = 0; GameLevel = GameLevel - 1;} 
 			  if (GameLevel<0)	{GameLevel = 0;} 
 			  
-			  for(int i=0; i<GameLevel; i++){
-				  pushMatrix();
-				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.5f*displayHeight/10);
-	//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-				  thoroid(0,0, 0, 255, 0, false, (latheRadiusMed-10)/10, latheRadiusMed/10);
-				  popMatrix();
-			  }
-			  
-			  // -- get EEG data
-			  getEEG();
-			  			  
-			  	
-			  // -- At(random) Player1
-//			  AtR = (255 * pAtRndNorm) / 100;  AtG = 0;  AtB = (255 * (100 - pAtRndNorm)) / 100 ;
-			  		// -- center and spin toroid for At (left)
-//			  pushMatrix();
-//			  translate(displayWidth/2 - 4f*displayWidth/10, displayHeight - 9*displayHeight/10);
-//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-//			  thoroid(0,0, AtR, AtG, AtB, true, AtDynamicR, latheRadiusAt);
-//			  popMatrix();			  
-			  
-			  // -- At Player2
-//			  AtR = (255 * pAt) / 100;  AtG = 0;  AtB = (255 * (100 - pAt)) / 100 ;	 		 
-//			  		// -- center and spin toroid Med (right)
-//			  pushMatrix();
-//			  translate(displayWidth/2 + 4f*displayWidth/10,displayHeight - 9*displayHeight/10);
-//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-//			  thoroid(0,0, AtR, AtG, AtB, true, MedDynamicR, latheRadiusMed);
-//			  popMatrix();
-			 		  
 			  // ===============================================
-			  // ===============================================
-			  // -- Player1((random, network) torroid
-			  AtR = (255 * pAtRndNorm) / 100; AtG = 0;  AtB = (255 * (100 - pAtRndNorm)) / 100 ;
-			  		// -- create dynamic ts based on pS
-			  Pl1Accel = Algorithm.CreateDynamic(pAtRndNorm, Pl1Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);		 		 
-			  		// -- center and spin toroid Med (right)
-			  pushMatrix();
-			  translate(displayWidth/2 - 2f*displayWidth/10, displayHeight - 1*displayHeight/10 - Pl1Accel);
-//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-			  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
-			  thoroid(0,0, AtR, AtG, AtB, true, latheRadiusMed-10, latheRadiusMed);
-			  popMatrix();
+			  		// -- get EEG index (one from att/med/S/P)
+			  index = getEEG();
 			  
-			  // -- Player2 torroid
-			  AtR = (255 * pAt) / 100; AtG = 0;  AtB = (255 * (100 - pAt)) / 100 ;
-			  		// -- create dynamic ts based on pS
-			  Pl2Accel = Algorithm.CreateDynamic(pAt, Pl2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
-			  		// -- center and spin toroid Med (right)	
-			  pushMatrix();
-			  translate(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - Pl2Accel);
-//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-			  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
-			  thoroid(0,0, AtR, AtG, AtB, true, latheRadiusMed-10, latheRadiusMed);
-			  popMatrix();
+			  switch(MainActivity.toroidGameType){
+				    case "you":
+				    	displayLocalUserToroid(displayWidth/2,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+				    	break;
+				    	
+					case "rnd vs you":
+						displayLocalUserToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+						displayPlayer2Toroid();
+						displayGameLevel();
+						break;
+			  } 
 			 
-			 // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
-			  DynamicIterrN = Algorithm.CreateDynamic(pAt, DynamicIterrN, 0, 7, 0.01f, 30, 50, 0);
-//			  DynamicIterrN = StoDynamicMovement(pAt, DynamicIterrN, 0, 7, 0.005f, 40, 60, 0);
-			  SierpF_iterN= (int)DynamicIterrN;
-//			  SierpF_iterN=2;
-			  triangleSier(SVx1, SVy1- Pl2Accel, SVx2, SVy2- Pl2Accel, SVx3, SVy3- Pl2Accel, SierpF_iterN);
-//			  triangleSier((float)(SVx1*Math.sin(alpha/2)), (float)(SVy1*Math.sin(alpha))- Pl2Accel,
-//					  (float)(SVx2*Math.sin(alpha/4)), (float)(SVy2*Math.sin(alpha))- Pl2Accel,
-//					  (float)(SVx3*Math.sin(alpha/2)), (float)(SVy3*Math.sin(alpha))- Pl2Accel,
-//					  SierpF_iterN);
-//			  alpha = alpha + Math.PI/100;
+//			 // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
+//			  DynamicIterrN = Algorithm.CreateDynamic(pAt, DynamicIterrN, 0, 7, 0.01f, 30, 50, 0);
+////			  DynamicIterrN = StoDynamicMovement(pAt, DynamicIterrN, 0, 7, 0.005f, 40, 60, 0);
+//			  SierpF_iterN= (int)DynamicIterrN;
+////			  SierpF_iterN=2;
+//			  triangleSier(SVx1, SVy1- localPlayerAccel, SVx2, SVy2- localPlayerAccel, SVx3, SVy3- localPlayerAccel, SierpF_iterN);
+////			  triangleSier((float)(SVx1*Math.sin(alpha/2)), (float)(SVy1*Math.sin(alpha))- localPlayerAccel,
+////					  (float)(SVx2*Math.sin(alpha/4)), (float)(SVy2*Math.sin(alpha))- localPlayerAccel,
+////					  (float)(SVx3*Math.sin(alpha/2)), (float)(SVy3*Math.sin(alpha))- localPlayerAccel,
+////					  SierpF_iterN);
+////			  alpha = alpha + Math.PI/100;
 		}
 
 
@@ -239,27 +204,136 @@ public class ProcessingRNDgame extends PApplet{
 			}
 		
 		/** get EEG data from MainActivity and calculate S,P */
-		public void getEEG(){
-			  pAt = MainActivity.At;
-			  pMed = MainActivity.Med;
-			  pS = pAt - pMed;
-			  pP = pAt + pMed;
-			   
-			  
-			  // -- create Randomly distributed At
-				  mLastTime = mLastTime +1;
-				  if (mLastTime < rndUpdDelay) return; 
-				  double val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 30 (standard deviation) - 70% of data
-
-				 // double val = r.nextGaussian() * 25 + 100; // 50 (mean); 30 (standard deviation) - 70% of data
-				  pAtRndNorm = (int) Math.round(val);
-				  if (pAtRndNorm>100) {pAtRndNorm=100;} if (pAtRndNorm<0) {pAtRndNorm=0;}	           
-				  if (mLastTime>rndUpdDelay){mLastTime=0;}
-			  
-			  // -- take EEG data directly from service wo interaction with activity
-			  //pAt = eegService.At;
+		public int getEEG(){			  
+		 	 switch(MainActivity.UserControl){
+		 	 case "att":
+		 		 return eegService.At;
+		 	 case "med":
+		 		 return eegService.Med;
+		 	 case "S":
+		 		 return (eegService.At - eegService.Med);
+		 	 case "P":
+		 		 return (eegService.At + eegService.Med);
+		 	 default:
+		 	     return 0;
+		 	 }
 		}
 			
+		/** get random (Normal) distribution for userControl */
+		public void getRndNormalDistribution(){			
+			// -- create Randomly distributed time series
+			  mLastTime = mLastTime +1;
+			  if (mLastTime < rndUpdDelay) return; 
+			  
+			double val = 0;
+			switch(MainActivity.UserControl){
+			 case "att":
+				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
+				 indexPl2  = (int) Math.round(val);
+				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	           
+				 if (mLastTime>rndUpdDelay){mLastTime=0;}
+				 rndMean = "mean ~ " + String.valueOf(50+GameLevel*5);
+			  	 break;
+			 case "med":
+				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
+				 indexPl2  = (int) Math.round(val);
+				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	           
+				 if (mLastTime>rndUpdDelay){mLastTime=0;}
+				 rndMean = "mean ~ " + String.valueOf(50+GameLevel*5);
+				 break;
+			 case "S":
+				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
+				 indexPl2  = (int) Math.round(val);
+				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	
+				 indexPl2 = indexPl2*2 - 100; // adjust to interval -100:100 
+				 if (mLastTime>rndUpdDelay){mLastTime=0;}
+				 rndMean = "mean ~ " + String.valueOf(0+GameLevel*5);
+				 break;
+			}
+			
+		}
+
+		/** display toroid for local player */
+		public void displayLocalUserToroid(float x, float y){
+			  indexR = (255 * index) / 100; indexG = 0;  indexB = (255 * (100 - index)) / 100 ;
+		  		// -- create dynamic ts based on index value
+			  switch(MainActivity.UserControl){
+				case "att":
+				  localPlayerAccel = Algorithm.CreateDynamic(index, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  break;
+				case "med":
+				  localPlayerAccel = Algorithm.CreateDynamic(index, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  break;
+				case "S":
+				  localPlayerAccel = Algorithm.StoDynamicMovement(index, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
+				  break;
+			  }
+//			  localPlayerAccel = Algorithm.CreateDynamic(index, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+			  
+		
+			  		// -- center and spin toroid 	
+			  pushMatrix();
+//				  translate(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+				  translate(x, y);
+				  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
+				  thoroid(0,0, indexR, indexG, indexB, true, latheRadiusMed-10, latheRadiusMed);
+			  popMatrix();
+			  			
+			  textFont(f,32);                 // STEP 4 Specify font to be used
+			  fill(255);                        // STEP 5 Specify font color 
+			  text(MainActivity.UserControl + " -> " + index+"\n    (you)",displayWidth/2 + 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - localPlayerAccel);  // STEP 6 Display Text
+		}
+		
+		/** display toroid of the second/rnd player */
+		public void displayPlayer2Toroid(){
+			  getRndNormalDistribution();
+			  // -- Player((random, network) (torroid on the left)
+			  indexR = (255 * indexPl2 ) / 100; indexG = 0;  indexB = (255 * (100 - indexPl2 )) / 100 ;
+			  		// -- create dynamic ts based on pS
+			  switch(MainActivity.UserControl){
+				case "att":
+				  Player2Accel = Algorithm.CreateDynamic(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  break;
+				case "med":
+				  Player2Accel = Algorithm.CreateDynamic(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  break;
+				case "S":
+				  Player2Accel = Algorithm.StoDynamicMovement(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
+				  break;
+			  }
+			  	// -- center and spin toroid 
+			  pushMatrix();
+			  translate(displayWidth/2 - 2f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+			  //			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+			  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
+			  thoroid(0,0, indexR, indexG, indexB, true, latheRadiusMed-10, latheRadiusMed);
+			  popMatrix();
+			
+			  textFont(f,32);         
+			  fill(255);                   
+			  text(MainActivity.UserControl + " -> " + indexPl2+"\n    ("+rndMean+")",displayWidth/2 - 1.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
+			  
+		}
+		
+		/** display game level for rnd vs you game */
+		public void displayGameLevel(){
+			  for(int i=0; i<MaxGameLevel; i++){
+				  pushMatrix();
+				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.25f*displayHeight/10);
+	//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+				  thoroid(0,0, 172,172,172, false, (latheRadiusMed-10)/10, latheRadiusMed/10);
+				  popMatrix();
+			  }
+			  
+			  for(int i=0; i<GameLevel; i++){
+//				  for(int i=0; i<4; i++){
+				  pushMatrix();
+				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.25f*displayHeight/10);
+//				  rotateZ(30*i);		  rotateY(20*i);		  rotateX(10*i);
+				  thoroid(0,0, 0,255,0, false, (latheRadiusMed-10)/8, latheRadiusMed/8);
+				  popMatrix();
+			  }
+		}
 		
 		public int sketchWidth() { return displayWidth; }
 		public int sketchHeight() { return displayHeight; }

@@ -44,18 +44,23 @@ public final class R {
         public static final int ic_twotoroids=0x7f020013;
         public static final int icon_apps=0x7f020014;
         public static final int icon_mind_os=0x7f020015;
-        public static final int mindhackme_logo=0x7f020016;
-        public static final int niccolo50=0x7f020017;
-        public static final int pingpong50=0x7f020018;
-        public static final int running50=0x7f020019;
-        public static final int skinner50=0x7f02001a;
-        public static final int user50=0x7f02001b;
+        public static final int info=0x7f020016;
+        public static final int info_b=0x7f020017;
+        public static final int info_blue=0x7f020018;
+        public static final int info_blue1=0x7f020019;
+        public static final int mindhackme_logo=0x7f02001a;
+        public static final int niccolo50=0x7f02001b;
+        public static final int pingpong50=0x7f02001c;
+        public static final int running50=0x7f02001d;
+        public static final int skinner50=0x7f02001e;
+        public static final int user50=0x7f02001f;
     }
     public static final class id {
         public static final int Att_label=0x7f06000b;
         public static final int Med_lable=0x7f06000c;
         public static final int NeuroskyStatus=0x7f06000a;
         public static final int TextCurrentActivityInfo=0x7f06000d;
+        public static final int background=0x7f060021;
         public static final int editTextCurrentActivity=0x7f06000e;
         public static final int ib_att=0x7f060013;
         public static final int ib_back=0x7f060018;
@@ -85,6 +90,7 @@ public final class R {
         public static final int toggleUser2=0x7f06001e;
         public static final int toggleUser3=0x7f06001f;
         public static final int toggleUser4=0x7f060020;
+        public static final int tv=0x7f060022;
     }
     public static final class layout {
         public static final int activity_apps=0x7f030000;
@@ -92,6 +98,7 @@ public final class R {
         public static final int app_ui_main=0x7f030002;
         public static final int main=0x7f030003;
         public static final int service_main=0x7f030004;
+        public static final int tutorial=0x7f030005;
     }
     public static final class string {
         public static final int action_settings=0x7f050002;

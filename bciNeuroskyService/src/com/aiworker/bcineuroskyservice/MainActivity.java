@@ -53,6 +53,8 @@ public class MainActivity extends Activity{
 	public static boolean backend = false;
 	
 	ImageButton ibAtt, ibMed, ibS, ibInfo, ibmOS, ibToroid, ibBack, imOneToroid, ibTwoToroids;
+	public static String UserControl="att";
+	public static String toroidGameType="you";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -189,26 +191,26 @@ public class MainActivity extends Activity{
 		ServiceRunningFlag = "stoped";
 	}
 	// -- submit current user activity 
-	public void onClickSendMessage (View v)
-	{
-		//only we need a handler to send message to any component.
-		//here we will get the handler from the service first, then 
-		//we will send a message to the service.
-
-        EditText et_CurrentActivity = (EditText)findViewById(R.id.editTextCurrentActivity);
-        
-		if(null != eegService.meegServiceHandler)
-		{
-			//first build the message and send.
-			//put a integer value here and get it from the service handler
-			//For Example: lets use 0 (msg.what = 0;) for getting service running status from the service
-			Message msg = new Message();
-			msg.what = 0; 
-			msg.obj  = et_CurrentActivity.getText(); // you can put extra message here
-			eegService.meegServiceHandler.sendMessage(msg);
-			//et_CurrentActivity.setText("");
-		}
-	}
+//	public void onClickSendMessage (View v)
+//	{
+//		//only we need a handler to send message to any component.
+//		//here we will get the handler from the service first, then 
+//		//we will send a message to the service.
+//
+//        EditText et_CurrentActivity = (EditText)findViewById(R.id.editTextCurrentActivity);
+//        
+//		if(null != eegService.meegServiceHandler)
+//		{
+//			//first build the message and send.
+//			//put a integer value here and get it from the service handler
+//			//For Example: lets use 0 (msg.what = 0;) for getting service running status from the service
+//			Message msg = new Message();
+//			msg.what = 0; 
+//			msg.obj  = et_CurrentActivity.getText(); // you can put extra message here
+//			eegService.meegServiceHandler.sendMessage(msg);
+//			//et_CurrentActivity.setText("");
+//		}
+//	}
 	
 //	// -- start toroid
 //	public void onClickStart_toroid (View v)
@@ -217,12 +219,12 @@ public class MainActivity extends Activity{
 //		startActivity(intent);
 //	}
 	
-	// -- start toroid
-	public void onClickStart_activity_apps (View v)
-	{
-		Intent intent = new Intent(this, AppsActivity.class);
-		startActivity(intent);
-	}
+//	// -- start actiwity with app button
+//	public void onClickStart_activity_apps (View v)
+//	{
+//		Intent intent = new Intent(this, AppsActivity.class);
+//		startActivity(intent);
+//	}
 
 	/** switch on/off the service*/
 	public void onSwitchClickedService(View view) {
@@ -250,6 +252,7 @@ public class MainActivity extends Activity{
 			ServiceRunningFlag = "stoped";
 	}
 	
+	/** switch on/off the backend service*/
 	public void onSwitchClickedBackEnd(View view) {
 	    // Is the toggle on?
 //	    boolean on = ((Switch) view).isChecked();
@@ -337,21 +340,21 @@ public class MainActivity extends Activity{
 	public void onImageButtonS_Clicked (View v)
 	{
 		switchToLayer2();
-		// set S flag
+		UserControl = "S";
 	}
 	
 	/** -- set Attention flag for further use */
 	public void onImageButtonA_Clicked (View v)
 	{
 		switchToLayer2();
-		// set Att flag
+		UserControl = "att";
 	}
 	
 	/** -- set Meditation flag for further use */
 	public void onImageButtonM_Clicked (View v)
 	{
 		switchToLayer2();
-		//set M flag
+		UserControl = "med";
 	}
 	
 	/** -- proceed with back button, returning to layer 1 */
@@ -359,6 +362,13 @@ public class MainActivity extends Activity{
 	{
 		if(layer==2){switchToLayer1();}
 		if(layer==3){switchToLayer2from3();}
+	}
+	
+	/** -- proceed with info button */
+	public void onImageButtonInfo_Clicked (View v)
+	{
+		Intent intent = new Intent(this, appInfo.class);
+		startActivity(intent);
 	}
 	
 	/** -- proceed with toroid button */
@@ -377,13 +387,16 @@ public class MainActivity extends Activity{
 	/** -- proceed with onetoroid button */
 	public void onImageButtonOneToroid_Clicked (View v)
 	{
-		Intent intent = new Intent(this, ProcessingToroid.class);
+		toroidGameType="you";
+//		Intent intent = new Intent(this, ProcessingToroid.class);
+		Intent intent = new Intent(this, ProcessingRNDgame.class);
 		startActivity(intent);
 	}
 	
 	/** -- proceed with twotoroids button */
 	public void onImageButtonTwoToroids_Clicked (View v)
 	{
+		toroidGameType="rnd vs you";
 		Intent intent = new Intent(this, ProcessingRNDgame.class);
 		startActivity(intent);
 	}

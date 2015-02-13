@@ -71,16 +71,16 @@
 	    </activity>
 	    
         <activity
-        	android:name=".ProcessingAttVividF"
-        	android:theme="@android:style/Theme.NoTitleBar"
+        	android:name=".appInfo"
+        	android:theme="@android:style/Theme.Translucent"
         	android:label="@string/app_name"
         	android:screenOrientation="portrait" 
         	android:background="@android:color/transparent"
-        	android:parentActivityName="com.aiworker.bcineuroskyservice.AppsActivity" >
+        	android:parentActivityName="com.aiworker.bcineuroskyservice.MainActivity" >
 	        <meta-data
 	            android:name="android.support.PARENT_ACTIVITY"
-	            android:value="com.aiworker.bcineuroskyservice.AppsActivity" />
-	    </activity>
+	            android:value="com.aiworker.bcineuroskyservice.MainActivity" />
+	    </activity> 
 	    
         <activity
         	android:name=".ProcessingNewtorkGame"

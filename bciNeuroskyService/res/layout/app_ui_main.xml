@@ -89,7 +89,8 @@
 		    android:layout_centerVertical="true"
 		    android:layout_margin="30dp"
 		    android:background="@android:color/transparent"
-		    android:src="@drawable/ic_info" />
+		    android:src="@drawable/ic_info"
+		    android:onClick="onImageButtonInfo_Clicked" />
 
 		<ImageButton
 		    android:id="@+id/ib_s"

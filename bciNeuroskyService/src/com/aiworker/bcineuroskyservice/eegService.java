@@ -73,8 +73,10 @@ public class eegService extends Service{
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-	   userName = intent.getStringExtra("UserName");
-	   CurrentActivity = intent.getStringExtra("UserActivity");
+//	   userName = intent.getStringExtra("UserName");
+//	   CurrentActivity = intent.getStringExtra("UserActivity");
+	   userName = "UserName";
+	   CurrentActivity = "UserActivity";
 		
 	   processStartTG();
 		 
