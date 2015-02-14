@@ -25,8 +25,9 @@ public class ProcessingRNDgame extends PApplet{
 		int indexR; int indexG; int indexB; 
 		int MedR; int MedG; int MedB;
 		
-		Random r = new Random(); private long mLastTime; int rndUpdDelay = 40;
-		int GameLevel = 0; int MaxGameLevel=9; String rndMean = "mean";
+		Random r = new Random(); private long mLastTime; int rndUpdDelay_ms = 500;
+		private long DataCollectionLastTime; int DataCollectionDelay_ms = 500;
+		int GameLevel = 8; int MaxGameLevel=9; String rndMean = "mean";
 		
 		// -- toroids setting
 		int pts = 10; 	 int segments = 40;
@@ -59,42 +60,65 @@ public class ProcessingRNDgame extends PApplet{
 		
 		PFont f; 
 
+		// -- for wave
+//		int xspacing = 8;   // How far apart should each horizontal location be spaced
+		int xspacing = 20; 
+		int w;              // Width of entire wave
+		int waveLength=200;
+		int maxwaves = 4;   // total # of waves to add together
+
+		float theta = 0.0f;
+		float[] amplitude = new float[maxwaves];   // Height of wave
+		float[] dx = new float[maxwaves];          // Value for incrementing X, to be calculated as a function of period and xspacing
+		float[] yvalues;                           // Using an array to store height values for the wave (not entirely necessary)
+		float[] xvalues;
+		
+		PImage imgFinish; 
+		
 		
 		public void setup(){	 
-			 // frameRate(1);  // Animate slowly
-
-			  smooth();
-			 // noStroke();
+//			 frameRate(15); 
+			 smooth(); // noStroke();
 			 // colorMode(HSB, 8, 100, 100);
-			  f = createFont("Arial",16,true); // STEP 3 Create Font
-			  
-			  // -- setup vertices coordinates for triangle
-				SVx1 = displayWidth/2 + 0*displayWidth/10;
-				SVy1 = displayHeight/2 + 3*displayHeight/10;
-				SVx2 = displayWidth/2 + 4*displayWidth/10;
-				SVy2 = displayHeight/2 + 3*displayHeight/10;
-				SVx3 = displayWidth/2 + 2f*displayWidth/10;
-				SVy3 = displayHeight/2 + 1*displayHeight/10;
-				
-//			  vert1 = new PVector(SVx1, SVy1);
-//			  vert2 = new PVector(SVx2, SVy2);
-//			  vert3 = new PVector(SVx3, SVy3);
+			 colorMode(RGB, 255, 255, 255, 100);
+			 
+			 f = createFont("Arial",16,true); // STEP 3 Create Font
+			 DataCollectionLastTime = millis();
+			 
+			 // -- for wave
+				 w = 40 ;
+				 xvalues = new float[w];
+				 xvalues[0] = 0;
+				 for (int i = 1; i <w; i++) { 
+				   xvalues[i] = xvalues[i-1] + displayWidth/(w);
+				 }
+//				 yvalues = new float[w/xspacing];
+				 yvalues = new float[w];
+			 // -- end for wave
+			 
+				 imgFinish = loadImage("finish.png");
+			 
+
 		}
 
 		public void draw(){
 			  // -- draw background and setup basic lighting setup
 			  background(0);  lights(); 
 			  
+//			  displayHeight - 1*displayHeight/10 - Player2Accel
 			  // -- check game status
-			  if (localPlayerAccel>Player2Accel && localPlayerAccel==(displayHeight - 1*displayHeight/10))
+			  if (localPlayerAccel>Player2Accel && (displayHeight - 1*displayHeight/10 - localPlayerAccel)<=(2f*displayHeight/10))
 			  	{Player2Accel = 0; localPlayerAccel = 0; GameLevel = GameLevel + 1;} 
-			  if (Player2Accel>localPlayerAccel && Player2Accel==(displayHeight - 1*displayHeight/10))
+			  if (Player2Accel>localPlayerAccel && (displayHeight - 1*displayHeight/10 - Player2Accel)<=(2f*displayHeight/10))
 			  	{Player2Accel = 0; localPlayerAccel = 0; GameLevel = GameLevel - 1;} 
 			  if (GameLevel<0)	{GameLevel = 0;} 
 			  
+			  image(imgFinish, 0, 2.0f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
+//			  image(imgFinish, 0, displayHeight - 2f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
 			  // ===============================================
 			  		// -- get EEG index (one from att/med/S/P)
 			  index = getEEG();
+			  			  
 			  
 			  switch(MainActivity.toroidGameType){
 				    case "you":
@@ -108,23 +132,20 @@ public class ProcessingRNDgame extends PApplet{
 						break;
 			  } 
 			 
-//			 // -- Draws the SierFractal2DColor (maximum 7 iteration visible)
-//			  DynamicIterrN = Algorithm.CreateDynamic(pAt, DynamicIterrN, 0, 7, 0.01f, 30, 50, 0);
-////			  DynamicIterrN = StoDynamicMovement(pAt, DynamicIterrN, 0, 7, 0.005f, 40, 60, 0);
-//			  SierpF_iterN= (int)DynamicIterrN;
-////			  SierpF_iterN=2;
-//			  triangleSier(SVx1, SVy1- localPlayerAccel, SVx2, SVy2- localPlayerAccel, SVx3, SVy3- localPlayerAccel, SierpF_iterN);
-////			  triangleSier((float)(SVx1*Math.sin(alpha/2)), (float)(SVy1*Math.sin(alpha))- localPlayerAccel,
-////					  (float)(SVx2*Math.sin(alpha/4)), (float)(SVy2*Math.sin(alpha))- localPlayerAccel,
-////					  (float)(SVx3*Math.sin(alpha/2)), (float)(SVy3*Math.sin(alpha))- localPlayerAccel,
-////					  SierpF_iterN);
-////			  alpha = alpha + Math.PI/100;
+			// ===============================================
+//			  calcWave();
+			  DataCollection(indexPl2);	
+//			  DataCollection(index);	
+			  renderWave();
+
+
 		}
 
 
 		public void thoroid (int _positionX, int _positionY, int _R, int _G, int _B, boolean isWireFrame_l,
 				float radius_l, float latheRadius_l) {
 		  // -- 2 rendering styles: wireframe or solid
+			strokeWeight(1);
 		  if (isWireFrame_l){
 			  stroke(_R, _G, _B);
 			  noFill();
@@ -179,7 +200,7 @@ public class ProcessingRNDgame extends PApplet{
 		    endShape();
 		    
 		  }
-		  
+		  noFill();
 		}
 		/** calculate Sierpinski rtiangle depending on iteration */
 		public void triangleSier(float x1, float y1, float x2, float y2, float x3, float y3, int n) {
@@ -202,6 +223,30 @@ public class ProcessingRNDgame extends PApplet{
 			    triangleSier(h3, w3, h2, w2, x3, y3, n-1);
 			  }
 			}
+
+		/** draw wave using ellipse */
+		void renderWave() {
+			  // A simple way to draw the wave with an ellipse at each location
+			smooth();  
+//			noStroke();
+//			fill(255, 0, 0);
+			 noFill();
+			 strokeWeight(7);
+			 
+			beginShape();
+//			  ellipseMode(CENTER);
+			  for (int i = 0; i < yvalues.length; i++) {
+//			    ellipse(x*xspacing,displayWidth/2+yvalues[x],16,16);
+//				ellipse(xvalues[i],displayWidth/2+yvalues[i],16,16);
+				  
+				if(yvalues[i]>80 && yvalues[i]<120){stroke(255,0,0);}
+				else stroke(0,255,0);
+				curveVertex(xvalues[i], 1.5f*displayHeight/10 - yvalues[i]); // the first control point
+				  
+			  }
+			  endShape();
+			  
+		}
 		
 		/** get EEG data from MainActivity and calculate S,P */
 		public int getEEG(){			  
@@ -219,11 +264,30 @@ public class ProcessingRNDgame extends PApplet{
 		 	 }
 		}
 			
+		public void DataCollection(int ind){
+	  		// -- collect indexes
+			  if (millis() - DataCollectionLastTime < DataCollectionDelay_ms) return; 
+			  else{		
+				  yvalues[yvalues.length-1] = 2*ind;
+//				  yvalues[yvalues.length-1] = 200;
+				  
+				  for (int j = 0; j < yvalues.length-1; j++) {
+					  yvalues[j] = yvalues[j+1];				    	
+				  }
+//				  yvalues[yvalues.length-1] = ind*5;
+				  
+				  DataCollectionLastTime=millis();	
+//				  
+			  }
+		}
+		
+		
 		/** get random (Normal) distribution for userControl */
 		public void getRndNormalDistribution(){			
 			// -- create Randomly distributed time series
-			  mLastTime = mLastTime +1;
-			  if (mLastTime < rndUpdDelay) return; 
+			  if (millis() - mLastTime < rndUpdDelay_ms) return; 
+			  else  mLastTime = millis();
+			  
 			  
 			double val = 0;
 			switch(MainActivity.UserControl){
@@ -231,14 +295,14 @@ public class ProcessingRNDgame extends PApplet{
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
 				 indexPl2  = (int) Math.round(val);
 				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	           
-				 if (mLastTime>rndUpdDelay){mLastTime=0;}
+//				 if (mLastTime>rndUpdDelay_ms){mLastTime=0;}
 				 rndMean = "mean ~ " + String.valueOf(50+GameLevel*5);
 			  	 break;
 			 case "med":
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
 				 indexPl2  = (int) Math.round(val);
 				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	           
-				 if (mLastTime>rndUpdDelay){mLastTime=0;}
+//				 if (mLastTime>rndUpdDelay_ms){mLastTime=0;}
 				 rndMean = "mean ~ " + String.valueOf(50+GameLevel*5);
 				 break;
 			 case "S":
@@ -246,13 +310,15 @@ public class ProcessingRNDgame extends PApplet{
 				 indexPl2  = (int) Math.round(val);
 				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	
 				 indexPl2 = indexPl2*2 - 100; // adjust to interval -100:100 
-				 if (mLastTime>rndUpdDelay){mLastTime=0;}
+//				 if (mLastTime>rndUpdDelay_ms){mLastTime=0;}
 				 rndMean = "mean ~ " + String.valueOf(0+GameLevel*5);
 				 break;
 			}
 			
 		}
+		
 
+		
 		/** display toroid for local player */
 		public void displayLocalUserToroid(float x, float y){
 			  indexR = (255 * index) / 100; indexG = 0;  indexB = (255 * (100 - index)) / 100 ;
@@ -317,22 +383,22 @@ public class ProcessingRNDgame extends PApplet{
 		
 		/** display game level for rnd vs you game */
 		public void displayGameLevel(){
-			  for(int i=0; i<MaxGameLevel; i++){
-				  pushMatrix();
-				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.25f*displayHeight/10);
-	//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-				  thoroid(0,0, 172,172,172, false, (latheRadiusMed-10)/10, latheRadiusMed/10);
-				  popMatrix();
-			  }
-			  
-			  for(int i=0; i<GameLevel; i++){
-//				  for(int i=0; i<4; i++){
-				  pushMatrix();
-				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.25f*displayHeight/10);
-//				  rotateZ(30*i);		  rotateY(20*i);		  rotateX(10*i);
-				  thoroid(0,0, 0,255,0, false, (latheRadiusMed-10)/8, latheRadiusMed/8);
-				  popMatrix();
-			  }
+//			  for(int i=0; i<MaxGameLevel; i++){
+//				  pushMatrix();
+//				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.25f*displayHeight/10);
+//	//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+//				  thoroid(0,0, 172,172,172, false, (latheRadiusMed-10)/10, latheRadiusMed/10);
+//				  popMatrix();
+//			  }
+//			  
+//			  for(int i=0; i<GameLevel; i++){
+////				  for(int i=0; i<4; i++){
+//				  pushMatrix();
+//				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.25f*displayHeight/10);
+////				  rotateZ(30*i);		  rotateY(20*i);		  rotateX(10*i);
+//				  thoroid(0,0, 0,255,0, false, (latheRadiusMed-10)/8, latheRadiusMed/8);
+//				  popMatrix();
+//			  }
 		}
 		
 		public int sketchWidth() { return displayWidth; }
