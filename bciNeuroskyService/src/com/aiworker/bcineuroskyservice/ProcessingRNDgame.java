@@ -8,6 +8,7 @@ import processing.opengl.*;
 import java.util.HashMap; 
 import java.util.ArrayList; 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.io.File; 
 import java.io.BufferedReader; 
 import java.io.PrintWriter; 
@@ -27,7 +28,8 @@ public class ProcessingRNDgame extends PApplet{
 		
 		Random r = new Random(); private long mLastTime; int rndUpdDelay_ms = 500;
 		private long DataCollectionLastTime; int DataCollectionDelay_ms = 500;
-		int GameLevel = 8; int MaxGameLevel=9; String rndMean = "mean";
+		private long CurrentTime,TimeOfTheGame = 0;
+		int GameLevel = 7; int MaxGameLevel=9; String rndMean = "mean";
 		
 		// -- toroids setting
 		int pts = 10; 	 int segments = 40;
@@ -84,6 +86,7 @@ public class ProcessingRNDgame extends PApplet{
 			 
 			 f = createFont("Arial",16,true); // STEP 3 Create Font
 			 DataCollectionLastTime = millis();
+			 CurrentTime = millis();
 			 
 			 // -- for wave
 				 w = 40 ;
@@ -108,13 +111,30 @@ public class ProcessingRNDgame extends PApplet{
 //			  displayHeight - 1*displayHeight/10 - Player2Accel
 			  // -- check game status
 			  if (localPlayerAccel>Player2Accel && (displayHeight - 1*displayHeight/10 - localPlayerAccel)<=(2f*displayHeight/10))
-			  	{Player2Accel = 0; localPlayerAccel = 0; GameLevel = GameLevel + 1;} 
+			  	{Player2Accel = 0; localPlayerAccel = 0; GameLevel = GameLevel + 1; CurrentTime=millis();} 
 			  if (Player2Accel>localPlayerAccel && (displayHeight - 1*displayHeight/10 - Player2Accel)<=(2f*displayHeight/10))
-			  	{Player2Accel = 0; localPlayerAccel = 0; GameLevel = GameLevel - 1;} 
+			  	{Player2Accel = 0; localPlayerAccel = 0; GameLevel = GameLevel - 1; CurrentTime=millis();} 
 			  if (GameLevel<0)	{GameLevel = 0;} 
 			  
+			  // ===============================================
 			  image(imgFinish, 0, 2.0f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
-//			  image(imgFinish, 0, displayHeight - 2f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
+			  
+			  // ===============================================
+			  TimeOfTheGame = millis() - CurrentTime;
+			  textFont(f,32);                 // STEP 4 Specify font to be used
+			  fill(255);                        // STEP 5 Specify font color 
+//			  int mm = Math.round(TimeOfTheGame/(1000f*60f));
+//			  int ss = Math.round((TimeOfTheGame-mm*60f*1000f)/1000f);
+//			  int mm = Math.round(ss/60f);
+//			  text(mm+":"+ss,5f*displayWidth/10, 2.0f*displayHeight/10 - 20f);  
+		
+			  String s = String.format("%02d:%02d:%02d", 
+					  TimeUnit.MILLISECONDS.toHours(TimeOfTheGame),
+					  TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame) -  
+					  TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(TimeOfTheGame)), // The change is in this line
+					  TimeUnit.MILLISECONDS.toSeconds(TimeOfTheGame) - 
+					  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame))); 
+			  text(s,4.5f*displayWidth/10, 2.0f*displayHeight/10 - 20f);  
 			  // ===============================================
 			  		// -- get EEG index (one from att/med/S/P)
 			  index = getEEG();
@@ -127,7 +147,7 @@ public class ProcessingRNDgame extends PApplet{
 				    	
 					case "rnd vs you":
 						displayLocalUserToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
-						displayPlayer2Toroid();
+						displayPlayer2Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
 						displayGameLevel();
 						break;
 			  } 
@@ -230,10 +250,10 @@ public class ProcessingRNDgame extends PApplet{
 			smooth();  
 //			noStroke();
 //			fill(255, 0, 0);
-			 noFill();
-			 strokeWeight(7);
+			  noFill();
+			  strokeWeight(7);
 			 
-			beginShape();
+			  beginShape();
 //			  ellipseMode(CENTER);
 			  for (int i = 0; i < yvalues.length; i++) {
 //			    ellipse(x*xspacing,displayWidth/2+yvalues[x],16,16);
@@ -245,6 +265,26 @@ public class ProcessingRNDgame extends PApplet{
 				  
 			  }
 			  endShape();
+			 
+			  textFont(f,32);                 // STEP 4 Specify font to be used
+			  fill(255);                        // STEP 5 Specify font color 
+			  text("0",10f, 1.4f*displayHeight/10+30f);  
+			  text("40",10f, 1.0f*displayHeight/10+30f); 
+			  text("60",10f, 0.55f*displayHeight/10+30f); 
+			  text("100",10f, 0.2f*displayHeight/10+30f); 
+			  
+			  stroke(255,255,255); strokeWeight(1f);
+			  line(70f, 1.5f*displayHeight/10f, displayWidth, 1.5f*displayHeight/10f);
+//			  
+//			  stroke(255,255,255); strokeWeight(1f);
+//			  line(60f, 0.9f*displayHeight/10f+40f, displayWidth, 0.9f*displayHeight/10f+40f);
+//			  
+			  stroke(255,255,255); strokeWeight(1f);
+			  line(70f, 0.3f*displayHeight/10f, displayWidth, 0.3f*displayHeight/10f);
+			  
+			  fill(200,200,200,40); noStroke();
+			  rect(10f, 0.7f*displayHeight/10f, displayWidth, 0.4f*displayHeight/10f);
+			  
 			  
 		}
 		
@@ -264,6 +304,7 @@ public class ProcessingRNDgame extends PApplet{
 		 	 }
 		}
 			
+		
 		public void DataCollection(int ind){
 	  		// -- collect indexes
 			  if (millis() - DataCollectionLastTime < DataCollectionDelay_ms) return; 
@@ -280,6 +321,7 @@ public class ProcessingRNDgame extends PApplet{
 //				  
 			  }
 		}
+		
 		
 		
 		/** get random (Normal) distribution for userControl */
@@ -351,7 +393,7 @@ public class ProcessingRNDgame extends PApplet{
 		}
 		
 		/** display toroid of the second/rnd player */
-		public void displayPlayer2Toroid(){
+		public void displayPlayer2Toroid(float x, float y){
 			  getRndNormalDistribution();
 			  // -- Player((random, network) (torroid on the left)
 			  indexR = (255 * indexPl2 ) / 100; indexG = 0;  indexB = (255 * (100 - indexPl2 )) / 100 ;
@@ -369,7 +411,7 @@ public class ProcessingRNDgame extends PApplet{
 			  }
 			  	// -- center and spin toroid 
 			  pushMatrix();
-			  translate(displayWidth/2 - 2f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+			  translate(x, y);
 			  //			  rotateZ(0);		  rotateY(0);		  rotateX(0);
 			  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
 			  thoroid(0,0, indexR, indexG, indexB, true, latheRadiusMed-10, latheRadiusMed);
@@ -377,7 +419,7 @@ public class ProcessingRNDgame extends PApplet{
 			
 			  textFont(f,32);         
 			  fill(255);                   
-			  text(MainActivity.UserControl + " -> " + indexPl2+"\n    ("+rndMean+")",displayWidth/2 - 1.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
+			  text(MainActivity.UserControl + " -> " + indexPl2+"\n    ("+rndMean+")",displayWidth/2 - 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
 			  
 		}
 		
