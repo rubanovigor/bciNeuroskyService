@@ -26,38 +26,25 @@ public class ProcessingRNDgame extends PApplet{
 		int indexR; int indexG; int indexB; 
 		int MedR; int MedG; int MedB;
 		
-		Random r = new Random(); private long mLastTime; int rndUpdDelay_ms = 500;
-		private long DataCollectionLastTime; int DataCollectionDelay_ms = 500;
+		Random r = new Random(); private long mLastTime; int rndUpdDelay_ms = 1000;
+		private long DataCollectionLastTime; int DataCollectionDelay_ms = 1000;
 		private long CurrentTime,TimeOfTheGame = 0;
-		int GameLevel = 7; int MaxGameLevel=9; String rndMean = "mean";
+		int GameLevel = 1; int MaxGameLevel=9; String rndMean = "mean";
 		
 		// -- toroids setting
 		int pts = 10; 	 int segments = 40;
 		float angle = 0; float latheAngle = 0;
 			// -- internal and external radius
-		float radiusAt = 10.0f; float radiusMed = 10.0f;
-		float latheRadiusAt = 50.0f; float latheRadiusMed = 50.0f; 
+//		float radiusAt = 10.0f; float radiusMed = 10.0f;
+//		float latheRadiusAt = 50.0f;
+		float ExternalToroidRadius = 50.0f; 
 			// -- dynamic internal radius
-		float AtDynamicR = radiusAt; float MedDynamicR = radiusMed;
+//		float AtDynamicR = radiusAt; float MedDynamicR = radiusMed;
 			// -- for optional helix
 		boolean isHelix = false;	float helixOffset = 5.0f;
 			// -- toroids vertices
 		PVector vertices[], vertices2[];
-	
-		// -- Sierpinski fractal iteration (from 0 to 7)
-		PVector vert1, vert2, vert3;
-		int SierpF_iterN = 0; float DynamicIterrN=SierpF_iterN;
-			// -- coordinates of triangle vertices
-		float SVx1, SVy1, SVx2, SVy2, SVx3, SVy3;
-		double alpha = Math.PI;
-
-		
-		// --processing algorithm
-//		float TimeToSelectMax = 70; float TimeToSelect = TimeToSelectMax;  float TimeToSelectItt = 0.5f;
-//		float accel_alphaMax = 10; float accel_alpha = 0; float accel_alphaDeviation = 0.5f;
-//		boolean FirstRun = true; boolean action_cancel_flag = false;
-		
-		// -- network game play
+			// -- network game play
 		float Player2Accel = 0; float localPlayerAccel = 0;
 		
 		PFont f; 
@@ -95,7 +82,6 @@ public class ProcessingRNDgame extends PApplet{
 				 for (int i = 1; i <w; i++) { 
 				   xvalues[i] = xvalues[i-1] + displayWidth/(w);
 				 }
-//				 yvalues = new float[w/xspacing];
 				 yvalues = new float[w];
 			 // -- end for wave
 			 
@@ -161,7 +147,6 @@ public class ProcessingRNDgame extends PApplet{
 
 		}
 
-
 		public void thoroid (int _positionX, int _positionY, int _R, int _G, int _B, boolean isWireFrame_l,
 				float radius_l, float latheRadius_l) {
 		  // -- 2 rendering styles: wireframe or solid
@@ -222,27 +207,6 @@ public class ProcessingRNDgame extends PApplet{
 		  }
 		  noFill();
 		}
-		/** calculate Sierpinski rtiangle depending on iteration */
-		public void triangleSier(float x1, float y1, float x2, float y2, float x3, float y3, int n) {
-			  // 'n' is the number of iteration.
-			  if ( n > 0 ) {
-			    fill(255/n, 0, 0);
-			    triangle(x1, y1, x2, y2, x3, y3);
-			     
-			    // Calculating the midpoints of all segments.
-			    float h1 = (x1+x2)/2.0f;
-			    float w1 = (y1+y2)/2.0f;
-			    float h2 = (x2+x3)/2.0f;
-			    float w2 = (y2+y3)/2.0f;
-			    float h3 = (x3+x1)/2.0f;
-			    float w3 = (y3+y1)/2.0f;
-			     
-			    // Trace the triangle with the new coordinates.
-			    triangleSier(x1, y1, h1, w1, h3, w3, n-1);
-			    triangleSier(h1, w1, x2, y2, h2, w2, n-1);
-			    triangleSier(h3, w3, h2, w2, x3, y3, n-1);
-			  }
-			}
 
 		/** draw wave using ellipse */
 		void renderWave() {
@@ -302,8 +266,7 @@ public class ProcessingRNDgame extends PApplet{
 		 	 default:
 		 	     return 0;
 		 	 }
-		}
-			
+		}		
 		
 		public void DataCollection(int ind){
 	  		// -- collect indexes
@@ -321,9 +284,7 @@ public class ProcessingRNDgame extends PApplet{
 //				  
 			  }
 		}
-		
-		
-		
+			
 		/** get random (Normal) distribution for userControl */
 		public void getRndNormalDistribution(){			
 			// -- create Randomly distributed time series
@@ -358,8 +319,7 @@ public class ProcessingRNDgame extends PApplet{
 			}
 			
 		}
-		
-
+	
 		
 		/** display toroid for local player */
 		public void displayLocalUserToroid(float x, float y){
@@ -384,7 +344,7 @@ public class ProcessingRNDgame extends PApplet{
 //				  translate(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
 				  translate(x, y);
 				  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
-				  thoroid(0,0, indexR, indexG, indexB, true, latheRadiusMed-10, latheRadiusMed);
+				  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-10, ExternalToroidRadius);
 			  popMatrix();
 			  			
 			  textFont(f,32);                 // STEP 4 Specify font to be used
@@ -414,7 +374,7 @@ public class ProcessingRNDgame extends PApplet{
 			  translate(x, y);
 			  //			  rotateZ(0);		  rotateY(0);		  rotateX(0);
 			  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
-			  thoroid(0,0, indexR, indexG, indexB, true, latheRadiusMed-10, latheRadiusMed);
+			  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-10, ExternalToroidRadius);
 			  popMatrix();
 			
 			  textFont(f,32);         
@@ -425,23 +385,18 @@ public class ProcessingRNDgame extends PApplet{
 		
 		/** display game level for rnd vs you game */
 		public void displayGameLevel(){
-//			  for(int i=0; i<MaxGameLevel; i++){
-//				  pushMatrix();
-//				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.25f*displayHeight/10);
-//	//			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-//				  thoroid(0,0, 172,172,172, false, (latheRadiusMed-10)/10, latheRadiusMed/10);
-//				  popMatrix();
-//			  }
-//			  
-//			  for(int i=0; i<GameLevel; i++){
-////				  for(int i=0; i<4; i++){
-//				  pushMatrix();
-//				  translate(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.25f*displayHeight/10);
-////				  rotateZ(30*i);		  rotateY(20*i);		  rotateX(10*i);
-//				  thoroid(0,0, 0,255,0, false, (latheRadiusMed-10)/8, latheRadiusMed/8);
-//				  popMatrix();
-//			  }
+			  noStroke();
+			  for(int i=0; i<MaxGameLevel; i++){
+					fill(255,0,0); 
+					ellipse(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.2f*displayHeight/10, 15, 15);  // Draw white ellipse using RADIUS mode
+		  	  }
+			  for(int i=0; i<GameLevel; i++){
+					fill(0,0,255);  // Set fill to gray
+					ellipse(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.2f*displayHeight/10, 20, 20);  // Draw gray ellipse using CENTER mode
+			  }
 		}
+
+		
 		
 		public int sketchWidth() { return displayWidth; }
 		public int sketchHeight() { return displayHeight; }
