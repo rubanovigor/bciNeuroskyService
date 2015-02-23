@@ -30,6 +30,7 @@ public class ProcessingRNDgame extends PApplet{
 		private long DataCollectionLastTime; int DataCollectionDelay_ms = 1000;
 		private long CurrentTime,TimeOfTheGame = 0;
 		int GameLevel = 1; int MaxGameLevel=9; String rndMean = "mean";
+		int ma_LastTime=0;  float ma_value = 0; int ma_length_ms=0;
 		
 		// -- toroids setting
 		int pts = 10; 	 int segments = 40;
@@ -47,7 +48,9 @@ public class ProcessingRNDgame extends PApplet{
 			// -- network game play
 		float Player2Accel = 0; float localPlayerAccel = 0;
 		
+			// -- EEGindex graph
 		PFont f; 
+		int legend100,legend60, legend40, legend0, waveHigh = 200, legendAdjY = 5, legendAdjX = 70;
 
 		// -- for wave
 //		int xspacing = 8;   // How far apart should each horizontal location be spaced
@@ -74,7 +77,7 @@ public class ProcessingRNDgame extends PApplet{
 			 f = createFont("Arial",16,true); // STEP 3 Create Font
 			 DataCollectionLastTime = millis();
 			 CurrentTime = millis();
-			 
+			 ma_LastTime = millis();
 			 // -- for wave
 				 w = 40 ;
 				 xvalues = new float[w];
@@ -88,6 +91,11 @@ public class ProcessingRNDgame extends PApplet{
 				 imgFinish = loadImage("finish.png");
 			 
 
+				 legend100 = 50;
+				 legend60 = (int) (legend100 + 0.4f*waveHigh);
+				 legend40 = (int) (legend100 + 0.6f*waveHigh);
+				 legend0 = (int) (legend100 + 1f*waveHigh);
+				 
 		}
 
 		public void draw(){
@@ -103,23 +111,22 @@ public class ProcessingRNDgame extends PApplet{
 			  if (GameLevel<0)	{GameLevel = 0;} 
 			  
 			  // ===============================================
+			  		// -- display finish line
 			  image(imgFinish, 0, 2.0f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
 			  
 			  // ===============================================
+			  		// -- display game time
 			  TimeOfTheGame = millis() - CurrentTime;
 			  textFont(f,32);                 // STEP 4 Specify font to be used
 			  fill(255);                        // STEP 5 Specify font color 
-//			  int mm = Math.round(TimeOfTheGame/(1000f*60f));
-//			  int ss = Math.round((TimeOfTheGame-mm*60f*1000f)/1000f);
-//			  int mm = Math.round(ss/60f);
-//			  text(mm+":"+ss,5f*displayWidth/10, 2.0f*displayHeight/10 - 20f);  
-		
+	
 			  String s = String.format("%02d:%02d:%02d", 
 					  TimeUnit.MILLISECONDS.toHours(TimeOfTheGame),
 					  TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame) -  
 					  TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(TimeOfTheGame)), // The change is in this line
 					  TimeUnit.MILLISECONDS.toSeconds(TimeOfTheGame) - 
 					  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame))); 
+			  
 			  text(s,4.5f*displayWidth/10, 2.0f*displayHeight/10 - 20f);  
 			  // ===============================================
 			  		// -- get EEG index (one from att/med/S/P)
@@ -139,10 +146,9 @@ public class ProcessingRNDgame extends PApplet{
 			  } 
 			 
 			// ===============================================
-//			  calcWave();
-			  DataCollection(indexPl2);	
-//			  DataCollection(index);	
-			  renderWave();
+//			  DataCollection(indexPl2);	
+			  DataCollection(index);	
+			  displayGraphOfEEGindex();
 
 
 		}
@@ -209,70 +215,117 @@ public class ProcessingRNDgame extends PApplet{
 		}
 
 		/** draw wave using ellipse */
-		void renderWave() {
-			  // A simple way to draw the wave with an ellipse at each location
-			smooth();  
-//			noStroke();
-//			fill(255, 0, 0);
+		void displayGraphOfEEGindex() {
+			  // -- draw EEGindex as a curve
+			  noSmooth();  
 			  noFill();
-			  strokeWeight(7);
-			 
+			  strokeWeight(5); 
+			  stroke(200,255,200);
+//			  curveTightness(1.25f);
 			  beginShape();
-//			  ellipseMode(CENTER);
-			  for (int i = 0; i < yvalues.length; i++) {
-//			    ellipse(x*xspacing,displayWidth/2+yvalues[x],16,16);
-//				ellipse(xvalues[i],displayWidth/2+yvalues[i],16,16);
+			  for (int i = 2; i < yvalues.length; i++) {				  
+//			    	if(yvalues[i]>80 && yvalues[i]<120){stroke(255,0,0);}
+//				  if(yvalues[i]<40){stroke(0,0,255);}
+//				  if(yvalues[i]>=40 && yvalues[i]<=60){stroke(170,170,170);}
+//				  if(yvalues[i]>60){stroke(0,255,0);}
+//				  indexR = (255 * index) / 100; indexG = 0;  indexB = (255 * (100 - index)) / 100 ;
+//				  indexR = (255 * indexPl2 ) / 100; indexG = 0;  indexB = (255 * (100 - indexPl2 )) / 100 ;
+//				  stroke(indexR, indexG, indexB);
 				  
-				if(yvalues[i]>80 && yvalues[i]<120){stroke(255,0,0);}
-				else stroke(0,255,0);
-				curveVertex(xvalues[i], 1.5f*displayHeight/10 - yvalues[i]); // the first control point
-				  
+//				curveVertex(xvalues[i], 1.5f*displayHeight/10 - yvalues[i]); // the first control point
+//				  if(i<5){strokeWeight(0);} else {strokeWeight(5);}
+				curveVertex(xvalues[i], legend0 - yvalues[i]);
+
 			  }
 			  endShape();
 			 
-			  textFont(f,32);                 // STEP 4 Specify font to be used
-			  fill(255);                        // STEP 5 Specify font color 
-			  text("0",10f, 1.4f*displayHeight/10+30f);  
-			  text("40",10f, 1.0f*displayHeight/10+30f); 
-			  text("60",10f, 0.55f*displayHeight/10+30f); 
-			  text("100",10f, 0.2f*displayHeight/10+30f); 
+			  // -- draw chart lines and legends
+			  switch(MainActivity.UserControl){
+			 	 case "att":
+					  textFont(f,32);  fill(255);	text(" 0",10f, legend0+legendAdjY);  
+					  textFont(f,20);  fill(190);	text("  40",10f, legend40+legendAdjY); 
+					  textFont(f,20);  fill(190);	text("  60",10f, legend60+legendAdjY); 
+					  textFont(f,32);  fill(255);	text("100",10f, legend100+legendAdjY); 
+					  break;
+			 	 case "med":
+					  textFont(f,32);  fill(255);	text(" 0",10f, legend0+legendAdjY);  
+					  textFont(f,20);  fill(190);	text("  40",10f, legend40+legendAdjY); 
+					  textFont(f,20);  fill(190);	text("  60",10f, legend60+legendAdjY); 
+					  textFont(f,32);  fill(255);	text("100",10f, legend100+legendAdjY); 
+					  break;
+			 	 case "S":
+					  textFont(f,32);  fill(255);	text("-100",10f, legend0+legendAdjY);  
+					  textFont(f,20);  fill(190);	text(" -30",10f, legend40+legendAdjY); 
+					  textFont(f,20);  fill(190);	text(" +30",10f, legend60+legendAdjY); 
+					  textFont(f,32);  fill(255);	text(" 100",10f, legend100+legendAdjY); 
+					  break;
+			 	 case "P":
+					  textFont(f,32);  fill(255);	text("  0",10f, legend0+legendAdjY);  
+					  textFont(f,20);  fill(190);	text(" 80",10f, legend40+legendAdjY); 
+					  textFont(f,20);  fill(190);	text("120",10f, legend60+legendAdjY); 
+					  textFont(f,32);  fill(255);	text("200",10f, legend100+legendAdjY); 
+					  break;
+			  }
 			  
-			  stroke(255,255,255); strokeWeight(1f);
-			  line(70f, 1.5f*displayHeight/10f, displayWidth, 1.5f*displayHeight/10f);
-//			  
-//			  stroke(255,255,255); strokeWeight(1f);
-//			  line(60f, 0.9f*displayHeight/10f+40f, displayWidth, 0.9f*displayHeight/10f+40f);
-//			  
-			  stroke(255,255,255); strokeWeight(1f);
-			  line(70f, 0.3f*displayHeight/10f, displayWidth, 0.3f*displayHeight/10f);
-			  
-			  fill(200,200,200,40); noStroke();
-			  rect(10f, 0.7f*displayHeight/10f, displayWidth, 0.4f*displayHeight/10f);
+			  stroke(170,170,170); strokeWeight(2f); line(legendAdjX, legend0, displayWidth, legend0);
+			  stroke(170,170,170); strokeWeight(2f); line(legendAdjX, legend100, displayWidth, legend100);
+			  stroke(170,170,170); strokeWeight(1f); line(legendAdjX, legend60, displayWidth, legend60);
+			  stroke(170,170,170); strokeWeight(1f); line(legendAdjX, legend40, displayWidth, legend40);
+			  		  
+			  fill(170,170,170, 40); noStroke();
+//			  rect(100f, legend60, displayWidth, legend40);
+			  rect(legendAdjX, legend40, displayWidth, legend60-legend40);
 			  
 			  
 		}
 		
-		/** get EEG data from MainActivity and calculate S,P */
-		public int getEEG(){			  
-		 	 switch(MainActivity.UserControl){
-		 	 case "att":
-		 		 return eegService.At;
-		 	 case "med":
-		 		 return eegService.Med;
-		 	 case "S":
-		 		 return (eegService.At - eegService.Med);
-		 	 case "P":
-		 		 return (eegService.At + eegService.Med);
-		 	 default:
-		 	     return 0;
-		 	 }
+		/** get EEG data from MainActivity and calculate S,P
+		 *  moving average not working yet!!! */
+		public int getEEG(){		
+			if (millis() - ma_LastTime<=ma_length_ms){
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At); 	
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med); 
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At - eegService.Med)); 
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At + eegService.Med));
+			 	 }
+				 return 0;
+			}else{
+			
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At); 
+			 		return eegService.At;
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med); 
+			 		return eegService.Med;
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At - eegService.Med)); 
+			 		return (eegService.At - eegService.Med);
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At + eegService.Med));
+			 		return (eegService.At + eegService.Med);
+			 	 default:
+			 	     return 0;
+			 	 }
+			}
 		}		
 		
 		public void DataCollection(int ind){
 	  		// -- collect indexes
 			  if (millis() - DataCollectionLastTime < DataCollectionDelay_ms) return; 
 			  else{		
-				  yvalues[yvalues.length-1] = 2*ind;
+				  switch(MainActivity.UserControl){
+				 	 case "att": yvalues[yvalues.length-1] = (waveHigh/100)*ind; break;
+				 	 case "med": yvalues[yvalues.length-1] = (waveHigh/100)*ind; break;
+				 	 case "S": yvalues[yvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
+				 	 case "P": yvalues[yvalues.length-1] = (waveHigh/100)*ind/2; break;
+				  }
+//				  yvalues[yvalues.length-1] = (waveHigh/100)*ind;
 //				  yvalues[yvalues.length-1] = 200;
 				  
 				  for (int j = 0; j < yvalues.length-1; j++) {
