@@ -68,11 +68,12 @@ public class eegService extends Service{
 	@Override
 	public void onStart(Intent intent, int startId) {
 		//Toast.makeText(this, "My Service Started", Toast.LENGTH_LONG).show();
-		Log.d(TAG, "onStart");	
+		Log.e("onStart", "EEGService"); 	
 	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+	   Log.e("onStartCommand", "EEGService"); 
 //	   userName = intent.getStringExtra("UserName");
 //	   CurrentActivity = intent.getStringExtra("UserActivity");
 	   userName = "UserName";
@@ -104,6 +105,7 @@ public class eegService extends Service{
 	public void onDestroy() {
 		//Toast.makeText(this, "eegService Stopped", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onDestroy");
+		Log.e("onDestroy", "EEGService"); 
 		
 		tgDevice.close();
 		Message msgToActivityDestroyed = new Message();
@@ -135,7 +137,7 @@ public class eegService extends Service{
     				Log.i("BackgroundThread","handleMessage(Message msg)" );
     				switch(msg.what)
     				{
-    				case 0: // we sent message with what value =0 from the activity. here it is
+    				case 0:  // we sent message with what value =0 from the activity. here it is
     						//Reply to the activity from here using same process handle.sendMessage()
     						//So first get the Activity handler then send the message
     					/*if(null != MainActivity.mUiHandler)
@@ -181,12 +183,14 @@ public class eegService extends Service{
             	msgToActivity.what = 4; // -- Bluetooth is OFF
 			    msgToActivity.obj  = "Bluetooth is OFF\n turn Bluetooth ON first!"; 		    						
 				MainActivity.mUiHandler.sendMessage(msgToActivity);  
+            	Toast.makeText(this, "Bluetooth is OFF", Toast.LENGTH_SHORT).show();
 				NeuroskyCurrentStatus = "Bluetooth is OFF, turn it ON to start!";
 				displayNotification();
                 return;
             }
             if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
             	// -- create the TGDevice 
+            	
                 tgDevice = new TGDevice(bluetoothAdapter, handler);
             	StartEEG();
             }
@@ -196,8 +200,11 @@ public class eegService extends Service{
 	}
 
 	public void StartEEG() {
-		if (tgDevice.getState() != TGDevice.STATE_CONNECTING && tgDevice.getState() != TGDevice.STATE_CONNECTED) {
+		Log.i("StartEEG", "TGDevice");
+		//if (tgDevice.getState() != TGDevice.STATE_CONNECTING && tgDevice.getState() != TGDevice.STATE_CONNECTED) {
+		if (tgDevice.getState() != TGDevice.STATE_CONNECTING || tgDevice.getState() != TGDevice.STATE_CONNECTED) {
 		    tgDevice.connect(RAW_ENABLED);
+		    Log.e("RAW_ENABLED", "TGDevice");
 		}
 	}
 	
@@ -213,10 +220,9 @@ public class eegService extends Service{
 			                    case TGDevice.STATE_IDLE:
 			                        break;
 			                    case TGDevice.STATE_CONNECTING:
+			                    	Log.i("STATE_CONNECTING", "TGDevice");
 			                    	//Toast.makeText(this, "connecting...", Toast.LENGTH_SHORT).show();
-			                    	//mBroadcaster.broadcastIntentWithState(Constants.STATE_CONNECTING);  
 		    						// -- send message to the MainActivity
-		    						//Message msgToActivity = new Message();
 		    						msgToActivity.what = 1; // -- connecting 
 		    					    msgToActivity.obj  = "connecting . . ."; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
@@ -224,6 +230,7 @@ public class eegService extends Service{
 		    						displayNotification();
 			                        break;
 			                    case TGDevice.STATE_CONNECTED:
+			                    	Log.i("STATE_CONNECTED", "TGDevice");
 			                        tgDevice.start();
 			                        
 		    						msgToActivity.what = 1; // -- connecting 
@@ -233,6 +240,7 @@ public class eegService extends Service{
 		    						displayNotification();
 			                        break;
 			                    case TGDevice.STATE_DISCONNECTED:
+			                    	Log.i("STATE_DISCONNECTED", "TGDevice");
 				    				msgToActivity.what = 1; // -- connecting 
 			    					msgToActivity.obj  = "neurosky mindwave mobile\ndisconnected"; 		    						
 			    					MainActivity.mUiHandler.sendMessage(msgToActivity);  
@@ -240,6 +248,7 @@ public class eegService extends Service{
 			    					displayNotification();
 			                    	break;
 			                    case TGDevice.STATE_NOT_FOUND:
+			                    	Log.i("STATE_NOT_FOUND", "TGDevice");
 		    						msgToActivity.what = 1; // -- connecting 
 		    					    msgToActivity.obj  = "neurosky mindwave mobile\nwas not found"; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity); 
@@ -247,6 +256,7 @@ public class eegService extends Service{
 		    						displayNotification();
 			                        break;
 			                    case TGDevice.STATE_NOT_PAIRED:
+			                    	Log.i("STATE_NOT_PAIRED", "TGDevice");
 			                    	//Toast.makeText(this, "neurosky mindwave mobile not paired !", Toast.LENGTH_SHORT).show();
 			    					msgToActivity.what = 1; // -- connecting 
 		    					    msgToActivity.obj  = "neurosky mindwave mobile\nnot paired"; 		    						
@@ -260,9 +270,11 @@ public class eegService extends Service{
 			                    break;
 			                    
 			                case TGDevice.MSG_POOR_SIGNAL:
+			                	//Log.i("MSG_POOR_SIGNAL", "TGDevice");
 			                      //int TGState = msg.arg1;
 			                    break;
 			                case TGDevice.MSG_RAW_DATA:
+			                	Log.i("MSG_RAW_DATA", "TGDevice");
 			                	//raw1 = msg.arg1;
 			                    //tv.append("Got raw: " + msg.arg1 + "\n");                  
 			                    break;
@@ -277,8 +289,8 @@ public class eegService extends Service{
 			                	if(MainActivity.backend){ iam = APIClient.getData();}
 			                	At_pl2 = iam[0]; 
 			                	Med_pl2 = iam[1];
-			                	Log.e("ir_Response Att", String.valueOf(iam[0]));	
-//			                	Log.e("ir_Response Med", String.valueOf(iam[1]));	
+			                	//Log.e("ir_Response Att", String.valueOf(iam[0]));	
+			                	//Log.e("ir_Response Med", String.valueOf(iam[1]));	
 			                	
 			                    At = msg.arg1;  
 			                    
@@ -304,7 +316,7 @@ public class eegService extends Service{
 	    	                    filename = "bciNeuroskyService" + date_time + ".csv";
 	    	                    
 	    	                    writeToExternalStoragePublic(filename, userName, now, At, Med);
-	    	                    //writeToExternalStoragePublic(filename, gmail, now, At, Med);
+	    	                    // writeToExternalStoragePublic(filename, gmail, now, At, Med);
 			                    break;
 			                    
 			                case TGDevice.MSG_MEDITATION:
@@ -420,7 +432,7 @@ public class eegService extends Service{
 	protected void displayNotification() {
 	      //Log.i("Start", "notification");
 
-	      /* Invoking the default notification service */
+	      // -- Invoking the default notification service 
 	      NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this);	
 	      //mBuilder.setOngoing(true); //this will make ongoing notification
 	      
@@ -428,11 +440,10 @@ public class eegService extends Service{
 	      //mBuilder.setContentText("...");
 	      mBuilder.setTicker(NeuroskyCurrentStatus);
 	      mBuilder.setSmallIcon(R.drawable.ic_launcher);
-
-	      /* Increase notification number every time a new notification arrives */
+	      // -- Increase notification number every time a new notification arrives 
 	      //mBuilder.setNumber(++numMessages);
 	      
-	      /* Creates an explicit intent for an Activity in your app */
+	      // -- Creates an explicit intent for an Activity in your app
 	      //Intent resultIntent = new Intent(this, NotificationView.class);
 	      Intent resultIntent = new Intent(this, MainActivity.class);
 
@@ -440,7 +451,7 @@ public class eegService extends Service{
 	      //stackBuilder.addParentStack(NotificationView.class);
 	      stackBuilder.addParentStack(MainActivity.class);
 
-	      /* Adds the Intent that starts the Activity to the top of the stack */
+	      // -- Adds the Intent that starts the Activity to the top of the stack 
 	      stackBuilder.addNextIntent(resultIntent);
 	      PendingIntent resultPendingIntent =
 	         stackBuilder.getPendingIntent(
@@ -453,32 +464,32 @@ public class eegService extends Service{
 	      mNotificationManager =
 	      (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-	      /* notificationID allows you to update the notification later on. */
-	      mNotificationManager.notify(notificationID, mBuilder.build());
+	      // -- notificationID allows you to update the notification later on
+	      mNotificationManager.notify(notificationID, mBuilder.build()); 
 	   }
 
 	protected void cancelNotification() {
-	      Log.i("Cancel", "notification");
+	      //Log.i("Cancel", "notification");
 	      mNotificationManager.cancel(notificationID);
 	}
 
     @SuppressLint("NewApi")
 	protected void updateNotification() {
-	      Log.i("Update", "notification");
+	      //Log.i("Update", "notification");
 
-	      /* Invoking the default notification service */
+	      // -- Invoking the default notification service 
 	      NotificationCompat.Builder  mBuilder =  new NotificationCompat.Builder(this);	
 
 	      mBuilder.setContentTitle(NeuroskyCurrentStatus);
 	      mBuilder.setContentText("A: " + At + " | M: " + Med);
-	     // mBuilder.setTicker("New Message Alert!");
+	      // mBuilder.setTicker("New Message Alert!");
 	      mBuilder.setSmallIcon(R.drawable.ic_launcher);
 	      
 
-	     /* Increase notification number every time a new notification arrives */
+	      // -- Increase notification number every time a new notification arrives 
 	      //mBuilder.setNumber(++numMessages);
 	      
-	      /* Creates an explicit intent for an Activity in your app */
+	      // -- Creates an explicit intent for an Activity in your app 
 	      //Intent resultIntent = new Intent(this, NotificationView.class);
 	      Intent resultIntent = new Intent(this, MainActivity.class);
 	      
@@ -486,7 +497,7 @@ public class eegService extends Service{
 	      //stackBuilder.addParentStack(NotificationView.class);
 	      stackBuilder.addParentStack(MainActivity.class);
 	      
-	      /* Adds the Intent that starts the Activity to the top of the stack */
+	      // -- Adds the Intent that starts the Activity to the top of the stack 
 	      stackBuilder.addNextIntent(resultIntent);
 	      PendingIntent resultPendingIntent =
 	         stackBuilder.getPendingIntent(
@@ -499,8 +510,8 @@ public class eegService extends Service{
 	      mNotificationManager =
 	      (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-	      /* Update the existing notification using same notification ID */
-	      mNotificationManager.notify(notificationID, mBuilder.build());
+	      // -- Update the existing notification using same notification ID 
+	      mNotificationManager.notify(notificationID, mBuilder.build()); 
 	   }
 	
 }

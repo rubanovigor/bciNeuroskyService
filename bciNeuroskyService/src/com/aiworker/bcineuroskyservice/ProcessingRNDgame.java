@@ -29,7 +29,7 @@ public class ProcessingRNDgame extends PApplet{
 		Random r = new Random(); private long mLastTime; int rndUpdDelay_ms = 1000;
 		private long DataCollectionLastTime; int DataCollectionDelay_ms = 1000;
 		private long CurrentTime,TimeOfTheGame = 0;
-		int GameLevel = 1; int MaxGameLevel=9; String rndMean = "mean";
+		int GameLevel = 0; int MaxGameLevel=9; String rndMean = "mean";
 		int ma_LastTime=0;  float ma_value = 0; int ma_length_ms=0;
 		
 		// -- toroids setting

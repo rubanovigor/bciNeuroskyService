@@ -60,7 +60,7 @@ public class MainActivity extends Activity{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app_ui_main);
-		Log.v(TAG, "inside onCreate");
+		 Log.e("onCreate", "MainActivity"); 
 		
         tv_Att = (TextView) findViewById(R.id.Att_label);
         tv_Med = (TextView) findViewById(R.id.Med_lable);       
@@ -113,16 +113,14 @@ public class MainActivity extends Activity{
 	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
 
 	          			if(NeuroskyStatus.equals("connected") ){
-//	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-//		          			StopServiceButton.setVisibility(View.VISIBLE); 
-//		          			Button StartServiceButton=(Button)findViewById(R.id.start_service);
-//		          			StartServiceButton.setVisibility(View.INVISIBLE); 
+	          				State_serviceOnOff = true; 
+	          				serviceOnOff.setChecked(State_serviceOnOff); 
+	          				tv_NeuroskyStatus.setText(NeuroskyStatus);
 	          			}
 	          			if(NeuroskyStatus.equals("connecting . . .") ){
-//	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
-//		          			StopServiceButton.setVisibility(View.INVISIBLE); 
-//		          			Button StartServiceButton=(Button)findViewById(R.id.start_service);
-//		          			StartServiceButton.setVisibility(View.INVISIBLE); 
+	          				State_serviceOnOff = true; 
+	          				serviceOnOff.setChecked(State_serviceOnOff); 
+	          				tv_NeuroskyStatus.setText(NeuroskyStatus);
 	          			}
 	          			if(NeuroskyStatus.equals("neurosky mindwave mobile\ndisconnected") || 
 	          			   NeuroskyStatus.equals("neurosky mindwave mobile\nnot paired") ||
@@ -141,15 +139,15 @@ public class MainActivity extends Activity{
 	          			At = msg.arg1; tv_Att.setText(String.valueOf(At));
 	          			Med = msg.arg2; tv_Med.setText(String.valueOf(Med));
 	          			NeuroskyStatus = msg.obj.toString();
-//	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
+	          			tv_NeuroskyStatus.setText("connected");
 	          			break;
 	          		
-	          		case 3:
+	          		case 3: // service Destroyed
 	          			tv_Att.setText("-");
 	          			tv_Med.setText("-");
 	          			break;
 	          		
-	          		case 4:
+	          		case 4: // BT is OFF
 	          			NeuroskyStatus = msg.obj.toString();
 	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
 	          			State_serviceOnOff = false; serviceOnOff.setChecked(State_serviceOnOff);
@@ -289,13 +287,13 @@ public class MainActivity extends Activity{
 	@Override
     public void onStop() {        
         super.onStop();
-        Log.v(TAG, "inside onStop");
+        Log.e("onStop", "MainActivity"); 
 	}
 	
 	@Override
     public void onPause() {        
         super.onPause();
-        Log.v(TAG, "inside onPause");    
+        Log.e("onPause", "MainActivity"); ;    
        
         // -- service
         SharedPreferences ss1 = getSharedPreferences(tService, 0);
@@ -315,14 +313,14 @@ public class MainActivity extends Activity{
 	@Override
     public void onStart() {        
         super.onStart();
-        Log.v(TAG, "inside onStart");  
+        Log.e("onStart", "MainActivity"); 
                 	
 	}    
 	   
 	@Override
     public void onResume() {        
         super.onResume();
-        Log.v(TAG, "inside onResume");  
+        Log.e("onResume", "MainActivity"); 
            
 	    // -- service
 		SharedPreferences ss1 = getSharedPreferences(tService, 0);
