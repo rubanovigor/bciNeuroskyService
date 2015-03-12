@@ -52,25 +52,27 @@ public final class R {
         public static final int niccolo50=0x7f02001b;
         public static final int pingpong50=0x7f02001c;
         public static final int running50=0x7f02001d;
-        public static final int skinner50=0x7f02001e;
-        public static final int user50=0x7f02001f;
+        public static final int settings=0x7f02001e;
+        public static final int skinner50=0x7f02001f;
+        public static final int user50=0x7f020020;
     }
     public static final class id {
         public static final int Att_label=0x7f06000b;
         public static final int Med_lable=0x7f06000c;
         public static final int NeuroskyStatus=0x7f06000a;
         public static final int TextCurrentActivityInfo=0x7f06000d;
-        public static final int background=0x7f060021;
+        public static final int background=0x7f060022;
         public static final int editTextCurrentActivity=0x7f06000e;
-        public static final int ib_att=0x7f060013;
-        public static final int ib_back=0x7f060018;
-        public static final int ib_info=0x7f060011;
-        public static final int ib_mOS=0x7f060015;
-        public static final int ib_med=0x7f060014;
-        public static final int ib_onetoroid=0x7f060017;
-        public static final int ib_s=0x7f060012;
-        public static final int ib_toroid=0x7f060019;
-        public static final int ib_twotoroids=0x7f060016;
+        public static final int ib_att=0x7f060014;
+        public static final int ib_back=0x7f060019;
+        public static final int ib_backend_settings=0x7f060010;
+        public static final int ib_info=0x7f060012;
+        public static final int ib_mOS=0x7f060016;
+        public static final int ib_med=0x7f060015;
+        public static final int ib_onetoroid=0x7f060018;
+        public static final int ib_s=0x7f060013;
+        public static final int ib_toroid=0x7f06001a;
+        public static final int ib_twotoroids=0x7f060017;
         public static final int send_message=0x7f060008;
         public static final int start_AttSierpF=0x7f060001;
         public static final int start_AttVividF=0x7f060003;
@@ -81,28 +83,48 @@ public final class R {
         public static final int start_service=0x7f060007;
         public static final int stop_service=0x7f060006;
         public static final int switch_backend=0x7f06000f;
-        public static final int switch_service=0x7f060010;
+        public static final int switch_service=0x7f060011;
         public static final int text_view_header=0x7f060000;
-        public static final int toggleActivity1=0x7f06001a;
-        public static final int toggleActivity2=0x7f06001b;
-        public static final int toggleActivity3=0x7f06001c;
-        public static final int toggleUser1=0x7f06001d;
-        public static final int toggleUser2=0x7f06001e;
-        public static final int toggleUser3=0x7f06001f;
-        public static final int toggleUser4=0x7f060020;
-        public static final int tv=0x7f060022;
+        public static final int toggleActivity1=0x7f06001b;
+        public static final int toggleActivity2=0x7f06001c;
+        public static final int toggleActivity3=0x7f06001d;
+        public static final int toggleUser1=0x7f06001e;
+        public static final int toggleUser2=0x7f06001f;
+        public static final int toggleUser3=0x7f060020;
+        public static final int toggleUser4=0x7f060021;
+        public static final int tv=0x7f060023;
     }
     public static final class layout {
         public static final int activity_apps=0x7f030000;
         public static final int activity_main=0x7f030001;
         public static final int app_ui_main=0x7f030002;
-        public static final int main=0x7f030003;
-        public static final int service_main=0x7f030004;
-        public static final int tutorial=0x7f030005;
+        public static final int backendsettings=0x7f030003;
+        public static final int main=0x7f030004;
+        public static final int service_main=0x7f030005;
+        public static final int tutorial=0x7f030006;
     }
     public static final class string {
         public static final int action_settings=0x7f050002;
         public static final int app_name=0x7f050000;
         public static final int hello_world=0x7f050001;
+        public static final int pref_backend_exercise_id_dialog_message=0x7f05000a;
+        public static final int pref_backend_exercise_id_dialog_title=0x7f050009;
+        public static final int pref_backend_exercise_id_summary=0x7f050008;
+        public static final int pref_backend_exercise_id_title=0x7f050007;
+        public static final int pref_backend_host_dialog_message=0x7f050012;
+        public static final int pref_backend_host_dialog_title=0x7f050011;
+        public static final int pref_backend_host_summary=0x7f050010;
+        public static final int pref_backend_host_title=0x7f05000f;
+        public static final int pref_backend_profile_id_dialog_message=0x7f050006;
+        public static final int pref_backend_profile_id_dialog_title=0x7f050005;
+        public static final int pref_backend_profile_id_summary=0x7f050004;
+        public static final int pref_backend_profile_id_title=0x7f050003;
+        public static final int pref_backend_settings_title=0x7f050015;
+        public static final int pref_backend_token_dialog_message=0x7f05000e;
+        public static final int pref_backend_token_dialog_title=0x7f05000d;
+        public static final int pref_backend_token_summary=0x7f05000c;
+        public static final int pref_backend_token_title=0x7f05000b;
+        public static final int pref_use_backend_summary=0x7f050014;
+        public static final int pref_use_backend_title=0x7f050013;
     }
 }

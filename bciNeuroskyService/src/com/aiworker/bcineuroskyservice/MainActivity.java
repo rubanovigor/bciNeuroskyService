@@ -40,6 +40,7 @@ public class MainActivity extends Activity{
 	public static int layer = 1;
 	public static final String tService = "toggleButtonService";
 	public static final String tBackEnd = "toggleButtonBackEnd";
+	private static final int RESULT_SETTINGS = 666;
 	
 	TextView tv_Med;    TextView tv_Att;    TextView tv_NeuroskyStatus; 
 	public static int At=42; public static int Med=42;
@@ -321,7 +322,10 @@ public class MainActivity extends Activity{
     public void onResume() {        
         super.onResume();
         Log.e("onResume", "MainActivity"); 
-           
+        
+        // load backend settings
+        updateBackendSettings();   
+        
 	    // -- service
 		SharedPreferences ss1 = getSharedPreferences(tService, 0);
 		State_serviceOnOff =  ss1.getBoolean(Key_State_serviceOnOff, false);
@@ -398,6 +402,13 @@ public class MainActivity extends Activity{
 		Intent intent = new Intent(this, ProcessingRNDgame.class);
 		startActivity(intent);
 	}
+
+	/** -- proceed with backend settings button */
+	public void onImageButtonBackendSettings_Clicked (View v)
+	{
+		Intent intent = new Intent(this, backendSettingsActivity.class);
+        startActivityForResult(intent, RESULT_SETTINGS);
+	}
 	
 	//=====================================
 	/** -- switch to layer 2 from layer 1 */
@@ -432,7 +443,33 @@ public class MainActivity extends Activity{
 		ibmOS.setVisibility(View.INVISIBLE); ibToroid.setVisibility(View.INVISIBLE);
 	}
 	
-	
+	 private void updateBackendSettings() {
+	        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+	        // -- backend_profile_id
+	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
+	    	    APIClient.setProfileId(0);	 
+//		        tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_profile_id", "0"));
+		    }else{
+		    	APIClient.setProfileId(Integer.parseInt(sharedPrefs.getString("pref_backend_profile_id", "0")));
+//		    	tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_profile_id", "0"));
+		    }
+
+	        
+	        // -- backend_profile_id
+	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
+	        	APIClient.setProfileId(0);;	        
+		    }else{
+		    	APIClient.setProfileId(Integer.parseInt(sharedPrefs.getString("pref_backend_profile_id", "0")));;
+		    }	        
+	        
+	        // -- rest string type settings
+	        APIClient.setToken(sharedPrefs.getString("pref_backend_token", ""));
+	        tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_token", ""));
+	        
+	        APIClient.setHost(sharedPrefs.getString("pref_backend_host", "neuro-backend.herokuapp.com"));
+	        APIClient.setBackendEnabled(sharedPrefs.getBoolean("pref_use_backend", false));
+	 }
+	 
 	/*@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	        return super.onKeyDown(keyCode, event);

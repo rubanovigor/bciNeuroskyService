@@ -28,9 +28,12 @@ import org.apache.http.HttpEntity;
 
 public class APIClient {
     // NOTE: Fill 3 constants below with right values and build the application
-    private static int profileId = 11;
-    private static int exerciseId = 16;
-    private static String token = "hY1C-Lrbi7wZSMW7os9x";
+//    private static int profileId = 11;
+//    private static int exerciseId = 16;
+//    private static String token = "hY1C-Lrbi7wZSMW7os9x";
+    private static int profileId = 0;
+    private static int exerciseId = 0;
+    private static String token = "";
     private static String host = "neuro-backend.herokuapp.com";
     private static boolean backendEnabled = true;
     private static boolean backendConfigured = true;

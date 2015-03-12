@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/pref_backend_settings_title">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_use_backend"
+        android:summary="@string/pref_use_backend_summary"
+        android:title="@string/pref_use_backend_title">
+    </CheckBoxPreference>
+
+    <EditTextPreference
+        android:key="pref_backend_profile_id"
+        android:title="@string/pref_backend_profile_id_title"
+        android:summary="@string/pref_backend_profile_id_summary"
+        android:dialogTitle="@string/pref_backend_profile_id_dialog_title"
+        android:dialogMessage="@string/pref_backend_profile_id_dialog_message"
+        android:inputType="number"
+        android:defaultValue=""
+        android:dependency="pref_use_backend" />
+    <EditTextPreference
+        android:key="pref_backend_exercise_id"
+        android:title="@string/pref_backend_exercise_id_title"
+        android:summary="@string/pref_backend_exercise_id_summary"
+        android:dialogTitle="@string/pref_backend_exercise_id_dialog_title"
+        android:dialogMessage="@string/pref_backend_exercise_id_dialog_message"
+        android:defaultValue=""
+        android:inputType="number"
+        android:dependency="pref_use_backend" />
+    <EditTextPreference
+        android:key="pref_backend_token"
+        android:title="@string/pref_backend_token_title"
+        android:summary="@string/pref_backend_token_summary"
+        android:dialogTitle="@string/pref_backend_token_dialog_title"
+        android:dialogMessage="@string/pref_backend_token_dialog_message"
+        android:defaultValue=""
+        android:dependency="pref_use_backend" />
+    <EditTextPreference
+        android:key="pref_backend_host"
+        android:title="@string/pref_backend_host_title"
+        android:summary="@string/pref_backend_host_summary"
+        android:dialogTitle="@string/pref_backend_host_dialog_title"
+        android:dialogMessage="@string/pref_backend_host_dialog_message"
+        android:defaultValue="neuro-backend.herokuapp.com"
+        android:dependency="pref_use_backend" />
+  </PreferenceCategory>
+</PreferenceScreen>
