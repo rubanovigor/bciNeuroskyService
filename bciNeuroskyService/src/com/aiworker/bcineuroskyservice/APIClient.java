@@ -31,9 +31,12 @@ public class APIClient {
 //    private static int profileId = 11;
 //    private static int exerciseId = 16;
 //    private static String token = "hY1C-Lrbi7wZSMW7os9x";
-    private static int profileId = 0;
-    private static int exerciseId = 0;
-    private static String token = "";
+//    public static int profileId = MainActivity.profileId;
+//    public static int exerciseId = MainActivity.exerciseId;
+//    public static String token = MainActivity.token;
+    private static int profileId;
+    private static int exerciseId;
+	private static String token;
     private static String host = "neuro-backend.herokuapp.com";
     private static boolean backendEnabled = true;
     private static boolean backendConfigured = true;

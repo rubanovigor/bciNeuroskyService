@@ -238,6 +238,11 @@ public class eegService extends Service{
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity);
 		    						NeuroskyCurrentStatus = "Neurosky connected";
 		    						displayNotification();
+		    						
+		    						APIClient.setProfileId(MainActivity.profileId);
+		    						APIClient.setExerciseId(MainActivity.exerciseId);
+		    						APIClient.setToken(MainActivity.token);
+		    				    	
 			                        break;
 			                    case TGDevice.STATE_DISCONNECTED:
 			                    	Log.i("STATE_DISCONNECTED", "TGDevice");

@@ -41,6 +41,10 @@ public class MainActivity extends Activity{
 	public static final String tService = "toggleButtonService";
 	public static final String tBackEnd = "toggleButtonBackEnd";
 	private static final int RESULT_SETTINGS = 666;
+		// -- backend settings
+    public static int profileId;
+    public static int exerciseId;
+    public static String token = "";
 	
 	TextView tv_Med;    TextView tv_Att;    TextView tv_NeuroskyStatus; 
 	public static int At=42; public static int Med=42;
@@ -448,23 +452,28 @@ public class MainActivity extends Activity{
 	        // -- backend_profile_id
 	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
 	    	    APIClient.setProfileId(0);	 
+	    	    profileId = 0;
 //		        tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_profile_id", "0"));
 		    }else{
 		    	APIClient.setProfileId(Integer.parseInt(sharedPrefs.getString("pref_backend_profile_id", "0")));
+		    	profileId = Integer.parseInt(sharedPrefs.getString("pref_backend_profile_id", "0"));
 //		    	tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_profile_id", "0"));
 		    }
 
 	        
 	        // -- backend_profile_id
 	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
-	        	APIClient.setProfileId(0);;	        
+	        	APIClient.setExerciseId(0);
+	        	exerciseId =0;
 		    }else{
-		    	APIClient.setProfileId(Integer.parseInt(sharedPrefs.getString("pref_backend_profile_id", "0")));;
+		    	APIClient.setExerciseId(Integer.parseInt(sharedPrefs.getString("pref_backend_exercise_id", "0")));
+		    	exerciseId = Integer.parseInt(sharedPrefs.getString("pref_backend_exercise_id", "0"));
 		    }	        
 	        
 	        // -- rest string type settings
 	        APIClient.setToken(sharedPrefs.getString("pref_backend_token", ""));
-	        tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_token", ""));
+	        token = sharedPrefs.getString("pref_backend_token", "");
+//	        tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_token", ""));
 	        
 	        APIClient.setHost(sharedPrefs.getString("pref_backend_host", "neuro-backend.herokuapp.com"));
 	        APIClient.setBackendEnabled(sharedPrefs.getBoolean("pref_use_backend", false));
