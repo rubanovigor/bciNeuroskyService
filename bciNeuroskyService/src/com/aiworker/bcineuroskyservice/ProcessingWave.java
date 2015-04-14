@@ -162,7 +162,7 @@ public class ProcessingWave extends PApplet {
 		  // -- setup background color (when wo image)
 //		  background(0,0,0); 
 		  // -- basic lighting setup
-		  lights(); 
+		//  lights(); // -- not working on some devices
 		  noFill();		  
 		  // -- setup background image
 //		  image(imgBack, 0, 0);

@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.io.IOException; 
 
 import android.view.KeyEvent;
+
+
 /** activity for Network Game Sample        */
 public class ProcessingRNDgame extends PApplet{
 		// -- local EEG variables
@@ -33,12 +35,14 @@ public class ProcessingRNDgame extends PApplet{
 		int ma_LastTime=0;  float ma_value = 0; int ma_length_ms=0;
 		
 		// -- toroids setting
-		int pts = 10; 	 int segments = 40;
-		float angle = 0; float latheAngle = 0;
+		int pts = 10; float angle = 0; float latheAngle = 0;
 			// -- internal and external radius
 //		float radiusAt = 10.0f; float radiusMed = 10.0f;
 //		float latheRadiusAt = 50.0f;
-		float ExternalToroidRadius = 50.0f; 
+//		int segments = 40;
+//		float ExternalToroidRadius = 50.0f;
+		int segments = 20;
+		float ExternalToroidRadius = 30.0f;
 			// -- dynamic internal radius
 //		float AtDynamicR = radiusAt; float MedDynamicR = radiusMed;
 			// -- for optional helix
@@ -50,18 +54,18 @@ public class ProcessingRNDgame extends PApplet{
 		
 			// -- EEGindex graph
 		PFont f; 
-		int legend100,legend60, legend40, legend0, waveHigh = 200, legendAdjY = 5, legendAdjX = 70;
-
+		int legend100,legend60, legend40, legend0, legendAdjY = 5, legendAdjX = 70;
+		int waveHigh; // vertical distance between line 0 and 100 <-> historical wave amplitude
 		// -- for wave
 //		int xspacing = 8;   // How far apart should each horizontal location be spaced
-		int xspacing = 20; 
+//		int xspacing = 20; 
 		int w;              // Width of entire wave
-		int waveLength=200;
-		int maxwaves = 4;   // total # of waves to add together
+//		int waveLength=200;
+//		int maxwaves = 4;   // total # of waves to add together
 
-		float theta = 0.0f;
-		float[] amplitude = new float[maxwaves];   // Height of wave
-		float[] dx = new float[maxwaves];          // Value for incrementing X, to be calculated as a function of period and xspacing
+//		float theta = 0.0f;
+//		float[] amplitude = new float[maxwaves];   // Height of wave
+//		float[] dx = new float[maxwaves];          // Value for incrementing X, to be calculated as a function of period and xspacing
 		float[] yvalues;                           // Using an array to store height values for the wave (not entirely necessary)
 		float[] xvalues;
 		
@@ -74,6 +78,10 @@ public class ProcessingRNDgame extends PApplet{
 			 // colorMode(HSB, 8, 100, 100);
 			 colorMode(RGB, 255, 255, 255, 100);
 			 
+			 // -- setup historical wave graph size
+			 waveHigh = displayHeight/10; 
+			 
+			 
 			 f = createFont("Arial",16,true); // STEP 3 Create Font
 			 DataCollectionLastTime = millis();
 			 CurrentTime = millis();
@@ -82,7 +90,9 @@ public class ProcessingRNDgame extends PApplet{
 				 w = 40 ;
 				 xvalues = new float[w];
 				 xvalues[0] = 0;
-				 for (int i = 1; i <w; i++) { 
+				 xvalues[1] = legendAdjX;
+				 
+				 for (int i = 2; i <w; i++) { 
 				   xvalues[i] = xvalues[i-1] + displayWidth/(w);
 				 }
 				 yvalues = new float[w];
@@ -100,7 +110,8 @@ public class ProcessingRNDgame extends PApplet{
 
 		public void draw(){
 			  // -- draw background and setup basic lighting setup
-			  background(0);  lights(); 
+			  background(0);
+			  //lights();  // -- not working on some devices
 			  
 //			  displayHeight - 1*displayHeight/10 - Player2Accel
 			  // -- check game status
@@ -113,7 +124,7 @@ public class ProcessingRNDgame extends PApplet{
 			  // ===============================================
 			  		// -- display finish line
 			  image(imgFinish, 0, 2.0f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
-			  
+		  
 			  // ===============================================
 			  		// -- display game time
 			  TimeOfTheGame = millis() - CurrentTime;
@@ -223,7 +234,7 @@ public class ProcessingRNDgame extends PApplet{
 			  stroke(200,255,200);
 //			  curveTightness(1.25f);
 			  beginShape();
-			  for (int i = 2; i < yvalues.length; i++) {				  
+			  for (int i = 0; i < yvalues.length; i++) {				  
 //			    	if(yvalues[i]>80 && yvalues[i]<120){stroke(255,0,0);}
 //				  if(yvalues[i]<40){stroke(0,0,255);}
 //				  if(yvalues[i]>=40 && yvalues[i]<=60){stroke(170,170,170);}
@@ -239,7 +250,7 @@ public class ProcessingRNDgame extends PApplet{
 			  }
 			  endShape();
 			 
-			  // -- draw chart lines and legends
+			  // -- draw chart legends
 			  switch(MainActivity.UserControl){
 			 	 case "att":
 					  textFont(f,32);  fill(255);	text(" 0",10f, legend0+legendAdjY);  
@@ -266,15 +277,16 @@ public class ProcessingRNDgame extends PApplet{
 					  textFont(f,32);  fill(255);	text("200",10f, legend100+legendAdjY); 
 					  break;
 			  }
-			  
-			  stroke(170,170,170); strokeWeight(2f); line(legendAdjX, legend0, displayWidth, legend0);
-			  stroke(170,170,170); strokeWeight(2f); line(legendAdjX, legend100, displayWidth, legend100);
-			  stroke(170,170,170); strokeWeight(1f); line(legendAdjX, legend60, displayWidth, legend60);
-			  stroke(170,170,170); strokeWeight(1f); line(legendAdjX, legend40, displayWidth, legend40);
+			  // -- draw chart lines
+			  stroke(170,170,170); strokeWeight(2f); line(legendAdjX, legend0, displayWidth-legendAdjX*0.1f, legend0);
+			  stroke(170,170,170); strokeWeight(2f); line(legendAdjX, legend100, displayWidth-legendAdjX*0.1f, legend100);
+			  stroke(170,170,170); strokeWeight(1f); line(legendAdjX, legend60, displayWidth-legendAdjX*0.1f, legend60);
+			  stroke(170,170,170); strokeWeight(1f); line(legendAdjX, legend40, displayWidth-legendAdjX*0.1f, legend40);
 			  		  
+			  // -- draw rectangular box on chart
 			  fill(170,170,170, 40); noStroke();
 //			  rect(100f, legend60, displayWidth, legend40);
-			  rect(legendAdjX, legend40, displayWidth, legend60-legend40);
+			  rect(legendAdjX, legend40, displayWidth-legendAdjX*1.1f, legend60-legend40);
 			  
 			  
 		}
@@ -400,7 +412,8 @@ public class ProcessingRNDgame extends PApplet{
 				  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-10, ExternalToroidRadius);
 			  popMatrix();
 			  			
-			  textFont(f,32);                 // STEP 4 Specify font to be used
+//			  textFont(f,32);                 // STEP 4 Specify font to be used
+			  textFont(f,displayHeight/50); 
 			  fill(255);                        // STEP 5 Specify font color 
 			  text(MainActivity.UserControl + " -> " + index+"\n    (you)",displayWidth/2 + 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - localPlayerAccel);  // STEP 6 Display Text
 		}
@@ -430,7 +443,8 @@ public class ProcessingRNDgame extends PApplet{
 			  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-10, ExternalToroidRadius);
 			  popMatrix();
 			
-			  textFont(f,32);         
+//			  textFont(f,32);  
+			  textFont(f,displayHeight/50); 
 			  fill(255);                   
 			  text(MainActivity.UserControl + " -> " + indexPl2+"\n    ("+rndMean+")",displayWidth/2 - 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
 			  
