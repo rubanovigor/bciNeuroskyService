@@ -9,10 +9,12 @@
 	  <string name="pref_backend_profile_id_summary">Your profile ID on the EEG backend</string>
 	  <string name="pref_backend_profile_id_dialog_title">Profile ID</string>
 	  <string name="pref_backend_profile_id_dialog_message">Enter profile ID</string>
+	  
 	  <string name="pref_backend_exercise_id_title">Exercise ID</string>
 	  <string name="pref_backend_exercise_id_summary">Your exercise ID on the EEG backend</string>
 	  <string name="pref_backend_exercise_id_dialog_title">Exercise ID</string>
-	  <string name="pref_backend_exercise_id_dialog_message">Enter profile ID</string>
+	  <string name="pref_backend_exercise_id_dialog_message">Enter exercise ID</string>
+	  
 	  <string name="pref_backend_token_title">Token</string>
 	  <string name="pref_backend_token_summary">Your token to access EEG backend API</string>
 	  <string name="pref_backend_token_dialog_title">Token</string>
@@ -23,6 +25,19 @@
 	  <string name="pref_backend_host_dialog_message">Enter host name</string>
 	  <string name="pref_use_backend_title">Use EEG backend</string>
 	  <string name="pref_use_backend_summary">Send data to EEG backend API</string>
+	  
 	  <string name="pref_backend_settings_title">EEG backend configuration</string>
+	  <string name="pref_onlinegane_settings_title">EEG Online Game configuration</string>
+	  
+	  <string name="pref_use_competitivegame_title">SetUp EEG Competitive Game</string>
+	  <string name="pref_use_competitivegame_summary">SetUp 2nd user Exercise ID</string>
+	  
+	  <string name="pref_use_cooperationgame_title">SetUp EEG Cooperation Game</string>
+	  <string name="pref_use_cooperationgame_summary">SetUp 2nd user Exercise ID</string>
+	  
+	  <string name="pref_backend_netuser_exercise_id_title">Network User Exercise ID</string>
+	  <string name="pref_backend_netuser_exercise_id_summary">Network User exercise ID on the EEG backend</string>
+	  <string name="pref_backend_netuser_exercise_id_dialog_title">Network User Exercise ID</string>
+	  <string name="pref_backend_netuser_exercise_id_dialog_message">Enter Network User exercise ID</string>
 	  
 </resources>

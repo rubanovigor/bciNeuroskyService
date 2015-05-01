@@ -41,10 +41,11 @@ public class MainActivity extends Activity{
 	public static final String tService = "toggleButtonService";
 	public static final String tBackEnd = "toggleButtonBackEnd";
 	private static final int RESULT_SETTINGS = 666;
-		// -- backend settings
-    public static int profileId;
-    public static int exerciseId;
-    public static String token = "";
+		// -- backend settings for local user
+    public static int profileId, exerciseId; public static String token = "";
+    	// -- backend settings for network user
+    public static int profileIdNetUser, exerciseIdNetUser; public static String tokenNetUser = "";
+    
 	
 	TextView tv_Med;    TextView tv_Att;    TextView tv_NeuroskyStatus; 
 	public static int At=42; public static int Med=42;
@@ -449,7 +450,7 @@ public class MainActivity extends Activity{
 	
 	 private void updateBackendSettings() {
 	        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-	        // -- backend_profile_id
+	        	// -- backend_profile_id
 	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
 	    	    APIClient.setProfileId(0);	 
 	    	    profileId = 0;
@@ -459,24 +460,51 @@ public class MainActivity extends Activity{
 		    	profileId = Integer.parseInt(sharedPrefs.getString("pref_backend_profile_id", "0"));
 //		    	tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_profile_id", "0"));
 		    }
-
 	        
-	        // -- backend_profile_id
+	        	// -- backend_Exercise_id
 	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
 	        	APIClient.setExerciseId(0);
-	        	exerciseId =0;
+	        	exerciseId = 0;
 		    }else{
 		    	APIClient.setExerciseId(Integer.parseInt(sharedPrefs.getString("pref_backend_exercise_id", "0")));
 		    	exerciseId = Integer.parseInt(sharedPrefs.getString("pref_backend_exercise_id", "0"));
 		    }	        
 	        
-	        // -- rest string type settings
+	     		// -- backend_Token_id
 	        APIClient.setToken(sharedPrefs.getString("pref_backend_token", ""));
 	        token = sharedPrefs.getString("pref_backend_token", "");
 //	        tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_token", ""));
 	        
+	        // -- rest string type settings
 	        APIClient.setHost(sharedPrefs.getString("pref_backend_host", "neuro-backend.herokuapp.com"));
 	        APIClient.setBackendEnabled(sharedPrefs.getBoolean("pref_use_backend", false));
+	        
+	        
+	        // ===================================================
+	        // -- network user profile settings
+	        // -- backend_profile_id
+	        if (sharedPrefs.getString("pref_backend_netuser_profile_id", "0").isEmpty()){
+	    	    APIClient.setProfileIdNetUser(0);	 
+	    	    profileIdNetUser = 0;
+		    }else{
+		    	APIClient.setProfileIdNetUser(Integer.parseInt(sharedPrefs.getString("pref_backend_netuser_profile_id", "0")));
+		    	profileIdNetUser = Integer.parseInt(sharedPrefs.getString("pref_backend_netuser_profile_id", "0"));
+		    }
+	        
+	        // -- backend_Exercise_id
+	        if (sharedPrefs.getString("pref_backend_netuser_profile_id", "0").isEmpty()){
+	        	APIClient.setExerciseIdNetUser(0);
+	        	exerciseIdNetUser = 0;
+		    }else{
+		    	APIClient.setExerciseIdNetUser(Integer.parseInt(sharedPrefs.getString("pref_backend_netuser_exercise_id", "0")));
+		    	exerciseIdNetUser = Integer.parseInt(sharedPrefs.getString("pref_backend_netuser_exercise_id", "0"));
+		    }	        
+	        
+	     	// -- backend_Token_id
+	        APIClient.setTokenNetUser(sharedPrefs.getString("pref_backend_netuser_token", ""));
+	        tokenNetUser = sharedPrefs.getString("pref_backend_netuser_token", "");
+	        
+	        
 	 }
 	 
 	/*@Override

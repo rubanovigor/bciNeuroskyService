@@ -28,16 +28,21 @@ import org.apache.http.HttpEntity;
 
 public class APIClient {
     // NOTE: Fill 3 constants below with right values and build the application
-//    private static int profileId = 11;
-//    private static int exerciseId = 16;
-//    private static String token = "hY1C-Lrbi7wZSMW7os9x";
+	// for rubanovigor@gmail.com
+		//    private static int profileId = 9;
+		//    private static int exerciseId = 11;
+		//    private static String token = "x_x55Xp1DgVW8jBXdGfk"; 
+	
 //    public static int profileId = MainActivity.profileId;
 //    public static int exerciseId = MainActivity.exerciseId;
 //    public static String token = MainActivity.token;
-    private static int profileId;
-    private static int exerciseId;
-	private static String token;
-    private static String host = "neuro-backend.herokuapp.com";
+		// -- backend settings for local user
+    private static int profileId, exerciseId;	private static String token;
+    	// -- backend settings for network user
+    private static int profileIdNetUser, exerciseIdNetUser; public static String tokenNetUser = "";
+    
+//    private static String host = "neuro-backend.herokuapp.com";
+    private static String host = "neurolyzer.herokuapp.com";
     private static boolean backendEnabled = true;
     private static boolean backendConfigured = true;
     public static String msgFromBackend;
@@ -79,6 +84,13 @@ public class APIClient {
         checkConfiguration();
     }
 
+    // -- for network user
+    public static void setProfileIdNetUser(int pId) {profileIdNetUser = pId;  checkConfiguration(); }
+    public static void setExerciseIdNetUser(int eId){exerciseIdNetUser = eId; checkConfiguration(); }
+    public static void setTokenNetUser(String tkn)  {tokenNetUser = tkn;      checkConfiguration(); }
+
+      
+    
     private static void checkConfiguration() {
         if (profileId > 0 && exerciseId > 0 && token != "" && host != "") {
             backendConfigured = true;
@@ -183,6 +195,33 @@ public class APIClient {
     	return "http://" + host + "/profiles/" + profileId + "/exercises/" + exerciseId +
     			"/statistics/latest_stat.json?auth_token=" + token;
     }
+
+    // ====================================
+    public static int[] getDataNetUser() {
+          client.get(null, getPartnerLatestDataURLNetUser(), null, null,
+        		  new AsyncHttpResponseHandler(){
+		                @Override
+		                public void onSuccess(String response) {
+		                	msgFromBackend = response;
+		                	indexes = parseMsg(msgFromBackend);
+		                	Log.e("ir_Response", response);               
+		                }
+		
+		               @Override
+		                 public void onFailure(Throwable e) {
+		            	   Log.e("error","ir_OnFailure!", e);
+		                 }
+          		  }
+          );
+
+          return indexes;
+    }
+
+    public static String getPartnerLatestDataURLNetUser() {
+    	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
+    			"/statistics/latest_stat.json?auth_token=" + tokenNetUser;
+    }
+    
     
     public static int[] parseMsg(String msg) {
     	String[] separatedMsg = msg.split(",");

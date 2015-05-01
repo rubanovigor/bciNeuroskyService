@@ -291,7 +291,11 @@ public class eegService extends Service{
 			                	if(MainActivity.backend){ APIClient.collectAttention(null, msg.arg1);}
 			                	
 			                	int[] iam={0, 0};
-			                	if(MainActivity.backend){ iam = APIClient.getData();}
+			                		// -- local user
+//			                	if(MainActivity.backend){ iam = APIClient.getData();}
+			                		// -- network user
+			                	if(MainActivity.backend){ iam = APIClient.getDataNetUser();}
+			                	
 			                	At_pl2 = iam[0]; 
 			                	Med_pl2 = iam[1];
 			                	//Log.e("ir_Response Att", String.valueOf(iam[0]));	

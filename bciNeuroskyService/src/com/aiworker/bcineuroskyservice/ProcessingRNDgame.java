@@ -142,7 +142,7 @@ public class ProcessingRNDgame extends PApplet{
 			  // ===============================================
 			  		// -- get EEG index (one from att/med/S/P)
 			  index = getEEG();
-			  			  
+			  indexPl2 = getEEGNetworkUser();		  
 			  
 			  switch(MainActivity.toroidGameType){
 				    case "you":
@@ -150,8 +150,13 @@ public class ProcessingRNDgame extends PApplet{
 				    	break;
 				    	
 					case "rnd vs you":
+							// -- local
 						displayLocalUserToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
-						displayPlayer2Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+							// -- RND
+//						displayPlayer2Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+							// --networkUser
+						displayNetworklUserToroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+						
 						displayGameLevel();
 						break;
 			  } 
@@ -327,6 +332,44 @@ public class ProcessingRNDgame extends PApplet{
 			}
 		}		
 		
+		/** get EEG data from MainActivity and calculate S,P
+		 *  moving average not working yet!!! */
+		public int getEEGNetworkUser(){		
+			if (millis() - ma_LastTime<=ma_length_ms){
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 	
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 - eegService.Med_pl2)); 
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 + eegService.Med_pl2));
+			 	 }
+				 return 0;
+			}else{
+			
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 
+			 		return eegService.At_pl2;
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
+			 		return eegService.Med_pl2;
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 - eegService.Med_pl2)); 
+			 		return (eegService.At_pl2 - eegService.Med_pl2);
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 + eegService.Med_pl2));
+			 		return (eegService.At_pl2 + eegService.Med_pl2);
+			 	 default:
+			 	     return 0;
+			 	 }
+			}
+		}		
+		
+		
+		
 		public void DataCollection(int ind){
 	  		// -- collect indexes
 			  if (millis() - DataCollectionLastTime < DataCollectionDelay_ms) return; 
@@ -418,6 +461,37 @@ public class ProcessingRNDgame extends PApplet{
 			  text(MainActivity.UserControl + " -> " + index+"\n    (you)",displayWidth/2 + 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - localPlayerAccel);  // STEP 6 Display Text
 		}
 		
+		/** display toroid of the Network player */
+		public void displayNetworklUserToroid(float x, float y){
+			  // -- Player((random, network) (torroid on the left)
+			  indexR = (255 * indexPl2 ) / 100; indexG = 0;  indexB = (255 * (100 - indexPl2 )) / 100 ;
+			  		// -- create dynamic ts based on pS
+			  switch(MainActivity.UserControl){
+				case "att":
+				  Player2Accel = Algorithm.CreateDynamic(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  break;
+				case "med":
+				  Player2Accel = Algorithm.CreateDynamic(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  break;
+				case "S":
+				  Player2Accel = Algorithm.StoDynamicMovement(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
+				  break;
+			  }
+			  	// -- center and spin toroid 
+			  pushMatrix();
+				  translate(x, y);
+				  //			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+				  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
+				  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-10, ExternalToroidRadius);
+			  popMatrix();
+			
+//			  textFont(f,32);  
+			  textFont(f,displayHeight/50); 
+			  fill(255);                   
+			  text(MainActivity.UserControl + " -> " + indexPl2+"\n    ("+rndMean+")",displayWidth/2 - 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
+			  
+		}
+		
 		/** display toroid of the second/rnd player */
 		public void displayPlayer2Toroid(float x, float y){
 			  getRndNormalDistribution();
@@ -437,10 +511,10 @@ public class ProcessingRNDgame extends PApplet{
 			  }
 			  	// -- center and spin toroid 
 			  pushMatrix();
-			  translate(x, y);
-			  //			  rotateZ(0);		  rotateY(0);		  rotateX(0);
-			  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
-			  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-10, ExternalToroidRadius);
+				  translate(x, y);
+				  //			  rotateZ(0);		  rotateY(0);		  rotateX(0);
+				  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
+				  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-10, ExternalToroidRadius);
 			  popMatrix();
 			
 //			  textFont(f,32);  
