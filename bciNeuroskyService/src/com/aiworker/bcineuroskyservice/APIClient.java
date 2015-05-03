@@ -194,10 +194,14 @@ public class APIClient {
     public static String getPartnerLatestDataURL() {
     	return "http://" + host + "/profiles/" + profileId + "/exercises/" + exerciseId +
     			"/statistics/latest_stat.json?auth_token=" + token;
-    }
+    } 
 
+    /*public static String getPartnerLatestDataURL() {
+    	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
+    			"/statistics/latest_stat.json?auth_token=" + tokenNetUser;
+    }*/
     // ====================================
-    public static int[] getDataNetUser() {
+    /*public static int[] getDataNetUser() {
           client.get(null, getPartnerLatestDataURLNetUser(), null, null,
         		  new AsyncHttpResponseHandler(){
 		                @Override
@@ -221,7 +225,7 @@ public class APIClient {
     	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
     			"/statistics/latest_stat.json?auth_token=" + tokenNetUser;
     }
-    
+    */
     
     public static int[] parseMsg(String msg) {
     	String[] separatedMsg = msg.split(",");

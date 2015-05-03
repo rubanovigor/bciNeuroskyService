@@ -41,7 +41,7 @@
         android:summary="@string/pref_backend_host_summary"
         android:dialogTitle="@string/pref_backend_host_dialog_title"
         android:dialogMessage="@string/pref_backend_host_dialog_message"
-        android:defaultValue="neuro-backend.herokuapp.com"
+        android:defaultValue="neurolyzer.herokuapp.com"
         android:dependency="pref_use_backend" />
     
       </PreferenceCategory>

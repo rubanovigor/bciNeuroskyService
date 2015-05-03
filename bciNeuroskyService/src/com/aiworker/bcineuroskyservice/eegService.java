@@ -242,6 +242,10 @@ public class eegService extends Service{
 		    						APIClient.setProfileId(MainActivity.profileId);
 		    						APIClient.setExerciseId(MainActivity.exerciseId);
 		    						APIClient.setToken(MainActivity.token);
+		    						
+		    						APIClient.setProfileIdNetUser(MainActivity.profileIdNetUser);
+		    						APIClient.setExerciseIdNetUser(MainActivity.exerciseIdNetUser);
+		    						APIClient.setTokenNetUser(MainActivity.tokenNetUser);
 		    				    	
 			                        break;
 			                    case TGDevice.STATE_DISCONNECTED:
@@ -290,22 +294,24 @@ public class eegService extends Service{
 			                    // -- send Attention data to the backend in async way
 			                	if(MainActivity.backend){ APIClient.collectAttention(null, msg.arg1);}
 			                	
-			                	int[] iam={0, 0};
+			                	int[] iam={5, 0};
 			                		// -- local user
 //			                	if(MainActivity.backend){ iam = APIClient.getData();}
 			                		// -- network user
-			                	if(MainActivity.backend){ iam = APIClient.getDataNetUser();}
+			                	if(MainActivity.backend){ iam = APIClient.getData();}
+//			                	if(MainActivity.backend){ iam = APIClient.getDataNetUser();}
 			                	
 			                	At_pl2 = iam[0]; 
 			                	Med_pl2 = iam[1];
 			                	//Log.e("ir_Response Att", String.valueOf(iam[0]));	
 			                	//Log.e("ir_Response Med", String.valueOf(iam[1]));	
 			                	
-			                    At = msg.arg1;  
+			                    At = msg.arg1;      
 			                    
 			                    msgToActivity.what = 2; // -- sending At/Med  
 			                    msgToActivity.arg1 = At;
-			                    msgToActivity.arg2 = Med;
+//			                    msgToActivity.arg2 = Med;
+			                    msgToActivity.arg2 = At_pl2;
 	    					    msgToActivity.obj  = "connected"; 		    						
 	    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
 	    						updateNotification();
@@ -335,7 +341,7 @@ public class eegService extends Service{
 			                    Med = msg.arg1;
 			                    msgToActivity.what = 2; // -- sending At/Med  
 			                    msgToActivity.arg1 = At;
-			                    msgToActivity.arg2 = Med;
+//			                    msgToActivity.arg2 = Med;
 	    					    msgToActivity.obj  = "connected"; 		    						
 	    					    MainActivity.mUiHandler.sendMessage(msgToActivity);	
 	    					    updateNotification();

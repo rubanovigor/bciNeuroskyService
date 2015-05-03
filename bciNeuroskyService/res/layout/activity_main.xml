@@ -117,7 +117,7 @@
            android:layout_above="@+id/editTextCurrentActivity"
            android:textColor="#ffffff"
            android:textSize="12sp" 
-           android:visibility="invisible" />
+           android:visibility="visible" />
 
        <EditText
            android:id="@+id/editTextCurrentActivity"

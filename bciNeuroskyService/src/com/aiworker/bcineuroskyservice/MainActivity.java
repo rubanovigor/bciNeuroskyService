@@ -47,7 +47,8 @@ public class MainActivity extends Activity{
     public static int profileIdNetUser, exerciseIdNetUser; public static String tokenNetUser = "";
     
 	
-	TextView tv_Med;    TextView tv_Att;    TextView tv_NeuroskyStatus; 
+	TextView tv_Med, tv_Att, tv_NeuroskyStatus; 
+	TextView tv_test;
 	public static int At=42; public static int Med=42;
 	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
 	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
@@ -71,6 +72,7 @@ public class MainActivity extends Activity{
         tv_Att = (TextView) findViewById(R.id.Att_label);
         tv_Med = (TextView) findViewById(R.id.Med_lable);       
         tv_NeuroskyStatus = (TextView) findViewById(R.id.NeuroskyStatus);
+        tv_test = (TextView) findViewById(R.id.tv_test);
 		
                      
         serviceOnOff = (ToggleButton) findViewById(R.id.switch_service);
@@ -146,6 +148,8 @@ public class MainActivity extends Activity{
 	          			Med = msg.arg2; tv_Med.setText(String.valueOf(Med));
 	          			NeuroskyStatus = msg.obj.toString();
 	          			tv_NeuroskyStatus.setText("connected");
+	          				// -- for testing only
+//	          			tv_test.setText(String.valueOf(At));
 	          			break;
 	          		
 	          		case 3: // service Destroyed

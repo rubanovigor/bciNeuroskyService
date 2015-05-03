@@ -192,4 +192,17 @@
 		    android:visibility="invisible" 
 		    android:onClick="onImageButtonToroid_Clicked"   />
 		
+		 <TextView
+           android:id="@+id/tv_test"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:padding="5dip"
+           android:text="test field"
+           android:gravity="center"
+           android:layout_centerHorizontal="true"
+           android:layout_alignParentBottom="true"
+           android:textColor="#ffffff"
+           android:textSize="12sp" 
+           android:visibility="visible" />
+		
 </RelativeLayout>
