@@ -149,7 +149,7 @@ public class MainActivity extends Activity{
 	          			NeuroskyStatus = msg.obj.toString();
 	          			tv_NeuroskyStatus.setText("connected");
 	          				// -- for testing only
-//	          			tv_test.setText(String.valueOf(At));
+	          			tv_test.setText(String.valueOf(msg.arg2));
 	          			break;
 	          		
 	          		case 3: // service Destroyed

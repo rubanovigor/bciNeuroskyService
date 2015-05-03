@@ -32,6 +32,7 @@ public class eegService extends Service{
 	private static final String TAG = "eegService";
 	public String userName = "";
 	public String appName;
+//	int[] iam={0, 0};
 	
 	// -- used for getting the handler from other class for sending messages
 	public static Handler 		meegServiceHandler 			= null;
@@ -294,7 +295,7 @@ public class eegService extends Service{
 			                    // -- send Attention data to the backend in async way
 			                	if(MainActivity.backend){ APIClient.collectAttention(null, msg.arg1);}
 			                	
-			                	int[] iam={5, 0};
+			                	int[] iam={0, 0};
 			                		// -- local user
 //			                	if(MainActivity.backend){ iam = APIClient.getData();}
 			                		// -- network user
@@ -310,8 +311,8 @@ public class eegService extends Service{
 			                    
 			                    msgToActivity.what = 2; // -- sending At/Med  
 			                    msgToActivity.arg1 = At;
-//			                    msgToActivity.arg2 = Med;
-			                    msgToActivity.arg2 = At_pl2;
+			                    msgToActivity.arg2 = Med;
+//			                    msgToActivity.arg2 = At_pl2;
 	    					    msgToActivity.obj  = "connected"; 		    						
 	    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
 	    						updateNotification();
@@ -341,7 +342,7 @@ public class eegService extends Service{
 			                    Med = msg.arg1;
 			                    msgToActivity.what = 2; // -- sending At/Med  
 			                    msgToActivity.arg1 = At;
-//			                    msgToActivity.arg2 = Med;
+			                    msgToActivity.arg2 = Med;
 	    					    msgToActivity.obj  = "connected"; 		    						
 	    					    MainActivity.mUiHandler.sendMessage(msgToActivity);	
 	    					    updateNotification();
