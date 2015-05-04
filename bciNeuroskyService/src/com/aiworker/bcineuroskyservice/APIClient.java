@@ -176,7 +176,8 @@ public class APIClient {
                 public void onSuccess(String response) {
                 	msgFromBackend = response;
                 	indexes = parseMsg(msgFromBackend);
-                	Log.e("ir_Response", response);               
+                	Log.e("ir_Response", response); 
+//                	Log.e("ir_indexes", String.valueOf(indexes)); 
                 }
 
                @Override
@@ -202,49 +203,18 @@ public class APIClient {
     } 
 
     
-    /*public static String getPartnerLatestDataURL() {
-    	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
-    			"/statistics/latest_stat.json?auth_token=" + tokenNetUser;
-    }*/
-    // ====================================
-    /*public static int[] getDataNetUser() {
-          client.get(null, getPartnerLatestDataURLNetUser(), null, null,
-        		  new AsyncHttpResponseHandler(){
-		                @Override
-		                public void onSuccess(String response) {
-		                	msgFromBackend = response;
-		                	indexes = parseMsg(msgFromBackend);
-		                	Log.e("ir_Response", response);               
-		                }
-		
-		               @Override
-		                 public void onFailure(Throwable e) {
-		            	   Log.e("error","ir_OnFailure!", e);
-		                 }
-          		  }
-          );
-
-          return indexes;
-    }
-
-    public static String getPartnerLatestDataURLNetUser() {
-    	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
-    			"/statistics/latest_stat.json?auth_token=" + tokenNetUser;
-    }
-    */
-    
-    public static int[] parseMsg(String msg) {
-    	String[] separatedMsg = msg.split(",");
-    	int[] indexes_l = {0, 0};
-    	String[] separatedMsgAtt = separatedMsg[4].split(":");
-    	indexes_l[0] = Integer.valueOf(separatedMsgAtt[1]);
-    	String[] separatedMsgMed = separatedMsg[5].split(":");
-    	indexes_l[1] = Integer.valueOf(separatedMsgMed[1]);
-    	
-//    	Log.e("ir_Response Att:", String.valueOf(indexes_l[0]));
-//    	Log.e("ir_Response Med:", String.valueOf(indexes_l[1]));
-    	return indexes_l;
-    }
+//    public static int[] parseMsg(String msg) {
+//    	String[] separatedMsg = msg.split(",");
+//    	int[] indexes_l = {0, 0};
+//    	String[] separatedMsgAtt = separatedMsg[4].split(":");
+//    	indexes_l[0] = Integer.valueOf(separatedMsgAtt[1]);
+//    	String[] separatedMsgMed = separatedMsg[5].split(":");
+//    	indexes_l[1] = Integer.valueOf(separatedMsgMed[1]);
+//    	
+//////    	Log.e("ir_Response Att:", String.valueOf(indexes_l[0]));
+//////    	Log.e("ir_Response Med:", String.valueOf(indexes_l[1]));
+//    	return indexes_l;
+//    }
     
     
 //    01-20 15:27:36.675: E/ir_Response(31244): 
@@ -253,5 +223,25 @@ public class APIClient {
 //    	"high_alpha":-32626.0,"low_alpha":-22455.0,"high_beta":-30498.0,"low_beta":18124.0,
 //    	"mid_gamma":8504.0,"low_gamma":3788.0,"delta":7886.0,"theta":-28942.0}
  
+	public static int[] parseMsg(String msg) {
+		  AttMed am = gson.fromJson(msg, AttMed.class);
+		  return am.toArray();
+		}
     
 }
+
+class AttMed {
+	  private int attention = 0;
+	  private int meditation = 0;
+	  AttMed() {}
+	  
+	  public int[] toArray() {
+		  int[] tt = {this.attention, this.meditation};
+//		  tt[0] = this.attention;
+//		  tt[1] = this.meditation;
+		  
+		  return tt;
+//	    return {this.attention, this.meditation};
+	  }
+}
+	 
