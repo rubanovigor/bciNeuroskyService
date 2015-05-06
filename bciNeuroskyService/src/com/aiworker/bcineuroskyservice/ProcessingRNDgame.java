@@ -23,15 +23,16 @@ import android.view.KeyEvent;
 public class ProcessingRNDgame extends PApplet{
 		// -- local EEG variables
 		int pAt=0; int pMed=0; int pS=0; int pP=0;
-		int index=0; int indexPl2=0;
+		int indexLocalPlayer=0, indexRND=0, indexNetworkPlayer=0;
+		String Torroid1info = "", Torroid2info = "";
 			// -- variables to manipulate torroids colors dynamics
-		int indexR; int indexG; int indexB; 
+		int indexR, indexG, indexB; 
 		int MedR; int MedG; int MedB;
 		
 		Random r = new Random(); private long mLastTime; int rndUpdDelay_ms = 1000;
 		private long DataCollectionLastTime; int DataCollectionDelay_ms = 1000;
 		private long CurrentTime,TimeOfTheGame = 0;
-		int GameLevel = 0; int MaxGameLevel=9; String rndMean = "mean";
+		int GameLevel = 0; int MaxGameLevel=9; 
 		int ma_LastTime=0;  float ma_value = 0; int ma_length_ms=0;
 		
 		// -- toroids setting
@@ -141,29 +142,56 @@ public class ProcessingRNDgame extends PApplet{
 			  text(s,4.5f*displayWidth/10, 2.0f*displayHeight/10 - 20f);  
 			  // ===============================================
 			  		// -- get EEG index (one from att/med/S/P)
-			  index = getEEG();
-			  indexPl2 = getEEGNetworkUser();		  
+//			  indexLocalPlayer = getEEG();
+//			  indexNetworkPlayer = getEEGNetworkUser();		  
+			  // -- indexRND calculated in getRndNormalDistribution();
 			  
 			  switch(MainActivity.toroidGameType){
-				    case "you":
-				    	displayLocalUserToroid(displayWidth/2,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+				    case "pl1 vs pl2":
+				    	indexLocalPlayer = getEEG();
+						indexNetworkPlayer = getEEGNetworkUser();
+							// -- local 
+				    	Torroid1info = "you";
+						displayLocalPlayerToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+							// -- networkUser
+						Torroid2info = "player 2";
+						displayNetworklPlayerToroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+				    					    	
+				    	displayGameLevel();
 				    	break;
 				    	
 					case "rnd vs you":
+						indexLocalPlayer = getEEG();	  
+						// -- indexRND calculated in getRndNormalDistribution();
 							// -- local
-						displayLocalUserToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+						Torroid1info = "you";
+						displayLocalPlayerToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
 							// -- RND
-//						displayPlayer2Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
-							// --networkUser
-						displayNetworklUserToroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+//						Torroid2info = "RND";
+						displayRND_Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+						
+						displayGameLevel();
+						break;
+						
+					case "rnd vs pl1 + pl2":
+						indexLocalPlayer = getEEG();
+						indexNetworkPlayer = getEEGNetworkUser();
+						// -- calculate aggregate index
+						indexLocalPlayer = (indexLocalPlayer + indexNetworkPlayer)/2;
+							// -- local
+						Torroid1info = "team";
+						displayLocalPlayerToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+							// -- RND
+//						Torroid2info = "RND";
+						displayRND_Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
 						
 						displayGameLevel();
 						break;
 			  } 
 			 
 			// ===============================================
-//			  DataCollection(indexPl2);	
-			  DataCollection(index);	
+//			  DataCollection(indexNetworkPlayer);	
+			  DataCollection(indexLocalPlayer);	
 			  displayGraphOfEEGindex();
 
 
@@ -396,55 +424,55 @@ public class ProcessingRNDgame extends PApplet{
 		/** get random (Normal) distribution for userControl */
 		public void getRndNormalDistribution(){			
 			// -- create Randomly distributed time series
-			  if (millis() - mLastTime < rndUpdDelay_ms) return; 
-			  else  mLastTime = millis();
+			if (millis() - mLastTime < rndUpdDelay_ms) return; 
+			else  mLastTime = millis();
 			  
 			  
 			double val = 0;
 			switch(MainActivity.UserControl){
 			 case "att":
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
-				 indexPl2  = (int) Math.round(val);
-				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	           
+				 indexRND  = (int) Math.round(val);
+				 if (indexRND >100) {indexRND =100;} if (indexRND <0) {indexRND =0;}	           
 //				 if (mLastTime>rndUpdDelay_ms){mLastTime=0;}
-				 rndMean = "mean ~ " + String.valueOf(50+GameLevel*5);
+				 Torroid2info = "mean ~ " + String.valueOf(50+GameLevel*5);
 			  	 break;
 			 case "med":
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
-				 indexPl2  = (int) Math.round(val);
-				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	           
+				 indexRND  = (int) Math.round(val);
+				 if (indexRND >100) {indexRND =100;} if (indexRND <0) {indexRND =0;}	           
 //				 if (mLastTime>rndUpdDelay_ms){mLastTime=0;}
-				 rndMean = "mean ~ " + String.valueOf(50+GameLevel*5);
+				 Torroid2info = "mean ~ " + String.valueOf(50+GameLevel*5);
 				 break;
 			 case "S":
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
-				 indexPl2  = (int) Math.round(val);
-				 if (indexPl2 >100) {indexPl2 =100;} if (indexPl2 <0) {indexPl2 =0;}	
-				 indexPl2 = indexPl2*2 - 100; // adjust to interval -100:100 
+				 indexRND  = (int) Math.round(val);
+				 if (indexRND >100) {indexRND =100;} if (indexRND <0) {indexRND =0;}	
+				 indexRND = indexRND*2 - 100; // adjust to interval -100:100 
 //				 if (mLastTime>rndUpdDelay_ms){mLastTime=0;}
-				 rndMean = "mean ~ " + String.valueOf(0+GameLevel*5);
+				 Torroid2info = "mean ~ " + String.valueOf(0+GameLevel*5);
 				 break;
 			}
 			
 		}
 	
 		
-		/** display toroid for local player */
-		public void displayLocalUserToroid(float x, float y){
-			  indexR = (255 * index) / 100; indexG = 0;  indexB = (255 * (100 - index)) / 100 ;
-		  		// -- create dynamic ts based on index value
+		/** display toroid for local/local+network player */
+		public void displayLocalPlayerToroid(float x, float y){
+			  indexR = (255 * indexLocalPlayer) / 100; indexG = 0;  indexB = (255 * (100 - indexLocalPlayer)) / 100 ;
+		  		// -- create dynamic ts based on indexLocalPlayer value
 			  switch(MainActivity.UserControl){
 				case "att":
-				  localPlayerAccel = Algorithm.CreateDynamic(index, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  localPlayerAccel = Algorithm.CreateDynamic(indexLocalPlayer, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "med":
-				  localPlayerAccel = Algorithm.CreateDynamic(index, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  localPlayerAccel = Algorithm.CreateDynamic(indexLocalPlayer, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":
-				  localPlayerAccel = Algorithm.StoDynamicMovement(index, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
+				  localPlayerAccel = Algorithm.StoDynamicMovement(indexLocalPlayer, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
 				  break;
 			  }
-//			  localPlayerAccel = Algorithm.CreateDynamic(index, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+//			  localPlayerAccel = Algorithm.CreateDynamic(indexLocalPlayer, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 			  
 		
 			  		// -- center and spin toroid 	
@@ -458,23 +486,23 @@ public class ProcessingRNDgame extends PApplet{
 //			  textFont(f,32);                 // STEP 4 Specify font to be used
 			  textFont(f,displayHeight/50); 
 			  fill(255);                        // STEP 5 Specify font color 
-			  text(MainActivity.UserControl + " -> " + index+"\n    (you)",displayWidth/2 + 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - localPlayerAccel);  // STEP 6 Display Text
+			  text(MainActivity.UserControl + " -> " + indexLocalPlayer+"\n    (" + Torroid1info + ")",displayWidth/2 + 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - localPlayerAccel);  // STEP 6 Display Text
 		}
 		
 		/** display toroid of the Network player */
-		public void displayNetworklUserToroid(float x, float y){
+		public void displayNetworklPlayerToroid(float x, float y){
 			  // -- Player((random, network) (torroid on the left)
-			  indexR = (255 * indexPl2 ) / 100; indexG = 0;  indexB = (255 * (100 - indexPl2 )) / 100 ;
+			  indexR = (255 * indexNetworkPlayer ) / 100; indexG = 0;  indexB = (255 * (100 - indexNetworkPlayer )) / 100 ;
 			  		// -- create dynamic ts based on pS
 			  switch(MainActivity.UserControl){
 				case "att":
-				  Player2Accel = Algorithm.CreateDynamic(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  Player2Accel = Algorithm.CreateDynamic(indexNetworkPlayer , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "med":
-				  Player2Accel = Algorithm.CreateDynamic(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  Player2Accel = Algorithm.CreateDynamic(indexNetworkPlayer , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":
-				  Player2Accel = Algorithm.StoDynamicMovement(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
+				  Player2Accel = Algorithm.StoDynamicMovement(indexNetworkPlayer , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
 				  break;
 			  }
 			  	// -- center and spin toroid 
@@ -488,25 +516,25 @@ public class ProcessingRNDgame extends PApplet{
 //			  textFont(f,32);  
 			  textFont(f,displayHeight/50); 
 			  fill(255);                   
-			  text(MainActivity.UserControl + " -> " + indexPl2+"\n    ("+rndMean+")",displayWidth/2 - 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
+			  text(MainActivity.UserControl + " -> " + indexNetworkPlayer+"\n    ("+Torroid2info+")",displayWidth/2 - 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
 			  
 		}
 		
-		/** display toroid of the second/rnd player */
-		public void displayPlayer2Toroid(float x, float y){
+		/** display toroid of the rnd player */
+		public void displayRND_Toroid(float x, float y){
 			  getRndNormalDistribution();
 			  // -- Player((random, network) (torroid on the left)
-			  indexR = (255 * indexPl2 ) / 100; indexG = 0;  indexB = (255 * (100 - indexPl2 )) / 100 ;
+			  indexR = (255 * indexRND ) / 100; indexG = 0;  indexB = (255 * (100 - indexRND )) / 100 ;
 			  		// -- create dynamic ts based on pS
 			  switch(MainActivity.UserControl){
 				case "att":
-				  Player2Accel = Algorithm.CreateDynamic(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  Player2Accel = Algorithm.CreateDynamic(indexRND , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "med":
-				  Player2Accel = Algorithm.CreateDynamic(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
+				  Player2Accel = Algorithm.CreateDynamic(indexRND , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":
-				  Player2Accel = Algorithm.StoDynamicMovement(indexPl2 , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
+				  Player2Accel = Algorithm.StoDynamicMovement(indexRND , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, -30, 30, 0);
 				  break;
 			  }
 			  	// -- center and spin toroid 
@@ -520,7 +548,7 @@ public class ProcessingRNDgame extends PApplet{
 //			  textFont(f,32);  
 			  textFont(f,displayHeight/50); 
 			  fill(255);                   
-			  text(MainActivity.UserControl + " -> " + indexPl2+"\n    ("+rndMean+")",displayWidth/2 - 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
+			  text(MainActivity.UserControl + " -> " + indexRND+"\n    ("+ Torroid2info +")",displayWidth/2 - 2.5f*displayWidth/10,displayHeight - 1.5f*displayHeight/10 - Player2Accel);
 			  
 		}
 		

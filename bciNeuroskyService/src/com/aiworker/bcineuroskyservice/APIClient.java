@@ -185,13 +185,13 @@ public class APIClient {
             	   Log.e("error","ir_OnFailure!", e);
                  }
             });
-//	      }
+//	      } 
 //	      lastTS1 = ts1;   
 //        	Log.e("ir_Response Att:", String.valueOf(indexes[0]));
 //        	Log.e("ir_Response Med:", String.valueOf(indexes[1]));
           return indexes;
     }
-
+ 
     public static String getPartnerLatestDataURL() {
 //    	return "http://" + host + "/profiles/" + profileId + "/exercises/" + exerciseId +
 //    			"/statistics/latest_stat.json?auth_token=" + token;

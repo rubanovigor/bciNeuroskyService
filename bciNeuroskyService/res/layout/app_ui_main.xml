@@ -146,35 +146,48 @@
 		    android:visibility="invisible"	
 		    android:onClick="onImageButtonMindOS_Clicked" />
 
+		
 		<ImageButton
-		    android:id="@+id/ib_twotoroids"
+		    android:id="@+id/ib_rnd"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_margin="30dp"
 		    android:layout_centerHorizontal="true"
 		    android:layout_centerVertical="true"
 		    android:background="@android:color/transparent"
-		    android:src="@drawable/ic_twotoroids" 
+		    android:src="@drawable/rnd" 
 		    android:visibility="invisible" 
-		    android:onClick="onImageButtonTwoToroids_Clicked" />
+		    android:onClick="onImageButtonYouRND_Clicked" />
 
 		<ImageButton
-		    android:id="@+id/ib_onetoroid"
+		    android:id="@+id/ib_competition"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:layout_toLeftOf="@+id/ib_s"
+		    android:layout_toLeftOf="@+id/ib_rnd"
 		    android:layout_centerVertical="true"
 		    android:background="@android:color/transparent"
-		    android:src="@drawable/ic_onetoroid" 
+		    android:src="@drawable/competition" 
 		    android:visibility="invisible" 
-		    android:onClick="onImageButtonOneToroid_Clicked"  />
+		    android:onClick="onImageButtonCompetitionPl1VSPl2_Clicked"  />
 
+		<ImageButton
+		    android:id="@+id/ib_cooperation"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/ib_rnd"
+		    android:layout_centerVertical="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/cooperation" 
+		    android:visibility="invisible" 
+		    android:onClick="onImageButtonCooperationPl1Pl2VSRND_Clicked"  />
+				
+		
 		<ImageButton
 		    android:id="@+id/ib_back"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:layout_toRightOf="@+id/ib_s"
-		    android:layout_centerVertical="true"
+		    android:layout_below="@+id/ib_s"
+		    android:layout_centerHorizontal="true"
 		    android:background="@android:color/transparent"
 		    android:src="@drawable/ic_back" 
 		    android:visibility="invisible"  

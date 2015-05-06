@@ -59,7 +59,8 @@ public class MainActivity extends Activity{
 	String Key_State_serviceOnOff, Key_State_backendOnOff;
 	public static boolean backend = false;
 	
-	ImageButton ibAtt, ibMed, ibS, ibInfo, ibmOS, ibToroid, ibBack, imOneToroid, ibTwoToroids;
+	ImageButton ibAtt, ibMed, ibS, ibInfo, ibmOS, ibToroid, ibBack;
+	ImageButton ibCooperation, ibCompetition, ibRND;
 	public static String UserControl="att";
 	public static String toroidGameType="you";
 	
@@ -87,8 +88,9 @@ public class MainActivity extends Activity{
         ibmOS = (ImageButton) findViewById(R.id.ib_mOS);        
         ibToroid = (ImageButton) findViewById(R.id.ib_toroid); 
         ibBack = (ImageButton) findViewById(R.id.ib_back); 
-        imOneToroid = (ImageButton) findViewById(R.id.ib_onetoroid); 
-        ibTwoToroids = (ImageButton) findViewById(R.id.ib_twotoroids); 
+        ibCompetition = (ImageButton) findViewById(R.id.ib_competition); 
+        ibCooperation = (ImageButton) findViewById(R.id.ib_cooperation); 
+        ibRND = (ImageButton) findViewById(R.id.ib_rnd); 
 
         
 	    // -- for glass testing only
@@ -347,6 +349,17 @@ public class MainActivity extends Activity{
     }   
 
 	
+	// -- ====================================
+	// -- process selected UI buttons
+	// -- ====================================
+	/** -- proceed with info button */
+	public void onImageButtonInfo_Clicked (View v)
+	{
+		Intent intent = new Intent(this, appInfo.class);
+		startActivity(intent);
+	}
+	
+		// -- layer 1: process Attention/Meditation/S/P selection
 	/** -- set S (A-M) flag for further use */
 	public void onImageButtonS_Clicked (View v)
 	{
@@ -368,58 +381,52 @@ public class MainActivity extends Activity{
 		UserControl = "med";
 	}
 	
+		// -- layer 2: process game selection and back button
 	/** -- proceed with back button, returning to layer 1 */
 	public void onImageButtonBack_Clicked (View v)
 	{
 		if(layer==2){switchToLayer1();}
 		if(layer==3){switchToLayer2from3();}
 	}
-	
-	/** -- proceed with info button */
-	public void onImageButtonInfo_Clicked (View v)
-	{
-		Intent intent = new Intent(this, appInfo.class);
-		startActivity(intent);
-	}
-	
-	/** -- proceed with toroid button */
-	public void onImageButtonToroid_Clicked (View v)
-	{
-		switchToLayer3from2();
-	}
-	
-	// -- start mindOS
+
+	/** -- start mindOS demo*/
 	public void onImageButtonMindOS_Clicked (View v)
 	{
 		Intent intent = new Intent(this, ProcessingWave.class);
 		startActivity(intent);
 	}
 	
-	/** -- proceed with onetoroid button */
-	public void onImageButtonOneToroid_Clicked (View v)
+		//=====================================
+	/** -- proceed with toroid menu button */
+	public void onImageButtonToroid_Clicked (View v)
 	{
-		toroidGameType="you";
-//		Intent intent = new Intent(this, ProcessingToroid.class);
-		Intent intent = new Intent(this, ProcessingRNDgame.class);
-		startActivity(intent);
+		switchToLayer3from2();
+	}
+		
+	/** -- proceed with onetoroid button */
+	public void onImageButtonCompetitionPl1VSPl2_Clicked (View v)
+	{
+		toroidGameType="pl1 vs pl2";
+		Intent intent = new Intent(this, ProcessingRNDgame.class);		startActivity(intent);
 	}
 	
-	/** -- proceed with twotoroids button */
-	public void onImageButtonTwoToroids_Clicked (View v)
+	/** -- proceed button rnd vs you */
+	public void onImageButtonYouRND_Clicked (View v)
 	{
 		toroidGameType="rnd vs you";
-		Intent intent = new Intent(this, ProcessingRNDgame.class);
-		startActivity(intent);
-	}
-
-	/** -- proceed with backend settings button */
-	public void onImageButtonBackendSettings_Clicked (View v)
-	{
-		Intent intent = new Intent(this, backendSettingsActivity.class);
-        startActivityForResult(intent, RESULT_SETTINGS);
+		Intent intent = new Intent(this, ProcessingRNDgame.class);		startActivity(intent);
 	}
 	
-	//=====================================
+	/** -- proceed button rnd vs you */
+	public void onImageButtonCooperationPl1Pl2VSRND_Clicked (View v)
+	{
+		toroidGameType="rnd vs pl1 + pl2";
+		Intent intent = new Intent(this, ProcessingRNDgame.class);		startActivity(intent);
+	}
+	
+
+	
+		//=====================================
 	/** -- switch to layer 2 from layer 1 */
 	public void switchToLayer2 ()
 	{
@@ -441,18 +448,27 @@ public class MainActivity extends Activity{
 	{
 		layer = 2;
 		ibmOS.setVisibility(View.VISIBLE); ibToroid.setVisibility(View.VISIBLE); ibBack.setVisibility(View.VISIBLE);
-		imOneToroid.setVisibility(View.INVISIBLE); ibTwoToroids.setVisibility(View.INVISIBLE); 
+		ibCompetition.setVisibility(View.INVISIBLE); ibRND.setVisibility(View.INVISIBLE); ibCooperation.setVisibility(View.INVISIBLE);
 	}
 	
 	/** -- switch to layer 3 from layer 2 (toroid selection) */
 	public void switchToLayer3from2 ()
 	{
 		layer = 3;
-		imOneToroid.setVisibility(View.VISIBLE); ibTwoToroids.setVisibility(View.VISIBLE);  ibBack.setVisibility(View.VISIBLE);
+		ibCompetition.setVisibility(View.VISIBLE); ibRND.setVisibility(View.VISIBLE); ibCooperation.setVisibility(View.VISIBLE);
+		ibBack.setVisibility(View.VISIBLE);
 		ibmOS.setVisibility(View.INVISIBLE); ibToroid.setVisibility(View.INVISIBLE);
 	}
 	
-	 private void updateBackendSettings() {
+	/** -- proceed with backend switch settings button */
+	public void onImageButtonBackendSettings_Clicked (View v)
+	{
+		Intent intent = new Intent(this, backendSettingsActivity.class);
+        startActivityForResult(intent, RESULT_SETTINGS);
+	}
+	
+	/** -- proceed with backend settings button */
+	private void updateBackendSettings() {
 	        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	        	// -- backend_profile_id
 	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
