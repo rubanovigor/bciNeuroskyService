@@ -70,6 +70,8 @@ public class ProcessingRNDgame extends PApplet{
 		float[] yvalues;                           // Using an array to store height values for the wave (not entirely necessary)
 		float[] xvalues;
 		
+		float alpha = 0f;
+		
 		PImage imgFinish; 
 		
 		
@@ -88,7 +90,8 @@ public class ProcessingRNDgame extends PApplet{
 			 CurrentTime = millis();
 			 ma_LastTime = millis();
 			 // -- for wave
-				 w = 40 ;
+//				 w = 40 ;
+				 w = 360 ;
 				 xvalues = new float[w];
 				 xvalues[0] = 0;
 				 xvalues[1] = legendAdjX;
@@ -192,7 +195,10 @@ public class ProcessingRNDgame extends PApplet{
 			// ===============================================
 //			  DataCollection(indexNetworkPlayer);	
 			  DataCollection(indexLocalPlayer);	
-			  displayGraphOfEEGindex();
+//			  DataCollection(indexRND);	
+			  
+//			  displayGraphOfEEGindex();
+			  displayEEGindexCircle();
 
 
 		}
@@ -324,6 +330,41 @@ public class ProcessingRNDgame extends PApplet{
 			  
 		}
 		
+		/** display EEG index in  form of circle with R=index */
+		void displayEEGindexCircle() {
+			  noSmooth();  
+			  noFill();
+			  strokeWeight(1); 
+			  stroke(200,255,200);
+//			  curveTightness(1.25f);
+			  beginShape();
+			  for (int i = 0; i < yvalues.length; i++) {
+//			  for (int i = yvalues.length-1; i < yvalues.length; i++) {
+
+				  strokeWeight(1);
+				  
+				  if(yvalues[i]<40){stroke(255,0,0);strokeWeight(3);}
+				  if(yvalues[i]>=40 && yvalues[i]<=60){stroke(0,0,255); strokeWeight(2);}
+				  if(yvalues[i]>60){stroke(0,255,0); strokeWeight(1);}
+				  
+				  if (i==yvalues.length-1){strokeWeight(10); }	 
+				  if (i==yvalues.length-2){strokeWeight(9); }	  
+				  if (i==yvalues.length-3){strokeWeight(8); }	 
+				  if (i==yvalues.length-4){strokeWeight(7); }	 
+				  if (i==yvalues.length-5){strokeWeight(6); }	
+				  
+				  line(150 + 50*sin(alpha), 150 + 50*cos(alpha), 150 + (50+ yvalues[i])*sin(alpha), 150 + (50+yvalues[i])*cos(alpha));
+				  
+//				  curveVertex(xvalues[i], legend0 - yvalues[i]);
+				  
+
+				  alpha = alpha + (float)Math.PI/45f; 
+
+			  }
+			  endShape();
+			  alpha = 0;
+		}
+		
 		/** get EEG data from MainActivity and calculate S,P
 		 *  moving average not working yet!!! */
 		public int getEEG(){		
@@ -403,7 +444,8 @@ public class ProcessingRNDgame extends PApplet{
 			  if (millis() - DataCollectionLastTime < DataCollectionDelay_ms) return; 
 			  else{		
 				  switch(MainActivity.UserControl){
-				 	 case "att": yvalues[yvalues.length-1] = (waveHigh/100)*ind; break;
+				 	 case "att": yvalues[yvalues.length-1] = ind; break;
+//				 	 case "att": yvalues[yvalues.length-1] = (waveHigh/100)*ind; break;
 				 	 case "med": yvalues[yvalues.length-1] = (waveHigh/100)*ind; break;
 				 	 case "S": yvalues[yvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
 				 	 case "P": yvalues[yvalues.length-1] = (waveHigh/100)*ind/2; break;
@@ -416,7 +458,13 @@ public class ProcessingRNDgame extends PApplet{
 				  }
 //				  yvalues[yvalues.length-1] = ind*5;
 				  
+//				  displayEEGindexCircle();
+				  
+//				  alpha = alpha - (float)Math.PI/180f; 
+				  
 				  DataCollectionLastTime=millis();	
+				  
+				  
 //				  
 			  }
 		}
@@ -552,7 +600,7 @@ public class ProcessingRNDgame extends PApplet{
 			  
 		}
 		
-		/** display game level for rnd vs you game */
+		/** display game level at the bottom of the screen */
 		public void displayGameLevel(){
 			  noStroke();
 			  for(int i=0; i<MaxGameLevel; i++){
