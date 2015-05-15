@@ -30,7 +30,8 @@ public class ProcessingRNDgame extends PApplet{
 		int MedR; int MedG; int MedB;
 		
 		Random r = new Random(); private long mLastTime; int rndUpdDelay_ms = 1000;
-		private long DataCollectionLastTime; int DataCollectionDelay_ms = 1000;
+		private long DataCollectionLastTime, DataCollectionLastTimeLocalPlayer;
+		int DataCollectionDelay_ms = 1000;
 		private long CurrentTime,TimeOfTheGame = 0;
 		int GameLevel = 0; int MaxGameLevel=9; 
 		int ma_LastTime=0;  float ma_value = 0; int ma_length_ms=0;
@@ -60,15 +61,17 @@ public class ProcessingRNDgame extends PApplet{
 		// -- for wave
 //		int xspacing = 8;   // How far apart should each horizontal location be spaced
 //		int xspacing = 20; 
-		int w;              // Width of entire wave
+		int EEGhistoryLength = 85;              // length of array for collecting historical indexes 
 //		int waveLength=200;
 //		int maxwaves = 4;   // total # of waves to add together
 
 //		float theta = 0.0f;
 //		float[] amplitude = new float[maxwaves];   // Height of wave
 //		float[] dx = new float[maxwaves];          // Value for incrementing X, to be calculated as a function of period and xspacing
-		float[] yvalues;                           // Using an array to store height values for the wave (not entirely necessary)
-		float[] xvalues;
+//		float[] xvalues, yvalues;
+		
+		float[] LocalPlayerYvalues, RNDYvalues;  
+		float[][] LocalPlayerColorsValues, RNDColorsValues;
 		
 		float alpha = 0f;
 		
@@ -87,19 +90,25 @@ public class ProcessingRNDgame extends PApplet{
 			 
 			 f = createFont("Arial",16,true); // STEP 3 Create Font
 			 DataCollectionLastTime = millis();
+			 DataCollectionLastTimeLocalPlayer = millis();
 			 CurrentTime = millis();
 			 ma_LastTime = millis();
 			 // -- for wave
-//				 w = 40 ;
-				 w = 360 ;
-				 xvalues = new float[w];
-				 xvalues[0] = 0;
-				 xvalues[1] = legendAdjX;
+//				 EEGhistoryLength = 90 ;
+//				 xvalues = new float[EEGhistoryLength];
+//				 xvalues[0] = 0;
+//				 xvalues[1] = legendAdjX;
+//				 
+//				 for (int i = 2; i <EEGhistoryLength; i++) { 
+//				   xvalues[i] = xvalues[i-1] + displayWidth/(EEGhistoryLength);
+//				 }
 				 
-				 for (int i = 2; i <w; i++) { 
-				   xvalues[i] = xvalues[i-1] + displayWidth/(w);
-				 }
-				 yvalues = new float[w];
+			 LocalPlayerYvalues = new float[EEGhistoryLength];
+			 LocalPlayerColorsValues = new float[EEGhistoryLength][3];
+						 
+			 RNDYvalues = new float[EEGhistoryLength];
+			 RNDColorsValues = new float[EEGhistoryLength][3];
+				 
 			 // -- end for wave
 			 
 				 imgFinish = loadImage("finish.png");
@@ -152,41 +161,52 @@ public class ProcessingRNDgame extends PApplet{
 			  switch(MainActivity.toroidGameType){
 				    case "pl1 vs pl2":
 				    	indexLocalPlayer = getEEG();
+				    	indexLocalPlayer = 50;
 						indexNetworkPlayer = getEEGNetworkUser();
+						indexNetworkPlayer = 100;
 							// -- local 
 				    	Torroid1info = "you";
 						displayLocalPlayerToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+						DataCollectionLocalPlayer(indexLocalPlayer);	displayEEGindexCircleLocalPlayer();
 							// -- networkUser
 						Torroid2info = "player 2";
 						displayNetworklPlayerToroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
-				    					    	
+						DataCollectionRND(indexNetworkPlayer);	displayEEGindexCircleRND();	
+						
 				    	displayGameLevel();
 				    	break;
 				    	
 					case "rnd vs you":
-						indexLocalPlayer = getEEG();	  
+						indexLocalPlayer = getEEG();	 
+						indexLocalPlayer = 100;
 						// -- indexRND calculated in getRndNormalDistribution();
 							// -- local
 						Torroid1info = "you";
 						displayLocalPlayerToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+						DataCollectionLocalPlayer(indexLocalPlayer);	displayEEGindexCircleLocalPlayer();
 							// -- RND
 //						Torroid2info = "RND";
 						displayRND_Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+						DataCollectionRND(indexRND);	displayEEGindexCircleRND();						
 						
 						displayGameLevel();
 						break;
 						
 					case "rnd vs pl1 + pl2":
 						indexLocalPlayer = getEEG();
+						indexLocalPlayer = 39;
 						indexNetworkPlayer = getEEGNetworkUser();
+						indexNetworkPlayer = 100;
 						// -- calculate aggregate index
 						indexLocalPlayer = (indexLocalPlayer + indexNetworkPlayer)/2;
 							// -- local
 						Torroid1info = "team";
 						displayLocalPlayerToroid(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
+						DataCollectionLocalPlayer(indexLocalPlayer);	displayEEGindexCircleLocalPlayer();
 							// -- RND
 //						Torroid2info = "RND";
 						displayRND_Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
+						DataCollectionRND(indexRND);	displayEEGindexCircleRND();	
 						
 						displayGameLevel();
 						break;
@@ -194,11 +214,11 @@ public class ProcessingRNDgame extends PApplet{
 			 
 			// ===============================================
 //			  DataCollection(indexNetworkPlayer);	
-			  DataCollection(indexLocalPlayer);	
-//			  DataCollection(indexRND);	
+//			  DataCollection(indexLocalPlayer);	
+//			  DataCollectionRND();	displayEEGindexCircleRND();
 			  
 //			  displayGraphOfEEGindex();
-			  displayEEGindexCircle();
+			  
 
 
 		}
@@ -265,7 +285,7 @@ public class ProcessingRNDgame extends PApplet{
 		}
 
 		/** draw wave using ellipse */
-		void displayGraphOfEEGindex() {
+	/*	void displayGraphOfEEGindex() {
 			  // -- draw EEGindex as a curve
 			  noSmooth();  
 			  noFill();
@@ -328,40 +348,75 @@ public class ProcessingRNDgame extends PApplet{
 			  rect(legendAdjX, legend40, displayWidth-legendAdjX*1.1f, legend60-legend40);
 			  
 			  
-		}
+		}*/
 		
-		/** display EEG index in  form of circle with R=index */
-		void displayEEGindexCircle() {
+		/** display LocalPlayer EEG index in  form of circle with R=index */
+		void displayEEGindexCircleLocalPlayer() {
 			  noSmooth();  
 			  noFill();
-			  strokeWeight(1); 
-			  stroke(200,255,200);
-//			  curveTightness(1.25f);
 			  beginShape();
-			  for (int i = 0; i < yvalues.length; i++) {
-//			  for (int i = yvalues.length-1; i < yvalues.length; i++) {
-
-				  strokeWeight(1);
+//			  for (int i = 0; i < yvalues.length; i++) {
+			  for (int i = LocalPlayerYvalues.length-1; i >= 0 ; i--) {
+				  // -- setup width of the bars
+				  strokeWeight(2);
 				  
-				  if(yvalues[i]<40){stroke(255,0,0);strokeWeight(3);}
-				  if(yvalues[i]>=40 && yvalues[i]<=60){stroke(0,0,255); strokeWeight(2);}
-				  if(yvalues[i]>60){stroke(0,255,0); strokeWeight(1);}
+				  // -- setup colors of bars
+				  if(LocalPlayerYvalues[i]<40){strokeWeight(4);}
+				  if(LocalPlayerYvalues[i]>=40 && LocalPlayerYvalues[i]<=60){strokeWeight(3);}
+				  if(LocalPlayerYvalues[i]>60){strokeWeight(2);}
 				  
-				  if (i==yvalues.length-1){strokeWeight(10); }	 
-				  if (i==yvalues.length-2){strokeWeight(9); }	  
-				  if (i==yvalues.length-3){strokeWeight(8); }	 
-				  if (i==yvalues.length-4){strokeWeight(7); }	 
-				  if (i==yvalues.length-5){strokeWeight(6); }	
+				  stroke(LocalPlayerColorsValues[i][0],LocalPlayerColorsValues[i][1],LocalPlayerColorsValues[i][2]);
 				  
-				  line(150 + 50*sin(alpha), 150 + 50*cos(alpha), 150 + (50+ yvalues[i])*sin(alpha), 150 + (50+yvalues[i])*cos(alpha));
+				  // -- setup width of the first 5 bars
+				  if (i==LocalPlayerYvalues.length-1){strokeWeight(10); }	 
+				  if (i==LocalPlayerYvalues.length-2){strokeWeight(8); }	  
+				  if (i==LocalPlayerYvalues.length-3){strokeWeight(6); }	 
+				  if (i==LocalPlayerYvalues.length-4){strokeWeight(5); }	 
+				  if (i==LocalPlayerYvalues.length-5){strokeWeight(4); }	
 				  
-//				  curveVertex(xvalues[i], legend0 - yvalues[i]);
-				  
-
-				  alpha = alpha + (float)Math.PI/45f; 
+				  // -- draw bars
+				  line(950 + 50*sin(alpha), 150 + 50*cos(alpha), 950 + (50+ LocalPlayerYvalues[i])*sin(alpha), 150 + (50+LocalPlayerYvalues[i])*cos(alpha));
+				  // -- update alpha: shift bars to the left
+				  alpha = alpha - (float)Math.PI/45f; 
 
 			  }
 			  endShape();
+			  // -- reset alpha, to draw current value at angle=0
+			  alpha = 0;
+		}
+		
+		/** display RND EEG index in  form of circle with R=index */
+		void displayEEGindexCircleRND() {
+			  noSmooth();  
+			  noFill();
+			  beginShape();
+//			  for (int i = 0; i < yvalues.length; i++) {
+			  for (int i = RNDYvalues.length-1; i >= 0 ; i--) {
+				  // -- setup width of the bars
+				  strokeWeight(2);
+				  
+				  // -- setup colors of bars
+				  if(RNDYvalues[i]<40){strokeWeight(4);}
+				  if(RNDYvalues[i]>=40 && RNDYvalues[i]<=60){strokeWeight(3);}
+				  if(RNDYvalues[i]>60){strokeWeight(2);}
+				  
+				  stroke(RNDColorsValues[i][0],RNDColorsValues[i][1],RNDColorsValues[i][2]);
+				  
+				  // -- setup width of the first 5 bars
+				  if (i==RNDYvalues.length-1){strokeWeight(10); }	 
+				  if (i==RNDYvalues.length-2){strokeWeight(8); }	  
+				  if (i==RNDYvalues.length-3){strokeWeight(6); }	 
+				  if (i==RNDYvalues.length-4){strokeWeight(5); }	 
+				  if (i==RNDYvalues.length-5){strokeWeight(4); }	
+				  
+				  // -- draw bars
+				  line(150 + 50*sin(alpha), 150 + 50*cos(alpha), 150 + (50+ RNDYvalues[i])*sin(alpha), 150 + (50+RNDYvalues[i])*cos(alpha));
+				  // -- update alpha: shift bars to the left
+				  alpha = alpha - (float)Math.PI/45f; 
+
+			  }
+			  endShape();
+			  // -- reset alpha, to draw current value at angle=0
 			  alpha = 0;
 		}
 		
@@ -437,38 +492,84 @@ public class ProcessingRNDgame extends PApplet{
 			}
 		}		
 		
-		
-		
-		public void DataCollection(int ind){
+		/** collect RND indexes to array for displaying */
+		public void DataCollectionLocalPlayer(int ind){
 	  		// -- collect indexes
-			  if (millis() - DataCollectionLastTime < DataCollectionDelay_ms) return; 
+			  if (millis() - DataCollectionLastTimeLocalPlayer < DataCollectionDelay_ms) return; 
 			  else{		
+				  	// -- setup gradient colors
+//				  indexR = (255 * indexRND ) / 100; indexG = 0;  indexB = (255 * (100 - indexRND )) / 100 ;	
+				  	// -- setup fixed 3 colors based on threshold
+				  if(ind<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+				  if(ind>=40 && ind<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
+				  if(ind>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  
+				  LocalPlayerColorsValues[LocalPlayerColorsValues.length-1][0] = indexR;
+			 	  LocalPlayerColorsValues[LocalPlayerColorsValues.length-1][1] = indexG;
+			 	  LocalPlayerColorsValues[LocalPlayerColorsValues.length-1][2] = indexB;
+			 		 
 				  switch(MainActivity.UserControl){
-				 	 case "att": yvalues[yvalues.length-1] = ind; break;
-//				 	 case "att": yvalues[yvalues.length-1] = (waveHigh/100)*ind; break;
-				 	 case "med": yvalues[yvalues.length-1] = (waveHigh/100)*ind; break;
-				 	 case "S": yvalues[yvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
-				 	 case "P": yvalues[yvalues.length-1] = (waveHigh/100)*ind/2; break;
+				  	 // -- store current index value
+				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = ind; break;
+//				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*ind; break;
+				 	 case "med": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*ind; break;
+				 	 case "S": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
+				 	 case "P": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
 				  }
-//				  yvalues[yvalues.length-1] = (waveHigh/100)*ind;
-//				  yvalues[yvalues.length-1] = 200;
 				  
-				  for (int j = 0; j < yvalues.length-1; j++) {
-					  yvalues[j] = yvalues[j+1];				    	
+				  // -- shift array, to keep only last EEGhistoryLength values
+				  for (int j = 0; j < LocalPlayerYvalues.length-1; j++) {
+					  LocalPlayerYvalues[j] = LocalPlayerYvalues[j+1];	
+					  LocalPlayerColorsValues[j][0] = LocalPlayerColorsValues[j+1][0];
+					  LocalPlayerColorsValues[j][1] = LocalPlayerColorsValues[j+1][1];
+					  LocalPlayerColorsValues[j][2] = LocalPlayerColorsValues[j+1][2];
 				  }
-//				  yvalues[yvalues.length-1] = ind*5;
 				  
-//				  displayEEGindexCircle();
-				  
-//				  alpha = alpha - (float)Math.PI/180f; 
-				  
-				  DataCollectionLastTime=millis();	
-				  
-				  
-//				  
+				  DataCollectionLastTimeLocalPlayer=millis();	
+				  			  
 			  }
 		}
 			
+		
+		/** collect RND indexes to array for displaying */
+		public void DataCollectionRND(int ind){
+	  		// -- collect indexes
+			  if (millis() - DataCollectionLastTime < DataCollectionDelay_ms) return; 
+			  else{		
+				  	// -- setup gradient colors
+//				  indexR = (255 * indexRND ) / 100; indexG = 0;  indexB = (255 * (100 - indexRND )) / 100 ;	
+				  	// -- setup fixed 3 colors based on threshold
+				  if(ind<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+				  if(ind>=40 && ind<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
+				  if(ind>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  
+				  RNDColorsValues[RNDColorsValues.length-1][0] = indexR;
+			 	  RNDColorsValues[RNDColorsValues.length-1][1] = indexG;
+			 	  RNDColorsValues[RNDColorsValues.length-1][2] = indexB;
+			 		 
+				  switch(MainActivity.UserControl){
+				  	 // -- store current index value
+				 	 case "att": RNDYvalues[RNDYvalues.length-1] = ind; break;
+//				 	 case "att": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*ind; break;
+				 	 case "med": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*ind; break;
+				 	 case "S": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
+				 	 case "P": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
+				  }
+				  
+				  // -- shift array, to keep only last EEGhistoryLength values
+				  for (int j = 0; j < RNDYvalues.length-1; j++) {
+					  RNDYvalues[j] = RNDYvalues[j+1];	
+					  RNDColorsValues[j][0] = RNDColorsValues[j+1][0];
+					  RNDColorsValues[j][1] = RNDColorsValues[j+1][1];
+					  RNDColorsValues[j][2] = RNDColorsValues[j+1][2];
+				  }
+				  
+				  DataCollectionLastTime=millis();	
+				  			  
+			  }
+		}
+			
+		
 		/** get random (Normal) distribution for userControl */
 		public void getRndNormalDistribution(){			
 			// -- create Randomly distributed time series
@@ -507,7 +608,13 @@ public class ProcessingRNDgame extends PApplet{
 		
 		/** display toroid for local/local+network player */
 		public void displayLocalPlayerToroid(float x, float y){
+				// -- setup gradient colors
 			  indexR = (255 * indexLocalPlayer) / 100; indexG = 0;  indexB = (255 * (100 - indexLocalPlayer)) / 100 ;
+			  	// -- setup fixed 3 colors based on threshold
+			  if(indexLocalPlayer<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+			  if(indexLocalPlayer>=40 && indexLocalPlayer<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
+			  if(indexLocalPlayer>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+			
 		  		// -- create dynamic ts based on indexLocalPlayer value
 			  switch(MainActivity.UserControl){
 				case "att":
@@ -539,8 +646,13 @@ public class ProcessingRNDgame extends PApplet{
 		
 		/** display toroid of the Network player */
 		public void displayNetworklPlayerToroid(float x, float y){
-			  // -- Player((random, network) (torroid on the left)
-			  indexR = (255 * indexNetworkPlayer ) / 100; indexG = 0;  indexB = (255 * (100 - indexNetworkPlayer )) / 100 ;
+				// -- setup gradient colors
+			  indexR = (255 * indexNetworkPlayer) / 100; indexG = 0;  indexB = (255 * (100 - indexNetworkPlayer )) / 100 ;
+			  	// -- setup fixed 3 colors based on threshold
+			  if(indexNetworkPlayer<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+			  if(indexNetworkPlayer>=40 && indexNetworkPlayer<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
+			  if(indexNetworkPlayer>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+			  
 			  		// -- create dynamic ts based on pS
 			  switch(MainActivity.UserControl){
 				case "att":
@@ -571,8 +683,13 @@ public class ProcessingRNDgame extends PApplet{
 		/** display toroid of the rnd player */
 		public void displayRND_Toroid(float x, float y){
 			  getRndNormalDistribution();
-			  // -- Player((random, network) (torroid on the left)
-			  indexR = (255 * indexRND ) / 100; indexG = 0;  indexB = (255 * (100 - indexRND )) / 100 ;
+			  	// -- setup gradient colors
+//			  indexR = (255 * indexRND ) / 100; indexG = 0;  indexB = (255 * (100 - indexRND )) / 100 ;
+			  	// -- setup fixed 3 colors based on threshold
+			  if(indexRND<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+			  if(indexRND>=40 && indexRND<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
+			  if(indexRND>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+			  
 			  		// -- create dynamic ts based on pS
 			  switch(MainActivity.UserControl){
 				case "att":
