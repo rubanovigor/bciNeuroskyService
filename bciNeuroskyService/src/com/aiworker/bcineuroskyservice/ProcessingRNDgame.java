@@ -57,7 +57,7 @@ public class ProcessingRNDgame extends PApplet{
 			// -- EEGindex graph
 		PFont f; 
 		int legend100,legend60, legend40, legend0, legendAdjY = 5, legendAdjX = 70;
-		int waveHigh; // vertical distance between line 0 and 100 <-> historical wave amplitude
+		float waveHigh; // vertical distance between line 0 and 100 <-> historical wave amplitude
 		// -- for wave
 //		int xspacing = 8;   // How far apart should each horizontal location be spaced
 //		int xspacing = 20; 
@@ -85,7 +85,8 @@ public class ProcessingRNDgame extends PApplet{
 			 colorMode(RGB, 255, 255, 255, 100);
 			 
 			 // -- setup historical wave graph size
-			 waveHigh = displayHeight/10; 
+//			 waveHigh = (int)displayHeight/10;
+			 waveHigh = (displayHeight*1f)/13f;
 			 
 			 
 			 f = createFont("Arial",16,true); // STEP 3 Create Font
@@ -375,7 +376,10 @@ public class ProcessingRNDgame extends PApplet{
 				  if (i==LocalPlayerYvalues.length-5){strokeWeight(4); }	
 				  
 				  // -- draw bars
-				  line(950 + 50*sin(alpha), 150 + 50*cos(alpha), 950 + (50+ LocalPlayerYvalues[i])*sin(alpha), 150 + (50+LocalPlayerYvalues[i])*cos(alpha));
+				  line(displayWidth-waveHigh-waveHigh/4 + (waveHigh/4)*sin(alpha),
+						  waveHigh+waveHigh/4 + (waveHigh/4)*cos(alpha),
+						  displayWidth-waveHigh-waveHigh/4 + ((waveHigh/4)+ LocalPlayerYvalues[i])*sin(alpha),
+						  waveHigh+waveHigh/4 + ((waveHigh/4)+LocalPlayerYvalues[i])*cos(alpha));
 				  // -- update alpha: shift bars to the left
 				  alpha = alpha - (float)Math.PI/45f; 
 
@@ -410,7 +414,10 @@ public class ProcessingRNDgame extends PApplet{
 				  if (i==RNDYvalues.length-5){strokeWeight(4); }	
 				  
 				  // -- draw bars
-				  line(150 + 50*sin(alpha), 150 + 50*cos(alpha), 150 + (50+ RNDYvalues[i])*sin(alpha), 150 + (50+RNDYvalues[i])*cos(alpha));
+				  line(waveHigh+waveHigh/4 + (waveHigh/4)*sin(alpha),
+						  waveHigh+waveHigh/4 + (waveHigh/4)*cos(alpha),
+						  waveHigh+waveHigh/4 + ((waveHigh/4)+ RNDYvalues[i])*sin(alpha),
+						  waveHigh+waveHigh/4 + ((waveHigh/4)+RNDYvalues[i])*cos(alpha));
 				  // -- update alpha: shift bars to the left
 				  alpha = alpha - (float)Math.PI/45f; 
 
@@ -510,8 +517,8 @@ public class ProcessingRNDgame extends PApplet{
 			 		 
 				  switch(MainActivity.UserControl){
 				  	 // -- store current index value
-				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = ind; break;
-//				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*ind; break;
+//				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = ind; break;
+				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*ind; break;
 				 	 case "med": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*ind; break;
 				 	 case "S": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
 				 	 case "P": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
@@ -549,8 +556,8 @@ public class ProcessingRNDgame extends PApplet{
 			 		 
 				  switch(MainActivity.UserControl){
 				  	 // -- store current index value
-				 	 case "att": RNDYvalues[RNDYvalues.length-1] = ind; break;
-//				 	 case "att": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*ind; break;
+//				 	 case "att": RNDYvalues[RNDYvalues.length-1] = ind; break;
+				 	 case "att": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*ind; break;
 				 	 case "med": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*ind; break;
 				 	 case "S": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
 				 	 case "P": RNDYvalues[RNDYvalues.length-1] = (waveHigh/100)*(ind+100)/2; break;
