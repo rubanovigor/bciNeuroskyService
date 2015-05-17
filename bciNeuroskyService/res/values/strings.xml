@@ -26,8 +26,8 @@
 	  <string name="pref_use_backend_title">Use EEG backend</string>
 	  <string name="pref_use_backend_summary">Send data to EEG backend API</string>
 	  
-	  <string name="pref_backend_settings_title">EEG backend configuration</string>
-	  <string name="pref_onlinegane_settings_title">EEG Online Game configuration</string>
+	  <string name="pref_backend_settings_title">Local Player: EEG backend configuration</string>
+	  <string name="pref_onlinegane_settings_title">Network Player: EEG backend configuration</string>
 	  
 	  <string name="pref_use_competitivegame_title">SetUp EEG Competitive Game</string>
 	  <string name="pref_use_competitivegame_summary">SetUp 2nd user Exercise ID</string>

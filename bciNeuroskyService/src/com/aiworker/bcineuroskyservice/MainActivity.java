@@ -73,7 +73,7 @@ public class MainActivity extends Activity{
         tv_Att = (TextView) findViewById(R.id.Att_label);
         tv_Med = (TextView) findViewById(R.id.Med_lable);       
         tv_NeuroskyStatus = (TextView) findViewById(R.id.NeuroskyStatus);
-        tv_test = (TextView) findViewById(R.id.tv_test);
+      
 		
                      
         serviceOnOff = (ToggleButton) findViewById(R.id.switch_service);
@@ -386,7 +386,7 @@ public class MainActivity extends Activity{
 	public void onImageButtonBack_Clicked (View v)
 	{
 		if(layer==2){switchToLayer1();}
-		if(layer==3){switchToLayer2from3();}
+//		if(layer==3){switchToLayer2from3();}
 	}
 
 	/** -- start mindOS demo*/
@@ -398,10 +398,10 @@ public class MainActivity extends Activity{
 	
 		//=====================================
 	/** -- proceed with toroid menu button */
-	public void onImageButtonToroid_Clicked (View v)
+	/*public void onImageButtonToroid_Clicked (View v)
 	{
 		switchToLayer3from2();
-	}
+	}*/
 		
 	/** -- proceed with onetoroid button */
 	public void onImageButtonCompetitionPl1VSPl2_Clicked (View v)
@@ -432,7 +432,11 @@ public class MainActivity extends Activity{
 	{
 		layer = 2;
 		ibS.setVisibility(View.INVISIBLE); ibAtt.setVisibility(View.INVISIBLE); ibMed.setVisibility(View.INVISIBLE);
-		ibmOS.setVisibility(View.VISIBLE); ibToroid.setVisibility(View.VISIBLE); ibBack.setVisibility(View.VISIBLE);
+		
+		ibCompetition.setVisibility(View.VISIBLE); ibRND.setVisibility(View.VISIBLE); ibCooperation.setVisibility(View.VISIBLE);
+		ibmOS.setVisibility(View.VISIBLE); 
+		ibBack.setVisibility(View.VISIBLE);
+					
 	}
 	
 	/** -- switch to layer 1 from layer 2*/
@@ -440,25 +444,27 @@ public class MainActivity extends Activity{
 	{
 		layer = 1;
 		ibS.setVisibility(View.VISIBLE); ibAtt.setVisibility(View.VISIBLE); ibMed.setVisibility(View.VISIBLE);
-		ibmOS.setVisibility(View.INVISIBLE); ibToroid.setVisibility(View.INVISIBLE); ibBack.setVisibility(View.INVISIBLE);
+		ibCompetition.setVisibility(View.INVISIBLE); ibRND.setVisibility(View.INVISIBLE); ibCooperation.setVisibility(View.INVISIBLE);
+		ibmOS.setVisibility(View.INVISIBLE); 
+		ibBack.setVisibility(View.INVISIBLE);
 	}
 	
 	/** -- switch to layer 2 from layer 3 */
-	public void switchToLayer2from3 ()
+	/*public void switchToLayer2from3 ()
 	{
 		layer = 2;
 		ibmOS.setVisibility(View.VISIBLE); ibToroid.setVisibility(View.VISIBLE); ibBack.setVisibility(View.VISIBLE);
 		ibCompetition.setVisibility(View.INVISIBLE); ibRND.setVisibility(View.INVISIBLE); ibCooperation.setVisibility(View.INVISIBLE);
-	}
+	}*/
 	
 	/** -- switch to layer 3 from layer 2 (toroid selection) */
-	public void switchToLayer3from2 ()
+	/*public void switchToLayer3from2 ()
 	{
 		layer = 3;
 		ibCompetition.setVisibility(View.VISIBLE); ibRND.setVisibility(View.VISIBLE); ibCooperation.setVisibility(View.VISIBLE);
 		ibBack.setVisibility(View.VISIBLE);
 		ibmOS.setVisibility(View.INVISIBLE); ibToroid.setVisibility(View.INVISIBLE);
-	}
+	}*/
 	
 	/** -- proceed with backend switch settings button */
 	public void onImageButtonBackendSettings_Clicked (View v)
@@ -473,7 +479,7 @@ public class MainActivity extends Activity{
 	        	// -- backend_profile_id
 	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
 	    	    APIClient.setProfileId(0);	 
-	    	    profileId = 0;
+	    	    profileId = 0; 
 //		        tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_profile_id", "0"));
 		    }else{
 		    	APIClient.setProfileId(Integer.parseInt(sharedPrefs.getString("pref_backend_profile_id", "0")));
@@ -482,7 +488,7 @@ public class MainActivity extends Activity{
 		    }
 	        
 	        	// -- backend_Exercise_id
-	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
+	        if (sharedPrefs.getString("pref_backend_exercise_id", "0").isEmpty()){
 	        	APIClient.setExerciseId(0);
 	        	exerciseId = 0;
 		    }else{
@@ -512,7 +518,7 @@ public class MainActivity extends Activity{
 		    }
 	        
 	        // -- backend_Exercise_id
-	        if (sharedPrefs.getString("pref_backend_netuser_profile_id", "0").isEmpty()){
+	        if (sharedPrefs.getString("pref_backend_netuser_exercise_id", "0").isEmpty()){
 	        	APIClient.setExerciseIdNetUser(0);
 	        	exerciseIdNetUser = 0;
 		    }else{

@@ -21,22 +21,23 @@
       
      <ToggleButton
            android:id="@+id/switch_backend"
-           android:layout_width="50dp"
-           android:layout_height="50dp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
            android:layout_below="@+id/text_view_header"
            android:layout_alignParentRight="true"
            android:layout_marginTop="5dp"
-           android:textOff="backend"
-		   android:textOn="backend" 
+           android:textOff="backend off"
+		   android:textOn="backend on" 
 		   android:onClick="onSwitchClickedBackEnd"
-		   android:textSize="10sp" 
+		   android:textSize="13sp" 
 		   android:visibility="visible"	/>
           
      <ImageButton
 		    android:id="@+id/ib_backend_settings"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:layout_toLeftOf="@+id/switch_backend"
+		    android:layout_below="@+id/switch_backend"
+		    android:layout_alignParentRight="true"
 		    android:layout_marginTop="5dp"
 		    android:background="@android:color/transparent"
 		    android:src="@drawable/settings"
@@ -52,6 +53,7 @@
            android:layout_marginTop="5dp"
            android:textOff="service off"
 		   android:textOn="service on" 
+		   android:textSize="13sp" 
 		   android:onClick="onSwitchClickedService"
 		   android:visibility="visible"	/>
 
@@ -74,7 +76,7 @@
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_centerVertical="true"
-           android:layout_alignBottom="@+id/NeuroskyStatus"
+           android:layout_below="@+id/ib_backend_settings"
            android:layout_alignParentLeft="true"
            android:padding="5dip"
            android:text="ATT"
@@ -88,7 +90,7 @@
            android:padding="5dip"
            android:text="MED"
            android:layout_centerVertical="true"
-           android:layout_alignBottom="@+id/NeuroskyStatus"
+           android:layout_below="@+id/ib_backend_settings"
 		   android:layout_alignParentRight="true"
            android:textColor="#ffffff"
            android:textSize="12sp" />
@@ -102,7 +104,8 @@
 		    android:layout_marginTop="20dp"
 		    android:background="@android:color/transparent"
 		    android:src="@drawable/ic_info"
-		    android:onClick="onImageButtonInfo_Clicked" />
+		    android:onClick="onImageButtonInfo_Clicked"
+		    android:visibility="invisible" />
 
 		<ImageButton
 		    android:id="@+id/ib_s"
@@ -112,7 +115,7 @@
 		    android:layout_centerHorizontal="true"
 		    android:layout_centerVertical="true"
 		    android:background="@android:color/transparent"
-		    android:src="@drawable/ic_s"
+		    android:src="@drawable/s_red"
 		    android:onClick="onImageButtonS_Clicked" />
 
 		<ImageButton
@@ -120,9 +123,10 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_toLeftOf="@+id/ib_s"
+		    android:layout_margin="20dp"
 		    android:layout_centerVertical="true"
 		    android:background="@android:color/transparent"
-		    android:src="@drawable/ic_a" 
+		    android:src="@drawable/att_red" 
 		    android:onClick="onImageButtonA_Clicked"/>
 
 		<ImageButton
@@ -132,17 +136,19 @@
 		    android:layout_toRightOf="@+id/ib_s"
 		    android:layout_centerVertical="true"
 		    android:background="@android:color/transparent"
-		    android:src="@drawable/ic_m" 
+		    android:src="@drawable/med_red" 
+		    android:layout_margin="20dp"
 		    android:onClick="onImageButtonM_Clicked"/>
 
 		<ImageButton
 		    android:id="@+id/ib_mOS"
+		    android:layout_margin="20dp"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:background="@android:color/transparent"
 		    android:src="@drawable/ic_mos"
-		    android:layout_toLeftOf="@+id/ib_s"
-		    android:layout_centerVertical="true"
+		    android:layout_toLeftOf="@+id/ib_back"
+		    android:layout_below="@+id/ib_competition"
 		    android:visibility="invisible"	
 		    android:onClick="onImageButtonMindOS_Clicked" />
 
@@ -151,7 +157,7 @@
 		    android:id="@+id/ib_rnd"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:layout_margin="30dp"
+		    android:layout_margin="20dp"
 		    android:layout_centerHorizontal="true"
 		    android:layout_centerVertical="true"
 		    android:background="@android:color/transparent"
@@ -168,6 +174,7 @@
 		    android:background="@android:color/transparent"
 		    android:src="@drawable/competition" 
 		    android:visibility="invisible" 
+		    android:layout_margin="20dp"
 		    android:onClick="onImageButtonCompetitionPl1VSPl2_Clicked"  />
 
 		<ImageButton
@@ -179,6 +186,7 @@
 		    android:background="@android:color/transparent"
 		    android:src="@drawable/cooperation" 
 		    android:visibility="invisible" 
+		    android:layout_margin="20dp"
 		    android:onClick="onImageButtonCooperationPl1Pl2VSRND_Clicked"  />
 				
 		
@@ -191,6 +199,7 @@
 		    android:background="@android:color/transparent"
 		    android:src="@drawable/ic_back" 
 		    android:visibility="invisible"  
+		    android:layout_margin="20dp"
 		    android:onClick="onImageButtonBack_Clicked" />
 
 		<ImageButton
@@ -205,17 +214,6 @@
 		    android:visibility="invisible" 
 		    android:onClick="onImageButtonToroid_Clicked"   />
 		
-		 <TextView
-           android:id="@+id/tv_test"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:padding="5dip"
-           android:text="test field"
-           android:gravity="center"
-           android:layout_centerHorizontal="true"
-           android:layout_alignParentBottom="true"
-           android:textColor="#ffffff"
-           android:textSize="12sp" 
-           android:visibility="visible" />
+
 		
 </RelativeLayout>
