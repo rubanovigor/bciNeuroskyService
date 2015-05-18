@@ -56,14 +56,14 @@ public final class R {
         public static final int background=0x7f06001c;
         public static final int editTextCurrentActivity=0x7f06000e;
         public static final int ib_att=0x7f060014;
-        public static final int ib_back=0x7f06001a;
+        public static final int ib_back=0x7f060017;
         public static final int ib_backend_settings=0x7f060010;
         public static final int ib_competition=0x7f060018;
-        public static final int ib_cooperation=0x7f060019;
+        public static final int ib_cooperation=0x7f06001a;
         public static final int ib_info=0x7f060012;
         public static final int ib_mOS=0x7f060016;
         public static final int ib_med=0x7f060015;
-        public static final int ib_rnd=0x7f060017;
+        public static final int ib_rnd=0x7f060019;
         public static final int ib_s=0x7f060013;
         public static final int ib_toroid=0x7f06001b;
         public static final int send_message=0x7f060008;
