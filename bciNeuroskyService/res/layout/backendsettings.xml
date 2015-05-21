@@ -64,10 +64,10 @@
      
      <EditTextPreference
         android:key="pref_backend_netuser_profile_id"
-        android:title="@string/pref_backend_profile_id_title"
-        android:summary="@string/pref_backend_profile_id_summary"
-        android:dialogTitle="@string/pref_backend_profile_id_dialog_title"
-        android:dialogMessage="@string/pref_backend_profile_id_dialog_message"
+        android:title="@string/pref_backend_netuser_profile_id_title"
+        android:summary="@string/pref_backend_netuser_profile_id_summary"
+        android:dialogTitle="@string/pref_backend_netuser_profile_id_dialog_title"
+        android:dialogMessage="@string/pref_backend_netuser_profile_id_dialog_message"
         android:inputType="number"
         android:defaultValue=""      />
      <EditTextPreference
@@ -78,6 +78,7 @@
         android:dialogMessage="@string/pref_backend_netuser_exercise_id_dialog_message"
         android:defaultValue=""
         android:inputType="number" />
+     <!--
      <EditTextPreference
         android:key="pref_backend_netuser_token"
         android:title="@string/pref_backend_token_title"
@@ -85,7 +86,7 @@
         android:dialogTitle="@string/pref_backend_token_dialog_title"
         android:dialogMessage="@string/pref_backend_token_dialog_message"
         android:defaultValue=""   />
-     
+     -->
 
    </PreferenceCategory>
      

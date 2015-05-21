@@ -55,10 +55,37 @@ public class Algorithm {
 	     return DynamicTS;
 	}
 	
-	/** convert S to dynamic movement*/
-	public static float CircularMovement(float acceleration, float accMin, float accMax){
-		float accelAlpha = (float) Math.toDegrees(acceleration);
-		return accelAlpha;
+	/** convert Index (Att or Med) to dynamic movement/rotational acceleration*/
+	public static float AMtoDynamicMovement(int TS, float DynamicTS,
+			float tsMin, float tsMax, float graviton,
+			float ClusterX1, float ClusterDeltaX){
+		 // -- limit time-series
+	     if (DynamicTS>=tsMax)	{DynamicTS = tsMax; }          
+	     if (DynamicTS<=tsMin )	{DynamicTS = tsMin; }
+	     
+	     // -- update DynamicTS depending on TS value
+	     if(TS >= ClusterX1+ClusterDeltaX )				   { DynamicTS = DynamicTS + graviton; }
+		 	else {
+			 	if (TS < ClusterX1+ClusterDeltaX )		   { DynamicTS = DynamicTS - graviton; }              
+				}
+	     
+
+	     if (DynamicTS>=tsMax)	{DynamicTS = tsMax; }          
+	     if (DynamicTS<=tsMin )	{DynamicTS = tsMin; }
+	     
+	     return DynamicTS;
+	}
+	
+	/** 
+	 * convert acceleration to angular dynamic movement
+	 * <p>
+	 * accelAlpha = accelAlpha + (float) Math.toDegrees(acceleration) 
+	 * @param alpha - rotational angle
+	 * @param acceleration - rotational acceleration
+	 * @return alpha*/
+	public static float CircularMovement(float alpha, float acceleration){	
+		alpha = alpha + (float) Math.toDegrees(acceleration);
+		return alpha;
 	}
 
 }

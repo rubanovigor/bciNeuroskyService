@@ -19,10 +19,27 @@
 	  <string name="pref_backend_token_summary">Your token to access EEG backend API</string>
 	  <string name="pref_backend_token_dialog_title">Token</string>
 	  <string name="pref_backend_token_dialog_message">Enter token</string>
+	  
 	  <string name="pref_backend_host_title">Backend host</string>
 	  <string name="pref_backend_host_summary">Host name without http(s):// and /</string>
 	  <string name="pref_backend_host_dialog_title">Host</string>
 	  <string name="pref_backend_host_dialog_message">Enter host name</string>
+	  
+	        
+	  <string name="pref_backend_netuser_profile_id_title">Network User Profile ID</string>
+	  <string name="pref_backend_netuser_profile_id_summary">Network User profile ID on the EEG backend</string>
+	  <string name="pref_backend_netuser_profile_id_dialog_title">Network User Profile ID</string>
+	  <string name="pref_backend_netuser_profile_id_dialog_message">Enter Network User profile ID</string>
+	  
+	  <string name="pref_backend_netuser_exercise_id_title">Network User Exercise ID</string>
+	  <string name="pref_backend_netuser_exercise_id_summary">Network User exercise ID on the EEG backend</string>
+	  <string name="pref_backend_netuser_exercise_id_dialog_title">Network User Exercise ID</string>
+	  <string name="pref_backend_netuser_exercise_id_dialog_message">Enter Network User exercise ID</string>
+	  
+	  
+	  
+	  
+	  
 	  <string name="pref_use_backend_title">Use EEG backend</string>
 	  <string name="pref_use_backend_summary">Send data to EEG backend API</string>
 	  
@@ -35,9 +52,5 @@
 	  <string name="pref_use_cooperationgame_title">SetUp EEG Cooperation Game</string>
 	  <string name="pref_use_cooperationgame_summary">SetUp 2nd user Exercise ID</string>
 	  
-	  <string name="pref_backend_netuser_exercise_id_title">Network User Exercise ID</string>
-	  <string name="pref_backend_netuser_exercise_id_summary">Network User exercise ID on the EEG backend</string>
-	  <string name="pref_backend_netuser_exercise_id_dialog_title">Network User Exercise ID</string>
-	  <string name="pref_backend_netuser_exercise_id_dialog_message">Enter Network User exercise ID</string>
 	  
 </resources>

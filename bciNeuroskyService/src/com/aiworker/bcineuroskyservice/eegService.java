@@ -113,7 +113,9 @@ public class eegService extends Service{
 		msgToActivityDestroyed.what = 3; // -- disconnected 		    						
 		MainActivity.mUiHandler.sendMessage(msgToActivityDestroyed);	
 		
-		cancelNotification();
+		// -- comment in specific case
+//		cancelNotification();
+		
 		mIsServiceRunning = false; // make it false, as the service is already destroyed.
 		
 		
@@ -186,7 +188,10 @@ public class eegService extends Service{
 				MainActivity.mUiHandler.sendMessage(msgToActivity);  
             	Toast.makeText(this, "Bluetooth is OFF", Toast.LENGTH_SHORT).show();
 				NeuroskyCurrentStatus = "Bluetooth is OFF, turn it ON to start!";
-				displayNotification();
+				
+				// -- comment in specific case
+//				displayNotification();
+				
                 return;
             }
             if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
@@ -228,7 +233,10 @@ public class eegService extends Service{
 		    					    msgToActivity.obj  = "connecting . . ."; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
 		    						NeuroskyCurrentStatus = "Neurosky connecting . . .";
-		    						displayNotification();
+		    						
+		    						// -- comment in specific case
+//		    						displayNotification();
+		    						
 			                        break;
 			                    case TGDevice.STATE_CONNECTED:
 			                    	Log.i("STATE_CONNECTED", "TGDevice");
@@ -238,15 +246,17 @@ public class eegService extends Service{
 		    					    msgToActivity.obj  = "connected"; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity);
 		    						NeuroskyCurrentStatus = "Neurosky connected";
-		    						displayNotification();
+		    						
+		    						// -- comment in specific case
+//		    						displayNotification();
 		    						
 		    						APIClient.setProfileId(MainActivity.profileId);
 		    						APIClient.setExerciseId(MainActivity.exerciseId);
 		    						APIClient.setToken(MainActivity.token);
 		    						
-		    						APIClient.setProfileIdNetUser(MainActivity.profileIdNetUser);
-		    						APIClient.setExerciseIdNetUser(MainActivity.exerciseIdNetUser);
-		    						APIClient.setTokenNetUser(MainActivity.tokenNetUser);
+//		    						APIClient.setProfileIdNetUser(MainActivity.profileIdNetUser);
+//		    						APIClient.setExerciseIdNetUser(MainActivity.exerciseIdNetUser);
+//		    						APIClient.setTokenNetUser(MainActivity.tokenNetUser);
 		    				    	
 			                        break;
 			                    case TGDevice.STATE_DISCONNECTED:
@@ -255,7 +265,10 @@ public class eegService extends Service{
 			    					msgToActivity.obj  = "neurosky mindwave mobile\ndisconnected"; 		    						
 			    					MainActivity.mUiHandler.sendMessage(msgToActivity);  
 			    					NeuroskyCurrentStatus = "Neurosky mindwave mobile disconnected";
-			    					displayNotification();
+			    					
+			    					// -- comment in specific case
+//			    					displayNotification();
+			    					
 			                    	break;
 			                    case TGDevice.STATE_NOT_FOUND:
 			                    	Log.i("STATE_NOT_FOUND", "TGDevice");
@@ -263,7 +276,10 @@ public class eegService extends Service{
 		    					    msgToActivity.obj  = "neurosky mindwave mobile\nwas not found"; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity); 
 		    						NeuroskyCurrentStatus = "Neurosky mindwave mobile was not found";
-		    						displayNotification();
+		    						
+		    						// -- comment in specific case
+//		    						displayNotification();
+		    						
 			                        break;
 			                    case TGDevice.STATE_NOT_PAIRED:
 			                    	Log.i("STATE_NOT_PAIRED", "TGDevice");
@@ -272,7 +288,10 @@ public class eegService extends Service{
 		    					    msgToActivity.obj  = "neurosky mindwave mobile\nnot paired"; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity); 
 		    						NeuroskyCurrentStatus = "Neurosky mindwave mobile not paired";
-		    						displayNotification();
+		    						
+		    						// -- comment in specific case
+//		    						displayNotification();
+		    						
 			                        break;
 
 			                    }
@@ -293,7 +312,12 @@ public class eegService extends Service{
 			                    break;
 			                case TGDevice.MSG_ATTENTION:
 			                    // -- send Attention data to the backend in async way
-			                	if(MainActivity.backend){ APIClient.collectAttention(null, msg.arg1);}
+			                	if(MainActivity.backend){
+			                		APIClient.collectAttention(null, msg.arg1);
+			                		Log.e("ir_send data to backend", String.valueOf(msg.arg1));
+			                	}
+//			                	APIClient.collectAttention(null, msg.arg1);
+			                	
 			                	
 			                	int[] iam={0, 0};
 			                		// -- local user
@@ -315,7 +339,9 @@ public class eegService extends Service{
 //			                    msgToActivity.arg2 = At_pl2;
 	    					    msgToActivity.obj  = "connected"; 		    						
 	    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
-	    						updateNotification();
+	    						
+	    						// -- comment in specific case
+//	    						updateNotification();
 	    						
 			                    //mBroadcaster.broadcastIntentWithA(At);  
 			                    //setUpAsForeground("Att: " + String.valueOf(At) + "||" + " Med: " + String.valueOf(Med) );
@@ -345,7 +371,9 @@ public class eegService extends Service{
 			                    msgToActivity.arg2 = Med;
 	    					    msgToActivity.obj  = "connected"; 		    						
 	    					    MainActivity.mUiHandler.sendMessage(msgToActivity);	
-	    					    updateNotification();
+	    					    
+	    					    // -- comment in specific case
+//	    					    updateNotification();
 	    					    
 			                    //mBroadcaster.broadcastIntentWithM(Med);  
 			                    //tv_Med.setText(String.valueOf(Med));

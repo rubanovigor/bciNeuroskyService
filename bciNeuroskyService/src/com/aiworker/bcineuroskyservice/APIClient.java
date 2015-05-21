@@ -97,6 +97,7 @@ public class APIClient {
         } else {
             backendConfigured = false;
         }
+        Log.e("ir_backendConfigured", String.valueOf(backendConfigured));
     }
 
     public static void collectMeditation(Context context, int meditation) {
@@ -110,7 +111,11 @@ public class APIClient {
         if (backendEnabled && backendConfigured) {
             sendDataIfRequired();
             statsCollector.addAttention(attention);
+            
         }
+        Log.e("ir_collectAttention backendEnabled", String.valueOf(backendEnabled));
+        Log.e("ir_collectAttention backendConfigured", String.valueOf(backendConfigured));
+        Log.e("ir_collectAttention", String.valueOf(attention));
     }
 
     public static void collectEEGPower(Context context, TGEegPower eegPower) {

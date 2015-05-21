@@ -267,8 +267,10 @@ public class MainActivity extends Activity{
 	    
 	    if (State_backendOnOff) {
 	    	backend = true;
+	    	APIClient.setBackendEnabled(true);
 	    } else {
 	        backend = false;
+	        APIClient.setBackendEnabled(false);
 	    }
 	}
 	
@@ -389,7 +391,8 @@ public class MainActivity extends Activity{
 	/** -- start mindOS demo*/
 	public void onImageButtonMindOS_Clicked (View v)
 	{
-		Intent intent = new Intent(this, ProcessingWave.class);
+//		Intent intent = new Intent(this, ProcessingWave.class);
+		Intent intent = new Intent(this, ProcessingMindOS.class);
 		startActivity(intent);
 	}
 	
