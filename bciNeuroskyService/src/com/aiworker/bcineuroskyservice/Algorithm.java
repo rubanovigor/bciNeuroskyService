@@ -85,6 +85,7 @@ public class Algorithm {
 	 * @return alpha*/
 	public static float CircularMovement(float alpha, float acceleration){	
 		alpha = alpha + (float) Math.toDegrees(acceleration);
+		if (alpha>=360){alpha = alpha - 360;}
 		return alpha;
 	}
 

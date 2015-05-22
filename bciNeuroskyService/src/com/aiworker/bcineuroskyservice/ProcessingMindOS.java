@@ -53,7 +53,7 @@ public class ProcessingMindOS extends PApplet {
 	
 	// -- Sierpinski fractal iteration (from 0 to 7)
 //	PVector vert1, vert2, vert3;
-	int SierpF_iterN = 1; float DynamicIterrN=SierpF_iterN;
+	int SierpF_iterN = 2; float DynamicIterrN=SierpF_iterN;
 	/** array for vertices coordinates of main Sierpinski triangle */	  float [] SierpTrV = new float [6];
 	/** icons width/hieght linked to main Sierpinski triangle radius */   int iconW, iconH; 
 	int rMainF, rFixed, rSelectionF;
@@ -68,9 +68,10 @@ public class ProcessingMindOS extends PApplet {
 		// -- time to selecting command after rotationAccel become 0 
 	float TimeToSelectMax = 70, TimeToSelect = TimeToSelectMax, TimeToSelectDecreaseStep = 0.5f;
 		// -- rotational angle in degree 
-	float rotationAngle = 90; 
+	float rotationAngle = 0;  //float rotationAngle = 90; 
 		
-	float rotationAngleDemo = 0; float demoTT = 5f; float demoTTd = 0.025f;
+//	float rotationAngleDemo = 0;
+	float demoTT = 5f; float demoTTd = 0.025f;
 	
 	boolean FirstRun = true; boolean action_cancel_flag = false;
 	
@@ -81,7 +82,7 @@ public class ProcessingMindOS extends PApplet {
 	int temp=0;
 	
 	// -- Setting up a background and icons images
-	PImage imgBack; 
+	PImage imgBack, imgCancel; 
 	/** array for storing icons of the layer1*/ PImage[] imgL1 = new PImage[3]; 
 	/** array for storing icons of the layer2*/ PImage[] imgL1L2 = new PImage[9]; 
 	PImage imgMusic;
@@ -124,9 +125,10 @@ public class ProcessingMindOS extends PApplet {
 		  SierpTrV[4] = displayWidth/2;							SierpTrV[5] = displayHeight/2 - 1.5f*displayHeight/10;
 		  		  
 		  // -- using Processing's loadImage method to import an image and store it in the variable imgBack
-//		  imgBack = loadImage("blacksquare.png");
-		  imgBack = loadImage("blacksquare_big.png");
+		  imgBack = loadImage("blacksquare.png");
+//		  imgBack = loadImage("blacksquare_big.png");
 //		  imgBack = loadImage("b3_big.png");
+		  imgCancel = loadImage("cancel.png");
 		  		// -- icons
 //		  imgMusic = loadImage("icon_musicplayer.png");
 //				  imgMusicPlay = loadImage("icon_play_white.png");
@@ -174,17 +176,17 @@ public class ProcessingMindOS extends PApplet {
 
 	public void draw(){
 		  // -- setup background color (when wo image)
-//		  background(0,0,0); 
+		 // background(0,0,0); 
 		  // -- basic lighting setup
 		//  lights(); // -- not working on some devices
 		  noFill();		  
 		  // -- setup background image
-		  image(imgBack, 0, 0);
-		  
+		 // image(imgBack, 0, 0);
+		   
 		  //=========================================
 		  	// -- get EEG index from background service and convert it to angular movement
 		  EEGindex = getEEG();	 
-//		  EEGindex = 65;
+		  //EEGindex = 65;
 		  ProcessingAlgorithm();
 		  rotationAngle = Algorithm.CircularMovement(rotationAngle, rotationAccel);
 		  
@@ -256,7 +258,7 @@ public class ProcessingMindOS extends PApplet {
 				  	if(SierpF_iterN>=2 && SierpF_iterN<5){ drawSectorLines();  	}
 			  }
 			  // -- transition to next level (animation)
-			  if(SierpF_iterN>=7){
+			  if(SierpF_iterN==7){
 				  	// -- decrease radius of active triangle (fade out)
 					  rMainF = rMainF - 30;  if (rMainF<=0){rMainF = 0;}
 					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rMainF, 0, 0);
@@ -275,6 +277,7 @@ public class ProcessingMindOS extends PApplet {
 					      drawFirstLayerIcons(imgL1L2[Icon2DisplIndex+0],imgL1L2[Icon2DisplIndex+1],imgL1L2[Icon2DisplIndex+2]);
 					  }
 			  }
+			  
 			  
 //			  if(SierpF_iterN==7){	
 //				  launchApp("com.aiworkereeg.launcher");
@@ -320,7 +323,7 @@ public class ProcessingMindOS extends PApplet {
 			  				
 
 			  // -- transition to next level (animation)
-			  if(SierpF_iterN>=7){
+			  if(SierpF_iterN==7){
 				  	// -- decrease radius of active triangle (fade out)
 					  rMainF = rMainF - 30;  if (rMainF<=0){rMainF = 0;}
 					  SierpTrV = getTriangleVertCoord(rotationAngle, displayWidth/2, displayHeight/2, rMainF, 0, 0);
@@ -348,16 +351,36 @@ public class ProcessingMindOS extends PApplet {
 
 		  }
 		  
+		  // -- display cancel image (in case acceleration change from 0 before time to select become 0 )
+//		  if(action_cancel_flag) {image(imgCancel, displayWidth/2-iconW, displayHeight/2-iconH, 2*iconW, 2*iconH);}
 		  
+		  // -- display EEG index
+		  textFont(f,45);
+		  switch(MainActivity.UserControl){
+			case "att":
+				if(EEGindex>=50){fill(0, 102, 153);} else{fill(255,255,255);}
+				break;
+			case "med":
+				if(EEGindex>=50){fill(0, 102, 153);} else{fill(255,255,255);}	
+				break;
+			case "S":
+				if(EEGindex>=-30 && EEGindex<=30){fill(0, 102, 153);} else{fill(255,255,255);}
+				break;
+		  }
+		  
+		  image(imgBack, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.9f*rFixed);
+		  text(EEGindex, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.8f*rFixed);
+		
 		  //============================
 		  // -- developing messages
-		  textFont(f,32);
+		 /* textFont(f,32);
 		  fill(0, 102, 153);
 		  text("t:"+ TimeToSelect,0, displayHeight/30); 
-		  text("At" + EEGindex ,0, displayHeight/20); 
+		  text(EEGindex ,0, displayHeight/20); 
 		  text(rotationAccel ,0, displayHeight/15); 
 		  text(SierpF_iterN ,0, displayHeight/12);
-		  text(String.valueOf(FirstRun) ,0, displayHeight/10); 
+		  text(String.valueOf(FirstRun) ,0, displayHeight/10); */
+		 // text(String.valueOf(rotationAngle) ,0, displayHeight/8); 
 		  	  
 		  	  
 	}
@@ -606,23 +629,39 @@ public class ProcessingMindOS extends PApplet {
 			  break;
 		}
 	  	    
+		// -- setup number of Fractal iterations to show depending on rotational acceleration
+//		if (rotationAccel<=0){rotationAccel = 0;}
+//		if (rotationAccel>=rotationAccelDeviation){SierpF_iterN = 2;}
+//		if (rotationAccel>0.0f && rotationAccel<rotationAccelDeviation && FirstRun==true){SierpF_iterN = 2;}
+//		if (rotationAccel>0.0f && rotationAccel<rotationAccelDeviation && FirstRun==false){SierpF_iterN = 3;}
+		
+		
 		// -- check if user want to send command
     		// -- check if rotational speed = 0 
 	    if (rotationAccel<=0f && FirstRun==false){
 	    	action_cancel_flag = false;
 	    		// -- decrease time to selecting command
-	    	TimeToSelect = TimeToSelect - TimeToSelectDecreaseStep;
-	    	if (TimeToSelect<0f){ TimeToSelect = 0f;}
+//	    	TimeToSelect = TimeToSelect - TimeToSelectDecreaseStep;
+//	    	if (TimeToSelect<0f){ TimeToSelect = 0f;}
 	    		// -- display time to select by changing Fractal iteration
-	    	SierpF_iterN = (int) (7 - TimeToSelect/10);
+	    	//SierpF_iterN = (int) (7 - TimeToSelect/10);
+			TimeToSelect = TimeToSelect - TimeToSelectDecreaseStep;
+			if (TimeToSelect>=55f && TimeToSelect<70f){SierpF_iterN = 4;}
+			if (TimeToSelect>=40f && TimeToSelect<55f){SierpF_iterN = 5;}
+			if (TimeToSelect>=25f && TimeToSelect<40f){SierpF_iterN = 6;}
+			if (TimeToSelect>=10f && TimeToSelect<25f){SierpF_iterN = 7;}
+			if (TimeToSelect<=0){TimeToSelect = 0;}
 	    }
+	    
+	    
 	    	// -- cancel command selection if rotational speed are not 0 anymore
 	    if (rotationAccel>0f && TimeToSelect>0f && TimeToSelect<TimeToSelectMax){
 	    		 // -- reset parameters
-	    		 action_cancel_flag = true;
+	    		 action_cancel_flag = true; 
 	    		 TimeToSelect = TimeToSelectMax;
-	    		 SierpF_iterN = 0;
-	    		 FirstRun = true;	    	
+	    		 SierpF_iterN = 2;
+	    		 FirstRun = true;	   
+	    		 
 	    }
 	    
 	    	// -- prevent selecting command till rotationAccel will sufficiently increase
@@ -643,27 +682,41 @@ public class ProcessingMindOS extends PApplet {
 										  int Icon2DisplIndexl, int sIteml){
 		float[] resl = new float[6]; 
 		
+		// -- setup number of Fractal iterations to show depending on rotational acceleration
 		if (rAccel<=0){rAccel = 0;}
-		if (rAccel>=0.4f){SierpFiterN = 2;}
-		if (rAccel>=0.0f && rAccel<0.4f){SierpFiterN = 3;}
-			  
+		if (rAccel>=rotationAccelDeviation){SierpFiterN = 2;  action_cancel_flag = false;}
+		if (rAccel>0.0f && rAccel<rotationAccelDeviation && FirstRun==true){SierpFiterN = 2;} 
+		if (rAccel>0.0f && rAccel<rotationAccelDeviation && FirstRun==false){SierpFiterN = 3;}
+		
 			  // -- process of selecting items when rotation stops
-		if (rAccel==0 && FirstRun == false && TimeToSelect==0){		  
-			demoTT = demoTT - demoTTd;
-			if (demoTT<=0){demoTT = 0;}
-			if (demoTT>=4f && demoTT<4.5f){SierpFiterN = 4;}
-			if (demoTT>=3f && demoTT<4f){SierpFiterN = 5;}
-			if (demoTT>=2f && demoTT<3f){SierpFiterN = 6;}
-			if (demoTT>=1f && demoTT<2f){SierpFiterN = 7;}
+//		if (rAccel==0 && FirstRun == false && TimeToSelect==0){		  
+//			demoTT = demoTT - demoTTd;
+//			if (demoTT<=0){demoTT = 0;}
+//			if (demoTT>=4f && demoTT<4.5f){SierpFiterN = 4;}
+//			if (demoTT>=3f && demoTT<4f){SierpFiterN = 5;}
+//			if (demoTT>=2f && demoTT<3f){SierpFiterN = 6;}
+//			if (demoTT>=1f && demoTT<2f){SierpFiterN = 7;}
+			
+		if (rAccel==0 && FirstRun == false){	
+//			TimeToSelect = TimeToSelect - TimeToSelectDecreaseStep;
+//			if (TimeToSelect>=55f && TimeToSelect<70f){SierpFiterN = 4;}
+//			if (TimeToSelect>=40f && TimeToSelect<55f){SierpFiterN = 5;}
+//			if (TimeToSelect>=25f && TimeToSelect<40f){SierpFiterN = 6;}
+//			if (TimeToSelect>=10f && TimeToSelect<25f){SierpFiterN = 7;}
+//			if (TimeToSelect<=0){TimeToSelect = 0;}
 			
 //			if (demoTT>=0f && demoTT<1f){SierpFiterN = 8; mindOSlayerl=2; rAccel = 0.5f; demoTT=5f;}
 		  
 
 			if(mindOSlayerl==1){
-				if (demoTT>=0f && demoTT<1f){
-					SierpFiterN = 8; mindOSlayerl=2; 
+//				if (demoTT>=0f && demoTT<1f){
+				if (TimeToSelect == 0){
+					SierpFiterN = 8; mindOSlayerl=2;
 //					rAccel = 0.5f; 
-					demoTT=5f;
+//					demoTT=5f;
+					TimeToSelect=rotationAccelMax;
+					action_cancel_flag = false;
+					FirstRun = true;
 				}
 				
 				if (rAngle>300 || rAngle<=60){Icon2DisplIndexl = 0;  sIteml = 0;}
@@ -671,11 +724,15 @@ public class ProcessingMindOS extends PApplet {
 				if (rAngle>180 && rAngle<=300){Icon2DisplIndexl = 3; sIteml = 2;}
 			}
 			
-			if(mindOSlayerl==2){
-				if (demoTT>=0f && demoTT<1f){
+			
+			if(mindOSlayerl==2 && FirstRun==false){
+//				if (demoTT>=0f && demoTT<1f){
+				if (TimeToSelect == 0){
 					SierpFiterN = 8; mindOSlayerl=3;
 //					rAccel = 0.5f;
-					demoTT=5f;
+					TimeToSelect=rotationAccelMax;
+					action_cancel_flag = false;
+//					demoTT=5f;
 				}
 				
 				if (rAngle>300 || rAngle<=60){sIteml = 0;  temp = 0; }
@@ -685,27 +742,31 @@ public class ProcessingMindOS extends PApplet {
 			}
 			
 		}
+		
+		// -- create array for return statement
 		resl[0]= rAccel; resl[1]= SierpFiterN; resl[2]= mindOSlayerl; 
 		resl[3] = Icon2DisplIndexl; resl[4] = sIteml;
 		return resl;
 	   
 	}
 	
+	
 	/** draw sector lines for selected items */
 	public void drawSectorLines(){
 	  	// -- draw sector lines
-	  	stroke(176,48,96);    strokeWeight(10);  strokeCap(ROUND);
+		stroke(176,48,96);    strokeWeight(10);  strokeCap(ROUND);
 	  	line((float) (displayWidth/2 + (rFixed-displayWidth/20) * Math.sin(Math.toRadians(60)) ), 
 	  		 (float) (displayHeight/2 + (rFixed-displayWidth/20) * Math.cos(Math.toRadians(60)) ), 
 	  		 (float) (displayWidth/2 + rFixed * Math.sin(Math.toRadians(60)) ), 
 	  		 (float) (displayHeight/2 + rFixed * Math.cos(Math.toRadians(60)) ));
 
+	  	stroke(255,255,255);
 	  	line((float) (displayWidth/2 + (rFixed-displayWidth/20) * Math.sin(Math.toRadians(180)) ), 
 		  		 (float) (displayHeight/2 + (rFixed-displayWidth/20) * Math.cos(Math.toRadians(180)) ), 
 		  		 (float) (displayWidth/2 + rFixed * Math.sin(Math.toRadians(180)) ), 
 		  		 (float) (displayHeight/2 + rFixed * Math.cos(Math.toRadians(180)) ));
 	  	
-//	  	stroke(255, 0, 0);    strokeWeight(10);  strokeCap(ROUND);
+	  	stroke(176,48,96);
 	  	line((float) (displayWidth/2 + (rFixed-displayWidth/20) * Math.sin(Math.toRadians(300)) ), 
 	  		 (float) (displayHeight/2 + (rFixed-displayWidth/20) * Math.cos(Math.toRadians(300)) ), 
 	  		 (float) (displayWidth/2 + rFixed * Math.sin(Math.toRadians(300)) ), 
