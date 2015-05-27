@@ -203,8 +203,11 @@ public class APIClient {
 //    	return "http://" + host + "/profiles/" + profileId + "/exercises/" + exerciseId +
 //    			"/statistics/latest.json?auth_token=" + token;
     	
+//    	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
+//    			"/statistics/latest.json?auth_token=" + tokenNetUser;
+    	
     	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
-    			"/statistics/latest.json?auth_token=" + tokenNetUser;
+    			"/statistics/latest.json?auth_token=" + token;
     } 
 
     
