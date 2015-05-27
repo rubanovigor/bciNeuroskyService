@@ -53,7 +53,7 @@ public final class R {
         public static final int Med_lable=0x7f06000c;
         public static final int NeuroskyStatus=0x7f06000a;
         public static final int TextCurrentActivityInfo=0x7f06000d;
-        public static final int background=0x7f06001c;
+        public static final int background=0x7f060020;
         public static final int editTextCurrentActivity=0x7f06000e;
         public static final int ib_att=0x7f060014;
         public static final int ib_back=0x7f060017;
@@ -77,8 +77,12 @@ public final class R {
         public static final int stop_service=0x7f060006;
         public static final int switch_backend=0x7f06000f;
         public static final int switch_service=0x7f060011;
+        public static final int text_view_AttGradient=0x7f06001d;
+        public static final int text_view_AttGradient_label=0x7f06001c;
+        public static final int text_view_MedGradient=0x7f06001f;
+        public static final int text_view_MedGradient_label=0x7f06001e;
         public static final int text_view_header=0x7f060000;
-        public static final int tv=0x7f06001d;
+        public static final int tv=0x7f060021;
     }
     public static final class layout {
         public static final int activity_apps=0x7f030000;

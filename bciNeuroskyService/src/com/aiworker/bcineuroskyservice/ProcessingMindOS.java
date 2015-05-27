@@ -362,7 +362,7 @@ public class ProcessingMindOS extends PApplet {
 //		  if(action_cancel_flag) {image(imgCancel, displayWidth/2-iconW, displayHeight/2-iconH, 2*iconW, 2*iconH);}
 		  
 		  // -- display EEG index
-		  textFont(f,25);
+		  
 		  switch(MainActivity.UserControl){
 			case "att":
 				if(EEGindex>=50){fill(0, 255, 0);//fill(0, 102, 153);
@@ -377,12 +377,14 @@ public class ProcessingMindOS extends PApplet {
 				break;
 		  }  
 		  // -- for standard android devices
-//		  image(imgBackforNum, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.9f*rFixed);
-//		  text(EEGindex, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.8f*rFixed);
+		  textFont(f,40);
+		  image(imgBackforNum, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.9f*rFixed);
+		  text(EEGindex, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.8f*rFixed);
 		  
 		  // -- for glass only
-		  image(imgBackforNum, displayWidth/2 + 0.73f*rFixed, displayHeight/2 - 1.6f*rFixed);
-		  text(EEGindex, displayWidth/2 + 0.73f*rFixed, displayHeight/2 - 0.8f*rFixed);
+//		  textFont(f,25);
+//		  image(imgBackforNum, displayWidth/2 + 0.73f*rFixed, displayHeight/2 - 1.6f*rFixed);
+//		  text(EEGindex, displayWidth/2 + 0.73f*rFixed, displayHeight/2 - 0.8f*rFixed);
 		  
 		  
 		  //============================
