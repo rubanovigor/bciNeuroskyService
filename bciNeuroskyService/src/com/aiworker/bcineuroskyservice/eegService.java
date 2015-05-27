@@ -254,6 +254,8 @@ public class eegService extends Service{
 		    						APIClient.setExerciseId(MainActivity.exerciseId);
 		    						APIClient.setToken(MainActivity.token);
 		    						
+		    						
+		    								    						
 //		    						APIClient.setProfileIdNetUser(MainActivity.profileIdNetUser);
 //		    						APIClient.setExerciseIdNetUser(MainActivity.exerciseIdNetUser);
 //		    						APIClient.setTokenNetUser(MainActivity.tokenNetUser);

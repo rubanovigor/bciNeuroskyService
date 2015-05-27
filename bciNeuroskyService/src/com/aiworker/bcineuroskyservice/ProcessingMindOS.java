@@ -17,9 +17,11 @@ import java.io.IOException;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class ProcessingMindOS extends PApplet {
+	
 	// -- local EEG variables
 	int pAt=0; int pMed=0; int pS=0; int pP=0;
 	// -- variables to manipulate torroids colors dynamics
@@ -82,7 +84,7 @@ public class ProcessingMindOS extends PApplet {
 	int temp=0;
 	
 	// -- Setting up a background and icons images
-	PImage imgBack, imgCancel; 
+	PImage imgBack, imgCancel, imgBackforNum; 
 	/** array for storing icons of the layer1*/ PImage[] imgL1 = new PImage[3]; 
 	/** array for storing icons of the layer2*/ PImage[] imgL1L2 = new PImage[9]; 
 	PImage imgMusic;
@@ -106,7 +108,10 @@ public class ProcessingMindOS extends PApplet {
 	float [] res = new float [6]; 
 
 	
-	public void setup(){	 
+	public void setup(){	
+		 // getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		// orientation(LANDSCAPE);
+		 
 //		  frameRate(15);  // Animate slowly
 //		  noFill();
 		  smooth();
@@ -129,6 +134,7 @@ public class ProcessingMindOS extends PApplet {
 //		  imgBack = loadImage("blacksquare_big.png");
 //		  imgBack = loadImage("b3_big.png");
 		  imgCancel = loadImage("cancel.png");
+		  imgBackforNum = loadImage("blacksquare2.png");
 		  		// -- icons
 //		  imgMusic = loadImage("icon_musicplayer.png");
 //				  imgMusicPlay = loadImage("icon_play_white.png");
@@ -175,6 +181,7 @@ public class ProcessingMindOS extends PApplet {
 	}
 
 	public void draw(){
+		//getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		  // -- setup background color (when wo image)
 		 // background(0,0,0); 
 		  // -- basic lighting setup
@@ -355,22 +362,29 @@ public class ProcessingMindOS extends PApplet {
 //		  if(action_cancel_flag) {image(imgCancel, displayWidth/2-iconW, displayHeight/2-iconH, 2*iconW, 2*iconH);}
 		  
 		  // -- display EEG index
-		  textFont(f,45);
+		  textFont(f,25);
 		  switch(MainActivity.UserControl){
 			case "att":
-				if(EEGindex>=50){fill(0, 102, 153);} else{fill(255,255,255);}
+				if(EEGindex>=50){fill(0, 255, 0);//fill(0, 102, 153);
+				} else{fill(255,255,255);}
 				break;
 			case "med":
-				if(EEGindex>=50){fill(0, 102, 153);} else{fill(255,255,255);}	
+				if(EEGindex>=50){fill(0, 255, 0);//fill(0, 102, 153);
+				} else{fill(255,255,255);}	
 				break;
 			case "S":
 				if(EEGindex>=-30 && EEGindex<=30){fill(0, 102, 153);} else{fill(255,255,255);}
 				break;
-		  }
+		  }  
+		  // -- for standard android devices
+//		  image(imgBackforNum, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.9f*rFixed);
+//		  text(EEGindex, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.8f*rFixed);
 		  
-		  image(imgBack, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.9f*rFixed);
-		  text(EEGindex, displayWidth/2 + 0.8f*rFixed, displayHeight/2 - 0.8f*rFixed);
-		
+		  // -- for glass only
+		  image(imgBackforNum, displayWidth/2 + 0.73f*rFixed, displayHeight/2 - 1.6f*rFixed);
+		  text(EEGindex, displayWidth/2 + 0.73f*rFixed, displayHeight/2 - 0.8f*rFixed);
+		  
+		  
 		  //============================
 		  // -- developing messages
 		 /* textFont(f,32);

@@ -1,0 +1,225 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/blacksquare"
+    android:keepScreenOn="true"
+    tools:context="com.aiworker.bcineuroskyservice.MainActivity" >
+
+	<TextView
+        android:id="@+id/text_view_header"
+		android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+  		android:gravity="center_horizontal"
+  		android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:text="mindhack.me service for collecting data" />
+
+      
+     <ToggleButton
+           android:id="@+id/switch_backend"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_below="@+id/text_view_header"
+           android:layout_alignParentRight="true"
+           android:layout_marginTop="5dp"
+           android:textOff="backend off"
+		   android:textOn="backend on" 
+		   android:onClick="onSwitchClickedBackEnd"
+		   android:textSize="13sp" 
+		   android:visibility="invisible"	/>
+          
+     <ImageButton
+		    android:id="@+id/ib_backend_settings"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/switch_backend"
+		    android:layout_alignParentRight="true"
+		    android:layout_marginTop="5dp"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/settings"
+		    android:onClick="onImageButtonBackendSettings_Clicked"
+		    android:visibility="invisible" />
+     		
+     	
+     <ToggleButton
+           android:id="@+id/switch_service"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_below="@+id/text_view_header"
+           android:layout_alignParentLeft="true"
+           android:layout_marginTop="5dp"
+           android:textOff="service off"
+		   android:textOn="service on" 
+		   android:textSize="13sp" 
+		   android:onClick="onSwitchClickedService"
+		   android:visibility="visible"	/>
+
+      
+     <TextView
+           android:id="@+id/NeuroskyStatus"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_below="@+id/text_view_header"
+           android:layout_centerHorizontal="true"
+           android:layout_marginTop="54dp"
+           android:padding="5dip"
+           android:text="Neurosky Status"
+           android:gravity="center_horizontal"
+           android:textColor="#ffffff"
+           android:textSize="12sp" />
+
+       <TextView
+           android:id="@+id/Att_label"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerVertical="true"
+           android:layout_below="@+id/ib_backend_settings"
+           android:layout_alignParentLeft="true"
+           android:padding="5dip"
+           android:text="ATT"
+           android:textColor="#ffffff"
+           android:textSize="12sp" />
+       
+       <TextView
+           android:id="@+id/Med_lable"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:padding="5dip"
+           android:text="MED"
+           android:layout_centerVertical="true"
+           android:layout_below="@+id/ib_backend_settings"
+		   android:layout_alignParentRight="true"
+           android:textColor="#ffffff"
+           android:textSize="12sp" />
+
+		<ImageButton
+		    android:id="@+id/ib_info"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/NeuroskyStatus"
+		    android:layout_centerHorizontal="true"
+		    android:layout_marginTop="20dp"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/ic_info"
+		    android:onClick="onImageButtonInfo_Clicked"
+		    android:visibility="invisible" />
+
+		<ImageButton
+		    android:id="@+id/ib_s"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_margin="20dp"
+		    android:layout_centerHorizontal="true"
+		    android:layout_centerVertical="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/s_red"
+		    android:onClick="onImageButtonS_Clicked" 
+		    android:visibility="invisible" />
+
+		<ImageButton
+		    android:id="@+id/ib_att"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toLeftOf="@+id/ib_s"
+		    android:layout_margin="20dp"
+		    android:layout_centerVertical="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/att_red" 
+		    android:onClick="onImageButtonA_Clicked"
+		    android:visibility="invisible" />
+
+		<ImageButton
+		    android:id="@+id/ib_med"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/ib_s"
+		    android:layout_centerVertical="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/med_red" 
+		    android:layout_margin="20dp"
+		    android:onClick="onImageButtonM_Clicked"
+		    android:visibility="invisible"/>
+
+		<ImageButton
+		    android:id="@+id/ib_mOS"
+		    android:layout_margin="20dp"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/ic_mos"
+		    android:layout_toLeftOf="@+id/ib_back"
+		    android:layout_below="@+id/ib_competition"	
+		    android:onClick="onImageButtonMindOS_Clicked" 
+		    android:visibility="invisible"/>
+
+		
+		<ImageButton
+		    android:id="@+id/ib_rnd"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_margin="20dp"
+		    android:layout_centerHorizontal="true"
+		    android:layout_centerVertical="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/rnd" 
+		    android:onClick="onImageButtonYouRND_Clicked"
+		    android:visibility="invisible"  />
+
+		<ImageButton
+		    android:id="@+id/ib_competition"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toLeftOf="@+id/ib_rnd"
+		    android:layout_centerVertical="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/competition" 
+		    android:layout_margin="20dp"
+		    android:onClick="onImageButtonCompetitionPl1VSPl2_Clicked" 
+		    android:visibility="invisible" />
+
+		<ImageButton
+		    android:id="@+id/ib_cooperation"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/ib_rnd"
+		    android:layout_centerVertical="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/cooperation" 
+		    android:layout_margin="20dp"
+		    android:onClick="onImageButtonCooperationPl1Pl2VSRND_Clicked" 
+		    android:visibility="invisible" />
+				
+		
+		<ImageButton
+		    android:id="@+id/ib_back"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/ib_s"
+		    android:layout_centerHorizontal="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/ic_back"  
+		    android:layout_margin="20dp"
+		    android:onClick="onImageButtonBack_Clicked"
+		    android:visibility="invisible" />
+
+		<ImageButton
+		    android:id="@+id/ib_toroid"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_margin="20dp"
+		    android:layout_centerHorizontal="true"
+		    android:layout_centerVertical="true"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/ic_toroid"
+		    android:onClick="onImageButtonToroid_Clicked" 
+		    android:visibility="invisible"  />
+		
+
+		
+</RelativeLayout>
+

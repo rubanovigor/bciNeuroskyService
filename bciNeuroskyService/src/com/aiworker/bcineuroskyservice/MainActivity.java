@@ -3,6 +3,8 @@ package com.aiworker.bcineuroskyservice;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.Notification;
@@ -17,6 +19,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -67,6 +70,12 @@ public class MainActivity extends Activity{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app_ui_main);
+//		setContentView(R.layout.app_ui_main_only_service);
+//		setContentView(R.layout.app_ui_glas);
+		
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		
+		
 		 Log.e("onCreate", "MainActivity"); 
 		
         tv_Att = (TextView) findViewById(R.id.Att_label);
@@ -247,6 +256,10 @@ public class MainActivity extends Activity{
 			serviceIntent.putExtra("UserName", userName);
 			serviceIntent.putExtra("UserActivity", userActivity);
 			startService(serviceIntent);
+			
+			//-- for glass only
+//			Intent intent = new Intent(this, ProcessingMindOS.class);
+//			startActivity(intent);
 			  
 	    } else { //Service will only stop if it is already running
 			stopService(new Intent(this, eegService.class));
@@ -332,6 +345,8 @@ public class MainActivity extends Activity{
     public void onResume() {        
         super.onResume();
         Log.e("onResume", "MainActivity"); 
+        
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
         // load backend settings
         updateBackendSettings();   
