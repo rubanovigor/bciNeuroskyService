@@ -1,5 +1,8 @@
 package com.aiworker.bcineuroskyservice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,7 +53,7 @@ public class MainActivity extends Activity{
     public static int profileIdNetUser, exerciseIdNetUser; public static String tokenNetUser = "";
     
 	
-	TextView tv_Med, tv_Att, tv_NeuroskyStatus; 
+	TextView tv_Med, tv_Att, tv_NeuroskyStatus, tv_AttGradient, tv_MedGradient; 
 	public static int At=42; public static int Med=42;
 	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
 	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
@@ -66,11 +69,16 @@ public class MainActivity extends Activity{
 	public static String UserControl="att";
 	public static String toroidGameType="you";
 	
+//	long avgTime=0, avgTimeMax = 300000;
+//	double avgAtt=50, avgMed=50;
+//	ArrayList<Double> avgAttTotal = new ArrayList<Double>();
+//	ArrayList<Double> avgMedTotal = new ArrayList<Double>();
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.app_ui_main);
-//		setContentView(R.layout.app_ui_main_only_service);
+//		setContentView(R.layout.app_ui_main);
+		setContentView(R.layout.app_ui_main_only_service);
 //		setContentView(R.layout.app_ui_glas);
 		
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -81,6 +89,8 @@ public class MainActivity extends Activity{
         tv_Att = (TextView) findViewById(R.id.Att_label);
         tv_Med = (TextView) findViewById(R.id.Med_lable);       
         tv_NeuroskyStatus = (TextView) findViewById(R.id.NeuroskyStatus);
+//        tv_AttGradient = (TextView) findViewById(R.id.text_view_AttGradient);
+//        tv_MedGradient = (TextView) findViewById(R.id.text_view_MedGradient);
       
 		
                      
@@ -100,7 +110,7 @@ public class MainActivity extends Activity{
         ibCooperation = (ImageButton) findViewById(R.id.ib_cooperation); 
         ibRND = (ImageButton) findViewById(R.id.ib_rnd); 
 
-        
+    
 	    // -- for glass testing only
 	   /* Button StopServiceButton=(Button)findViewById(R.id.stop_service);
 	    StopServiceButton.setVisibility(View.INVISIBLE); 
@@ -134,6 +144,8 @@ public class MainActivity extends Activity{
 	          				State_serviceOnOff = true; 
 	          				serviceOnOff.setChecked(State_serviceOnOff); 
 	          				tv_NeuroskyStatus.setText(NeuroskyStatus);
+	          				
+//	          				avgTime = System.currentTimeMillis();
 	          			}
 	          			if(NeuroskyStatus.equals("connecting . . .") ){
 	          				State_serviceOnOff = true; 
@@ -158,6 +170,28 @@ public class MainActivity extends Activity{
 	          			Med = msg.arg2; tv_Med.setText(String.valueOf(Med));
 	          			NeuroskyStatus = msg.obj.toString();
 	          			tv_NeuroskyStatus.setText("connected");
+	          			
+	          			
+//	          			// -- calculate AVG
+//	          			if (System.currentTimeMillis() - avgTime <=avgTimeMax){
+//	          				avgAttTotal.add((double) At);	
+//	          				avgMedTotal.add((double) Med);
+//	          				tv_AttGradient.setText("collecting first 5min of data...");
+//	          				tv_MedGradient.setText("collecting first 5min of data...");
+//	          				
+//	          			}else{	   
+//	          				avgAttTotal.remove(0);
+//	          				avgAttTotal.add((double) At);	
+//	          				avgAtt = calculateAverage(avgAttTotal);
+//	          				
+//	          				tv_AttGradient.setText("  " + String.valueOf(0.1f*(Math.round(10f*(50-avgAtt)/50))) + " %");
+//	          					          				
+//	          				avgMedTotal.remove(0);
+//	          				avgMedTotal.add((double) Med);
+//	          				avgMed = calculateAverage(avgMedTotal);
+//	          				tv_MedGradient.setText("  " + String.valueOf(0.1f*(Math.round(10f*(50-avgMed)/50))) + " %");
+//	          			}
+	          			
 	          			break;
 	          		
 	          		case 3: // service Destroyed
@@ -178,6 +212,17 @@ public class MainActivity extends Activity{
         	}
         };
 	}
+	
+//	private double calculateAverage(ArrayList<Double> marks) {
+//		  double sum = 0;
+//		  if(!marks.isEmpty()) {		  
+//		      for (int i=0; i< marks.size(); i++) {
+//		        sum += marks.get(i);
+//		    }
+//		    return sum / marks.size();
+//		  }
+//		  return sum;
+//	}
 	
 	//start the service
 	public void onClickStartServie(View V)
@@ -285,6 +330,12 @@ public class MainActivity extends Activity{
 	        backend = false;
 	        APIClient.setBackendEnabled(false);
 	    }
+	    
+	    // -- saving status        
+        	// -- backend
+//        SharedPreferences ss2 = getSharedPreferences(tBackEnd, 0);
+//        SharedPreferences.Editor ee2 = ss2.edit(); 
+//        ee2.putBoolean(Key_State_backendOnOff, State_backendOnOff); ee2.commit();
 	}
 	
 	
@@ -351,6 +402,7 @@ public class MainActivity extends Activity{
         // load backend settings
         updateBackendSettings();   
         
+        Log.e("onResume", "MainActivity: restore settings"); 
 	    // -- service
 		SharedPreferences ss1 = getSharedPreferences(tService, 0);
 		State_serviceOnOff =  ss1.getBoolean(Key_State_serviceOnOff, false);
@@ -359,7 +411,20 @@ public class MainActivity extends Activity{
 		// -- backend
 		SharedPreferences ss2 = getSharedPreferences(tBackEnd, 0);
 		State_backendOnOff =  ss2.getBoolean(Key_State_backendOnOff, false);
-        	backendOnOff.setChecked(State_backendOnOff);			
+        	backendOnOff.setChecked(State_backendOnOff);	
+        	
+        Log.e("onResume", "MainActivity: update backend toggle button"); 
+    	// -- Is the toggle on?
+    		State_backendOnOff = backendOnOff.isChecked();
+    	    
+    	    if (State_backendOnOff) {
+    	    	backend = true;
+    	    	APIClient.setBackendEnabled(true);
+    	    } else {
+    	        backend = false;
+    	        APIClient.setBackendEnabled(false);
+    	    }
+    	    
     }   
 
 	

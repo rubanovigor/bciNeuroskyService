@@ -218,5 +218,50 @@
 		    android:onClick="onImageButtonToroid_Clicked"   />
 		
 
+			<TextView
+		        android:id="@+id/text_view_AttGradient_label"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		  		android:gravity="center_horizontal"
+				android:layout_centerHorizontal="true"
+				android:layout_centerVertical="true"
+		  		android:textColor="#FFFFFF"
+		        android:textSize="14sp"
+		        android:text="relative change in the Att for the last 5 min" 
+		        android:visibility="invisible" />
+			<TextView
+		        android:id="@+id/text_view_AttGradient"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		  		android:gravity="center_horizontal"
+		  	    android:layout_centerHorizontal="true"
+				android:layout_below="@+id/text_view_AttGradient_label"
+		  		android:textColor="#FFFFFF"
+		        android:textSize="20sp"
+		        android:text="-" 
+		        android:visibility="invisible" />
+			
+			<TextView
+		        android:id="@+id/text_view_MedGradient_label"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		  		android:gravity="center_horizontal"
+		  	    android:layout_below="@+id/text_view_AttGradient"
+				android:layout_centerHorizontal="true"
+		  		android:textColor="#FFFFFF"
+		        android:textSize="14sp"
+		        android:text="relative change in the Med for the last 5 min" 
+		        android:visibility="invisible" />
+			<TextView
+		        android:id="@+id/text_view_MedGradient"
+				android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		  		android:gravity="center_horizontal"
+		  		android:layout_below="@+id/text_view_MedGradient_label"
+		  	    android:layout_centerHorizontal="true"
+		  		android:textColor="#FFFFFF"
+		        android:textSize="20sp"
+		        android:text="-" 
+		        android:visibility="invisible" />
 		
 </RelativeLayout>
