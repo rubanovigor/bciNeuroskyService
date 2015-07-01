@@ -77,8 +77,8 @@ public class MainActivity extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		setContentView(R.layout.app_ui_main);
-		setContentView(R.layout.app_ui_main_only_service);
+		setContentView(R.layout.app_ui_main);
+//		setContentView(R.layout.app_ui_main_only_service);
 //		setContentView(R.layout.app_ui_glas);
 		
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -487,7 +487,8 @@ public class MainActivity extends Activity{
 	public void onImageButtonCompetitionPl1VSPl2_Clicked (View v)
 	{
 		toroidGameType="pl1 vs pl2";
-		Intent intent = new Intent(this, ProcessingRNDgame.class);		startActivity(intent);
+//		Intent intent = new Intent(this, ProcessingRNDgame.class);		startActivity(intent);
+		Intent intent = new Intent(this, ProcessingMultiUser.class);		startActivity(intent);
 	}
 	
 	/** -- proceed button rnd vs you */

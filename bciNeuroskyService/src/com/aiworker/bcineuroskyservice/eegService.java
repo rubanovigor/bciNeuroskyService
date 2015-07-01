@@ -325,7 +325,7 @@ public class eegService extends Service{
 			                		// -- local user
 //			                	if(MainActivity.backend){ iam = APIClient.getData();}
 			                		// -- network user
-//			                	if(MainActivity.backend){ iam = APIClient.getData();}
+			                	if(MainActivity.backend){ iam = APIClient.getData();}
 //			                	//if(MainActivity.backend){ iam = APIClient.getDataNetUser();}
 			                	
 			                	At_pl2 = iam[0]; 

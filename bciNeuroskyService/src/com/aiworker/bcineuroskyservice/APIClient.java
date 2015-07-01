@@ -197,15 +197,7 @@ public class APIClient {
           return indexes;
     }
  
-    public static String getPartnerLatestDataURL() {
-//    	return "http://" + host + "/profiles/" + profileId + "/exercises/" + exerciseId +
-//    			"/statistics/latest_stat.json?auth_token=" + token;
-//    	return "http://" + host + "/profiles/" + profileId + "/exercises/" + exerciseId +
-//    			"/statistics/latest.json?auth_token=" + token;
-    	
-//    	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
-//    			"/statistics/latest.json?auth_token=" + tokenNetUser;
-    	
+    public static String getPartnerLatestDataURL() {   	
     	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
     			"/statistics/latest.json?auth_token=" + token;
     } 
