@@ -26,17 +26,21 @@
 	  <string name="pref_backend_host_dialog_message">Enter host name</string>
 	  
 	        
-	  <string name="pref_backend_netuser_profile_id_title">Network User Profile ID</string>
-	  <string name="pref_backend_netuser_profile_id_summary">Network User profile ID on the EEG backend</string>
+	  <string name="pref_backend_netuser_profile_id_title">Profile ID</string>
+	  <string name="pref_backend_netuser_profile_id_summary"></string>
 	  <string name="pref_backend_netuser_profile_id_dialog_title">Network User Profile ID</string>
 	  <string name="pref_backend_netuser_profile_id_dialog_message">Enter Network User profile ID</string>
 	  
-	  <string name="pref_backend_netuser_exercise_id_title">Network User Exercise ID</string>
-	  <string name="pref_backend_netuser_exercise_id_summary">Network User exercise ID on the EEG backend</string>
+	  <string name="pref_backend_netuser_exercise_id_title">Exercise ID</string>
+	  <string name="pref_backend_netuser_exercise_id_summary"></string>
 	  <string name="pref_backend_netuser_exercise_id_dialog_title">Network User Exercise ID</string>
 	  <string name="pref_backend_netuser_exercise_id_dialog_message">Enter Network User exercise ID</string>
 	  
 	  
+	  
+	  <string name="pref_settings_player2_title">Network Player 2</string>
+	  <string name="pref_settings_player3_title">Network Player 3</string>
+	  <string name="pref_settings_player4_title">Network Player 4</string>
 	  
 	  
 	  
@@ -44,7 +48,6 @@
 	  <string name="pref_use_backend_summary">Send data to EEG backend API</string>
 	  
 	  <string name="pref_backend_settings_title">Local Player: EEG backend configuration</string>
-	  <string name="pref_onlinegane_settings_title">Network Player: EEG backend configuration</string>
 	  
 	  <string name="pref_use_competitivegame_title">SetUp EEG Competitive Game</string>
 	  <string name="pref_use_competitivegame_summary">SetUp 2nd user Exercise ID</string>

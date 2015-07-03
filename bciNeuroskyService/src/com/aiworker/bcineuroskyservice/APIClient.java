@@ -39,7 +39,8 @@ public class APIClient {
 		// -- backend settings for local user
     private static int profileId, exerciseId;	private static String token;
     	// -- backend settings for network user
-    private static int profileIdNetUser, exerciseIdNetUser; public static String tokenNetUser = "";
+    private static int profileIdPlayer2, exerciseIdPlayer2, profileIdPlayer3, exerciseIdPlayer3, profileIdPlayer4, exerciseIdPlayer4;
+//    public static String tokenNetUser = "";
     
 //    private static String host = "neuro-backend.herokuapp.com";
     private static String host = "neurolyzer.herokuapp.com";
@@ -83,13 +84,6 @@ public class APIClient {
         backendEnabled = enabled;
         checkConfiguration();
     }
-
-    // -- for network user
-    public static void setProfileIdNetUser(int pId) {profileIdNetUser = pId;  checkConfiguration(); }
-    public static void setExerciseIdNetUser(int eId){exerciseIdNetUser = eId; checkConfiguration(); }
-    public static void setTokenNetUser(String tkn)  {tokenNetUser = tkn;      checkConfiguration(); }
-
-      
     
     private static void checkConfiguration() {
         if (profileId > 0 && exerciseId > 0 && token != "" && host != "") {
@@ -172,11 +166,27 @@ public class APIClient {
     }
     
     // ====================================
-    public static int[] getData() {
+    // -- for network user
+    public static void setProfileIdPlayer2(int pId) {profileIdPlayer2 = pId;  checkConfiguration(); }
+    public static void setExerciseIdPlayer2(int eId){exerciseIdPlayer2 = eId; checkConfiguration(); }
+    
+    
+    /** -- get PLAYER 2 data from the server */
+   
+    
+    public static void setProfileIdPlayer3(int pId) {profileIdPlayer3 = pId;  checkConfiguration(); }
+    public static void setExerciseIdPlayer3(int eId){exerciseIdPlayer3 = eId; checkConfiguration(); }
+    
+    public static void setProfileIdPlayer4(int pId) {profileIdPlayer4 = pId;  checkConfiguration(); }
+    public static void setExerciseIdPlayer4(int eId){exerciseIdPlayer4 = eId; checkConfiguration(); }
+    
+    
+    
+    public static int[] getDataPlayer2() {
 //	     String ts1 = getCurrentTimeUTC();
 //	     if (lastTS1 != null && !lastTS1.equals(ts1)) {
 	//      AsyncHttpClient client = new AsyncHttpClient();
-            client.get(null, getPartnerLatestDataURL(), null, null, new AsyncHttpResponseHandler(){
+            client.get(null, getPlayer2LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
                 @Override
                 public void onSuccess(String response) {
                 	msgFromBackend = response;
@@ -197,10 +207,62 @@ public class APIClient {
           return indexes;
     }
  
-    public static String getPartnerLatestDataURL() {   	
-    	return "http://" + host + "/profiles/" + profileIdNetUser + "/exercises/" + exerciseIdNetUser +
+    
+    public static String getPlayer2LatestDataURL() {   	
+    	return "http://" + host + "/profiles/" + profileIdPlayer2 + "/exercises/" + exerciseIdPlayer2 +
     			"/statistics/latest.json?auth_token=" + token;
     } 
+    
+    public static int[] getDataPlayer3() {
+           client.get(null, getPlayer2LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
+               @Override
+               public void onSuccess(String response) {
+               	msgFromBackend = response;
+               	indexes = parseMsg(msgFromBackend);
+               	Log.e("ir_Response", response); 
+//               	Log.e("ir_indexes", String.valueOf(indexes)); 
+               }
+
+              @Override
+                public void onFailure(Throwable e) {
+           	   Log.e("error","ir_OnFailure!", e);
+                }
+           });
+         return indexes;
+   }
+
+   
+   public static String getPlayer3LatestDataURL() {   	
+   	return "http://" + host + "/profiles/" + profileIdPlayer3 + "/exercises/" + exerciseIdPlayer3 +
+   			"/statistics/latest.json?auth_token=" + token;
+   } 
+    
+   
+   public static int[] getDataPlayer4() {
+          client.get(null, getPlayer2LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
+              @Override
+              public void onSuccess(String response) {
+              	msgFromBackend = response;
+              	indexes = parseMsg(msgFromBackend);
+              	Log.e("ir_Response", response); 
+//              	Log.e("ir_indexes", String.valueOf(indexes)); 
+              }
+
+             @Override
+               public void onFailure(Throwable e) {
+          	   Log.e("error","ir_OnFailure!", e);
+               }
+          });
+        return indexes;
+  }
+
+  
+  public static String getPlayer4LatestDataURL() {   	
+  	return "http://" + host + "/profiles/" + profileIdPlayer4 + "/exercises/" + exerciseIdPlayer4 +
+  			"/statistics/latest.json?auth_token=" + token;
+  } 
+    
+    
 
     
 //    public static int[] parseMsg(String msg) {

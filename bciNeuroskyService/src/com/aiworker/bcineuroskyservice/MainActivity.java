@@ -556,6 +556,7 @@ public class MainActivity extends Activity{
 	
 	/** -- proceed with backend settings button */
 	private void updateBackendSettings() {
+			// ====LOCAL PLAYER=============
 	        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	        	// -- backend_profile_id
 	        if (sharedPrefs.getString("pref_backend_profile_id", "0").isEmpty()){
@@ -583,33 +584,57 @@ public class MainActivity extends Activity{
 //	        tv_NeuroskyStatus.setText(sharedPrefs.getString("pref_backend_token", ""));
 	        
 	        // -- rest string type settings
-	        APIClient.setHost(sharedPrefs.getString("pref_backend_host", "neuro-backend.herokuapp.com"));
-	        APIClient.setBackendEnabled(sharedPrefs.getBoolean("pref_use_backend", false));
+//	        APIClient.setHost(sharedPrefs.getString("pref_backend_host", "neuro-backend.herokuapp.com"));
+//	        APIClient.setBackendEnabled(sharedPrefs.getBoolean("pref_use_backend", false));
 	        
 	        
-	        // ===================================================
-	        // -- network user profile settings
-	        // -- backend_profile_id
-	        if (sharedPrefs.getString("pref_backend_netuser_profile_id", "0").isEmpty()){
-	    	    APIClient.setProfileIdNetUser(0);	 
-	    	    profileIdNetUser = 0;
+	     	// ====LOCAL PLAYER 2===========
+	        	// -- Profile ID
+	        if (sharedPrefs.getString("pref_backend_player2_profile_id", "0").isEmpty()){
+	    	    APIClient.setProfileIdPlayer2(0); // profileIdNetUser = 0;
 		    }else{
-		    	APIClient.setProfileIdNetUser(Integer.parseInt(sharedPrefs.getString("pref_backend_netuser_profile_id", "0")));
-		    	profileIdNetUser = Integer.parseInt(sharedPrefs.getString("pref_backend_netuser_profile_id", "0"));
+		    	APIClient.setProfileIdPlayer2(Integer.parseInt(sharedPrefs.getString("pref_backend_player2_profile_id", "0")));
+//		    	profileIdNetUser = Integer.parseInt(sharedPrefs.getString("pref_backend_player2_profile_id", "0"));
 		    }
 	        
-	        // -- backend_Exercise_id
-	        if (sharedPrefs.getString("pref_backend_netuser_exercise_id", "0").isEmpty()){
-	        	APIClient.setExerciseIdNetUser(0);
-	        	exerciseIdNetUser = 0;
+	        	// -- Exercise ID
+	        if (sharedPrefs.getString("pref_backend_player2_exercise_id", "0").isEmpty()){
+	        	APIClient.setExerciseIdPlayer2(0); // exerciseIdNetUser = 0;
 		    }else{
-		    	APIClient.setExerciseIdNetUser(Integer.parseInt(sharedPrefs.getString("pref_backend_netuser_exercise_id", "0")));
-		    	exerciseIdNetUser = Integer.parseInt(sharedPrefs.getString("pref_backend_netuser_exercise_id", "0"));
-		    }	        
+		    	APIClient.setExerciseIdPlayer2(Integer.parseInt(sharedPrefs.getString("pref_backend_player2_exercise_id", "0")));
+//		    	exerciseIdNetUser = Integer.parseInt(sharedPrefs.getString("pref_backend_player2_exercise_id", "0"));
+		    }	  
 	        
-	     	// -- backend_Token_id
-	        APIClient.setTokenNetUser(sharedPrefs.getString("pref_backend_netuser_token", ""));
-	        tokenNetUser = sharedPrefs.getString("pref_backend_netuser_token", "");
+	     	// ====LOCAL PLAYER 3===========
+	        	// -- Profile ID
+	        if (sharedPrefs.getString("pref_backend_player3_profile_id", "0").isEmpty()){
+	    	    APIClient.setProfileIdPlayer3(0); 
+		    }else{
+		    	APIClient.setProfileIdPlayer3(Integer.parseInt(sharedPrefs.getString("pref_backend_player3_profile_id", "0")));
+		    }
+	        
+	        	// -- Exercise ID
+	        if (sharedPrefs.getString("pref_backend_player3_exercise_id", "0").isEmpty()){
+	        	APIClient.setExerciseIdPlayer3(0); 
+		    }else{
+		    	APIClient.setExerciseIdPlayer3(Integer.parseInt(sharedPrefs.getString("pref_backend_player3_exercise_id", "0")));
+		    }
+	        
+	     	// ====LOCAL PLAYER 4===========
+	        	// -- Profile ID
+	        if (sharedPrefs.getString("pref_backend_player4_profile_id", "0").isEmpty()){
+	    	    APIClient.setProfileIdPlayer4(0); 
+		    }else{
+		    	APIClient.setProfileIdPlayer4(Integer.parseInt(sharedPrefs.getString("pref_backend_player4_profile_id", "0")));
+		    }
+	        
+	        	// -- Exercise ID
+	        if (sharedPrefs.getString("pref_backend_player4_exercise_id", "0").isEmpty()){
+	        	APIClient.setExerciseIdPlayer4(0); 
+		    }else{
+		    	APIClient.setExerciseIdPlayer4(Integer.parseInt(sharedPrefs.getString("pref_backend_player4_exercise_id", "0")));
+		    }
+	        
 	        
 	        
 	 }

@@ -120,17 +120,19 @@ public final class R {
         public static final int pref_backend_profile_id_dialog_title=0x7f050005;
         public static final int pref_backend_profile_id_summary=0x7f050004;
         public static final int pref_backend_profile_id_title=0x7f050003;
-        public static final int pref_backend_settings_title=0x7f05001d;
+        public static final int pref_backend_settings_title=0x7f050020;
         public static final int pref_backend_token_dialog_message=0x7f05000e;
         public static final int pref_backend_token_dialog_title=0x7f05000d;
         public static final int pref_backend_token_summary=0x7f05000c;
         public static final int pref_backend_token_title=0x7f05000b;
-        public static final int pref_onlinegane_settings_title=0x7f05001e;
-        public static final int pref_use_backend_summary=0x7f05001c;
-        public static final int pref_use_backend_title=0x7f05001b;
-        public static final int pref_use_competitivegame_summary=0x7f050020;
-        public static final int pref_use_competitivegame_title=0x7f05001f;
-        public static final int pref_use_cooperationgame_summary=0x7f050022;
-        public static final int pref_use_cooperationgame_title=0x7f050021;
+        public static final int pref_settings_player2_title=0x7f05001b;
+        public static final int pref_settings_player3_title=0x7f05001c;
+        public static final int pref_settings_player4_title=0x7f05001d;
+        public static final int pref_use_backend_summary=0x7f05001f;
+        public static final int pref_use_backend_title=0x7f05001e;
+        public static final int pref_use_competitivegame_summary=0x7f050022;
+        public static final int pref_use_competitivegame_title=0x7f050021;
+        public static final int pref_use_cooperationgame_summary=0x7f050024;
+        public static final int pref_use_cooperationgame_title=0x7f050023;
     }
 }

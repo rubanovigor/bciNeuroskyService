@@ -24,7 +24,8 @@ import android.view.KeyEvent;
 public class ProcessingMultiUser extends PApplet{
 		// -- local EEG variables
 		int pAt=0; int pMed=0; int pS=0; int pP=0;
-		int indexLocalPlayer=0, indexRND=0, indexNetworkPlayer=0;
+		int indexRND=0, indexNetworkPlayer=0;
+		int indexLocalPlayer[] = new int[] {0,0,0,0};
 		String Torroid1info = "", Torroid2info = "";
 		String playerInfor[] = new String[] {"you","pl1","pl2","pl3"};
 		float plPositionY[] = new float[] {0,0,0,0};
@@ -39,7 +40,7 @@ public class ProcessingMultiUser extends PApplet{
 		private long DataCollectionLastTime, DataCollectionLastTimeLocalPlayer;
 		int DataCollectionDelay_ms = 1000;
 		private long CurrentTime,TimeOfTheGame = 0;
-		int GameLevel = 4; int MaxGameLevel=4; 
+		int GameLevel = 1; int MaxGameLevel=4; 
 		int ma_LastTime=0;  float ma_value = 0; int ma_length_ms=0;
 		
 		// -- toroids setting
@@ -180,22 +181,22 @@ public class ProcessingMultiUser extends PApplet{
 			  		// =================================================
 			    	// =================================================
 				    case "pl1 vs pl2":
-//				    	indexLocalPlayer = getEEG();
-				    	indexLocalPlayer = 41;
-						indexNetworkPlayer = getEEGNetworkUser();
+				    	indexLocalPlayer[0] = getEEG();
+				    	indexLocalPlayer[1] = getEEGPlayer2();
+				    	indexLocalPlayer[2] = getEEGPlayer3();
+				    	indexLocalPlayer[3] = getEEGPlayer4();
+//				    	indexLocalPlayer[1] = 61;
+//						indexNetworkPlayer = getEEGNetworkUser();
 //						indexNetworkPlayer = 100;
 
 						// -- initial constant offset on Y axis
 						torroidY = displayHeight - 1*displayHeight/10;
 						if(GameLevel <= MaxGameLevel){
 							// -- draw 4 players in loop					
-							for(int i = 0; i < 4; i = i+1) {
-								//--for test only
-								indexLocalPlayer = indexLocalPlayer + 10;
-								
+							for(int i = 0; i < 4; i = i+1) {							
 								playerID = i; 
 								torroidX = displayWidth/10 + playerID*displayWidth/4; 
-								displayToroidByID(indexLocalPlayer, playerID, torroidX, torroidY - plPositionY[playerID]);
+								displayToroidByID(indexLocalPlayer[i], playerID, torroidX, torroidY - plPositionY[playerID]);
 							}
 							
 													
@@ -482,6 +483,116 @@ public class ProcessingMultiUser extends PApplet{
 			 	 }
 			}
 		}		
+		
+		/** get EEG data from MainActivity and calculate S,P
+		 *  moving average not working yet!!! */
+		public int getEEGPlayer2(){		
+			if (millis() - ma_LastTime<=ma_length_ms){
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 	
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 - eegService.Med_pl2)); 
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 + eegService.Med_pl2));
+			 	 }
+				 return 0;
+			}else{
+			
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 
+			 		return eegService.At_pl2;
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
+			 		return eegService.Med_pl2;
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 - eegService.Med_pl2)); 
+			 		return (eegService.At_pl2 - eegService.Med_pl2);
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 + eegService.Med_pl2));
+			 		return (eegService.At_pl2 + eegService.Med_pl2);
+			 	 default:
+			 	     return 0;
+			 	 }
+			}
+		}
+		
+		/** get EEG data from MainActivity and calculate S,P
+		 *  moving average not working yet!!! */
+		public int getEEGPlayer3(){		
+			if (millis() - ma_LastTime<=ma_length_ms){
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl3); 	
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl3); 
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl3 - eegService.Med_pl3)); 
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl3 + eegService.Med_pl3));
+			 	 }
+				 return 0;
+			}else{
+			
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl3); 
+			 		return eegService.At_pl3;
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl3); 
+			 		return eegService.Med_pl3;
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl3 - eegService.Med_pl3)); 
+			 		return (eegService.At_pl3 - eegService.Med_pl3);
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl3 + eegService.Med_pl3));
+			 		return (eegService.At_pl3 + eegService.Med_pl3);
+			 	 default:
+			 	     return 0;
+			 	 }
+			}
+		}
+		
+		
+		/** get EEG data from MainActivity and calculate S,P
+		 *  moving average not working yet!!! */
+		public int getEEGPlayer4(){		
+			if (millis() - ma_LastTime<=ma_length_ms){
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl4); 	
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl4); 
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl4 - eegService.Med_pl4)); 
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl4 + eegService.Med_pl4));
+			 	 }
+				 return 0;
+			}else{
+			
+			 	 switch(MainActivity.UserControl){
+			 	 case "att":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl4); 
+			 		return eegService.At_pl4;
+			 	 case "med":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl4); 
+			 		return eegService.Med_pl4;
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl4 - eegService.Med_pl4)); 
+			 		return (eegService.At_pl4 - eegService.Med_pl4);
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl4 + eegService.Med_pl4));
+			 		return (eegService.At_pl4 + eegService.Med_pl4);
+			 	 default:
+			 	     return 0;
+			 	 }
+			}
+		}
+		
 		
 		/** get EEG data from MainActivity and calculate S,P
 		 *  moving average not working yet!!! */
