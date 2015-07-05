@@ -214,7 +214,7 @@ public class APIClient {
     } 
     
     public static int[] getDataPlayer3() {
-           client.get(null, getPlayer2LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
+           client.get(null, getPlayer3LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
                @Override
                public void onSuccess(String response) {
                	msgFromBackend = response;
@@ -239,7 +239,7 @@ public class APIClient {
     
    
    public static int[] getDataPlayer4() {
-          client.get(null, getPlayer2LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
+          client.get(null, getPlayer4LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
               @Override
               public void onSuccess(String response) {
               	msgFromBackend = response;
