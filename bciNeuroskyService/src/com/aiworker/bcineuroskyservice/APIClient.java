@@ -166,14 +166,10 @@ public class APIClient {
     }
     
     // ====================================
-    // -- for network user
+    // -- for network user's
     public static void setProfileIdPlayer2(int pId) {profileIdPlayer2 = pId;  checkConfiguration(); }
     public static void setExerciseIdPlayer2(int eId){exerciseIdPlayer2 = eId; checkConfiguration(); }
-    
-    
-    /** -- get PLAYER 2 data from the server */
-   
-    
+        
     public static void setProfileIdPlayer3(int pId) {profileIdPlayer3 = pId;  checkConfiguration(); }
     public static void setExerciseIdPlayer3(int eId){exerciseIdPlayer3 = eId; checkConfiguration(); }
     
@@ -217,16 +213,13 @@ public class APIClient {
            client.get(null, getPlayer3LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
                @Override
                public void onSuccess(String response) {
-               	msgFromBackend = response;
-               	indexes = parseMsg(msgFromBackend);
-               	Log.e("ir_Response", response); 
-//               	Log.e("ir_indexes", String.valueOf(indexes)); 
+	               	msgFromBackend = response;
+	               	indexes = parseMsg(msgFromBackend);
+	               	Log.e("ir_Response", response); 
                }
 
               @Override
-                public void onFailure(Throwable e) {
-           	   Log.e("error","ir_OnFailure!", e);
-                }
+                public void onFailure(Throwable e) {Log.e("error","ir_OnFailure!", e); }
            });
          return indexes;
    }
@@ -242,16 +235,13 @@ public class APIClient {
           client.get(null, getPlayer4LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
               @Override
               public void onSuccess(String response) {
-              	msgFromBackend = response;
-              	indexes = parseMsg(msgFromBackend);
-              	Log.e("ir_Response", response); 
-//              	Log.e("ir_indexes", String.valueOf(indexes)); 
-              }
+	              	msgFromBackend = response;
+	              	indexes = parseMsg(msgFromBackend);
+	              	Log.e("ir_Response", response); 
+              	}
 
              @Override
-               public void onFailure(Throwable e) {
-          	   Log.e("error","ir_OnFailure!", e);
-               }
+               public void onFailure(Throwable e) {Log.e("error","ir_OnFailure!", e);}
           });
         return indexes;
   }
@@ -298,12 +288,8 @@ class AttMed {
 	  AttMed() {}
 	  
 	  public int[] toArray() {
-		  int[] tt = {this.attention, this.meditation};
-//		  tt[0] = this.attention;
-//		  tt[1] = this.meditation;
-		  
+		  int[] tt = {this.attention, this.meditation};		  
 		  return tt;
-//	    return {this.attention, this.meditation};
 	  }
 }
 	 

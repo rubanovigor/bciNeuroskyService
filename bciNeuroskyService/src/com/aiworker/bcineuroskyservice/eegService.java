@@ -252,9 +252,7 @@ public class eegService extends Service{
 		    						
 		    						APIClient.setProfileId(MainActivity.profileId);
 		    						APIClient.setExerciseId(MainActivity.exerciseId);
-		    						APIClient.setToken(MainActivity.token);
-		    						
-		    						
+		    						APIClient.setToken(MainActivity.token);    								
 		    								    						
 //		    						APIClient.setProfileIdNetUser(MainActivity.profileIdNetUser);
 //		    						APIClient.setExerciseIdNetUser(MainActivity.exerciseIdNetUser);
@@ -331,6 +329,9 @@ public class eegService extends Service{
 			                	At_pl3 = iam[0]; Med_pl3 = iam[1];
 			                	if(MainActivity.backend){ iam = APIClient.getDataPlayer4();}			                	
 			                	At_pl4 = iam[0]; Med_pl4 = iam[1];
+			                	
+//			                	At_pl3 = 0; Med_pl3 = 0;		                	              	
+//			                	At_pl4 = 0; Med_pl4 = 0;
 			                	
 			                	//Log.e("ir_Response Att", String.valueOf(iam[0]));	
 			                	//Log.e("ir_Response Med", String.valueOf(iam[1]));	
