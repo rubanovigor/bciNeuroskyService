@@ -47,7 +47,7 @@ public class APIClient {
     private static boolean backendEnabled = true;
     private static boolean backendConfigured = true;
     public static String msgFromBackend;
-	public static int[] indexes = {0, 0};
+	public static int[] indexes2 = {0, 0}, indexes3 = {0, 0}, indexes4 = {0, 0};
 	public static String lastTS1;
     
     
@@ -186,9 +186,9 @@ public class APIClient {
                 @Override
                 public void onSuccess(String response) {
                 	msgFromBackend = response;
-                	indexes = parseMsg(msgFromBackend);
+                	indexes2 = parseMsg(msgFromBackend);
                 	Log.e("ir_Response", response); 
-//                	Log.e("ir_indexes", String.valueOf(indexes)); 
+//                	Log.e("ir_indexes", String.valueOf(indexes2)); 
                 }
 
                @Override
@@ -198,9 +198,9 @@ public class APIClient {
             });
 //	      } 
 //	      lastTS1 = ts1;   
-//        	Log.e("ir_Response Att:", String.valueOf(indexes[0]));
-//        	Log.e("ir_Response Med:", String.valueOf(indexes[1]));
-          return indexes;
+//        	Log.e("ir_Response Att:", String.valueOf(indexes2[0]));
+//        	Log.e("ir_Response Med:", String.valueOf(indexes2[1]));
+          return indexes2;
     }
  
     
@@ -214,14 +214,14 @@ public class APIClient {
                @Override
                public void onSuccess(String response) {
 	               	msgFromBackend = response;
-	               	indexes = parseMsg(msgFromBackend);
+	               	indexes3 = parseMsg(msgFromBackend);
 	               	Log.e("ir_Response", response); 
                }
 
               @Override
                 public void onFailure(Throwable e) {Log.e("error","ir_OnFailure!", e); }
            });
-         return indexes;
+         return indexes3;
    }
 
    
@@ -236,14 +236,14 @@ public class APIClient {
               @Override
               public void onSuccess(String response) {
 	              	msgFromBackend = response;
-	              	indexes = parseMsg(msgFromBackend);
+	              	indexes4 = parseMsg(msgFromBackend);
 	              	Log.e("ir_Response", response); 
               	}
 
              @Override
                public void onFailure(Throwable e) {Log.e("error","ir_OnFailure!", e);}
           });
-        return indexes;
+        return indexes4;
   }
 
   

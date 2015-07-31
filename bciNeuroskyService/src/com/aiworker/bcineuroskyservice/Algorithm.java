@@ -17,9 +17,9 @@ public class Algorithm {
 	     if(TS >= ClusterX1-ClusterDeltaX &&	TS <= ClusterX2+ClusterDeltaX) 
 														   { DynamicTS = DynamicTS ; }
 		 	else {
-			 	if (TS > ClusterX2+ClusterDeltaX )		   { DynamicTS = DynamicTS + graviton; } 
+			 	if (TS > ClusterX2+ClusterDeltaX )		   { DynamicTS = DynamicTS + TS*graviton/100; } 
 				else {
-						if (TS < ClusterX1-ClusterDeltaX ) { DynamicTS = DynamicTS - graviton;  }
+						if (TS < ClusterX1-ClusterDeltaX ) { DynamicTS = DynamicTS - TS*graviton/100;  }
 					}                    
 				}
 	     

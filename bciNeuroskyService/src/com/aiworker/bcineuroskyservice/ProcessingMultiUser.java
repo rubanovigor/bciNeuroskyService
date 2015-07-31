@@ -27,7 +27,8 @@ public class ProcessingMultiUser extends PApplet{
 		int indexRND=0, indexNetworkPlayer=0;
 		int indexLocalPlayer[] = new int[] {0,0,0,0};
 		String Torroid1info = "", Torroid2info = "";
-		String playerInfor[] = new String[] {"you","pl1","pl2","pl3"};
+//		String playerInfor[] = new String[] {"you","player1","player2","player3"};
+		String playerInfor[] = new String[] {"you","green","blue","red"};
 		float plPositionY[] = new float[] {0,0,0,0};
 		int plScore[] = new int[] {0,0,0,0};
 		int playerID;
@@ -57,6 +58,8 @@ public class ProcessingMultiUser extends PApplet{
 			// -- network game play
 		float Player2Accel = 0; 	float localPlayerAccel = 0;
 
+		// -- position of vertical (Att) line
+		float X_line, Y_line, line_width, line_hight;
 		
 			// -- EEGindex graph
 		PFont f; 
@@ -71,7 +74,10 @@ public class ProcessingMultiUser extends PApplet{
 		float alpha = 0f;
 		
 		PImage imgFinish; 
-		
+		// Constants
+		int Y_AXIS = 1;
+		int X_AXIS = 2;
+		int b1, b2, c1, c2;
 		
 		public void setup(){	 
 //			 frameRate(15); 
@@ -83,8 +89,8 @@ public class ProcessingMultiUser extends PApplet{
 //			 histChartR = (int)displayHeight/10;
 			 histChartR = (displayHeight*1f)/13f;
 			 histChartRsmall = histChartR/4;
-			 finishLineY1coordinate = 2*histChartR + 3*histChartRsmall;
-			 finishLineY2coordinate = 2*histChartRsmall;
+			 finishLineY1coordinate = 1*histChartR + 1*histChartRsmall;
+			 finishLineY2coordinate = 5*histChartRsmall;
 			 
 			 ExternalToroidRadius = (displayWidth*1f)/25f;
 			 InternalToroidDelta = histChartRsmall/2;
@@ -112,7 +118,17 @@ public class ProcessingMultiUser extends PApplet{
 				 
 			 // -- finish line			 
 			 imgFinish = loadImage("finish.png");
-			 				 
+			 	
+			 // -- line intitial setup
+			 torroidX = displayWidth/4;
+			 torroidY = displayHeight - 1*displayHeight/10;
+			 X_line = torroidX - displayWidth/80;
+			 Y_line =  displayHeight - 3*displayHeight/10;
+			 line_width = displayWidth/40;
+//			 line_hight = displayHeight - 2*displayHeight/8;
+			 
+			 c1 = color(72, 61, 139);
+			 c2 = color(170,187,204);
 		}
 
 		public void draw(){
@@ -130,7 +146,8 @@ public class ProcessingMultiUser extends PApplet{
 			     }
 			  }
 			  		// -- update parameters when single race is finished
-			  if ((displayHeight - 1*displayHeight/10 - ExternalToroidRadius-InternalToroidDelta - plPositionY[WinnerIndex])<=
+//			  if ((displayHeight - 1*displayHeight/10 - ExternalToroidRadius-InternalToroidDelta - plPositionY[WinnerIndex])<=
+			  if ((displayHeight - 1*displayHeight/10 - plPositionY[WinnerIndex])<=
 					  (finishLineY1coordinate+finishLineY2coordinate)){				  
 				  plScore[WinnerIndex] =  plScore[WinnerIndex] + 1;
 				  Arrays.fill(plPositionY, 0f);
@@ -153,8 +170,9 @@ public class ProcessingMultiUser extends PApplet{
 			  // ===============================================
 			  		// -- display finish line
 //			  image(imgFinish, 0, 2.0f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
-			  image(imgFinish, 0, finishLineY1coordinate, displayWidth, finishLineY2coordinate);
+//			  image(imgFinish, 0, finishLineY1coordinate, displayWidth, finishLineY2coordinate);
 		  
+			  setGradient(0, (int)(finishLineY1coordinate), displayWidth, finishLineY2coordinate, c1, c2);
 //			  4/20 vs 1/20
 			  // ===============================================
 			  		// -- display game time
@@ -170,7 +188,7 @@ public class ProcessingMultiUser extends PApplet{
 					  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame))); 
 			  
 //			  text(s,4.5f*displayWidth/10, 2.0f*displayHeight/10 - 20f); 
-			  text(s, 4.5f*displayWidth/10, 2*histChartR + 2*histChartRsmall); 
+			  text(s, 4.5f*displayWidth/10, finishLineY1coordinate - 0.5f*histChartRsmall); 
 			  // ===============================================
 			  		// -- get EEG index (one from att/med/S/P)
 //			  indexLocalPlayer = getEEG();
@@ -185,17 +203,21 @@ public class ProcessingMultiUser extends PApplet{
 				    	indexLocalPlayer[1] = getEEGPlayer2();
 				    	indexLocalPlayer[2] = getEEGPlayer3();
 				    	indexLocalPlayer[3] = getEEGPlayer4();
-//				    	indexLocalPlayer[1] = 61;
+				    	indexLocalPlayer[1] = 61;  	indexLocalPlayer[2] = 80;    	indexLocalPlayer[3] = 100;
 //						indexNetworkPlayer = getEEGNetworkUser();
 //						indexNetworkPlayer = 100;
 
 						// -- initial constant offset on Y axis
-						torroidY = displayHeight - 1*displayHeight/10;
+//						torroidY = displayHeight - 1*displayHeight/10;
 						if(GameLevel <= MaxGameLevel){
 							// -- draw 4 players in loop					
 							for(int i = 0; i < 4; i = i+1) {							
 								playerID = i; 
 								torroidX = displayWidth/10 + playerID*displayWidth/4; 
+								X_line = torroidX - displayWidth/80;
+//								Y_line = displayHeight/8;
+//								line_hight = torroidY - plPositionY[playerID];
+								
 								displayToroidByID(indexLocalPlayer[i], playerID, torroidX, torroidY - plPositionY[playerID]);
 							}
 							
@@ -215,7 +237,7 @@ public class ProcessingMultiUser extends PApplet{
 //							  textFont(f,displayHeight/40); 	//-- Specify font to be used	
 							  textFont(createFont("Arial",40,true)); 	//-- Specify font to be used	
 							  fill(255);                        //-- Specify font color 
-							  text("Winner player with index " + WI,  displayWidth/3,  displayHeight/2); 
+							  text("The Winner is " + playerInfor[WI],  displayWidth/3,  displayHeight/2); 
 						}
 				    	break;
 				    // =================================================
@@ -786,29 +808,39 @@ public class ProcessingMultiUser extends PApplet{
 			  }
 		
 			  		// -- move, spin and draw toroid 	
+//			  pushMatrix();
+//				  translate(x, y);
+//				  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
+//				  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-InternalToroidDelta, ExternalToroidRadius);
+//			  popMatrix();
+			  		
+			  		// -- move, spin and draw thron line 	
 			  pushMatrix();
-				  translate(x, y);
-				  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
-				  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-InternalToroidDelta, ExternalToroidRadius);
-			  popMatrix();
-			  			
+			  	stroke(0,154,255); fill(0,154,255);
+			  	if (plID == 1){stroke(0,255,0); fill(0,255,0);}
+			  	if (plID == 2){stroke(0,0,255); fill(0,0,255);}
+			  	if (plID == 3){stroke(255,0,0); fill(255,0,0);}
+				rect(X_line, y,
+						line_width, 
+						displayHeight-y - displayHeight/15 );
+						  
+			  
+			  popMatrix();			  
+			  
 			  		// -- display info about player
-			  if(plID==0){
+
 				  textFont(f,displayHeight/70); 	//-- Specify font to be used	
 				  fill(255);                        //-- Specify font color 
-				  text(MainActivity.UserControl + " -> " + ind+"\n    (" + playerInfor[plID] + ")",
-						  x + displayWidth/25, y - displayHeight/25); 
-			  }else{
-				  textFont(f,displayHeight/70); 	//-- Specify font to be used	
-				  fill(255);                        //-- Specify font color 
-				  text(MainActivity.UserControl + " -> " + ind+"\n    (" + playerInfor[plID] + ")",
-						  x + displayWidth/25, y - displayHeight/25); 
-			  }
+//				  text(MainActivity.UserControl + " -> " + ind+"\n    (" + playerInfor[plID] + ")",  x + displayWidth/25, y - displayHeight/25); 
+				  text(ind,  x - displayWidth/80, y - displayHeight/100); 
+				  textFont(f,displayHeight/50); 
+				  text(playerInfor[plID],  x- displayWidth/50 , displayHeight - displayHeight/20);
+	
 			  
 			  // -- display current score
 			  textFont(f,displayHeight/40); 	//-- Specify font to be used	
 			  fill(255);                        //-- Specify font color 
-			  text(plScore[plID],  x ,  1.0f*displayHeight/10); 
+			  text(plScore[plID],  x ,  0.5f*displayHeight/10); 
 			  
 		}
 		
@@ -916,6 +948,18 @@ public class ProcessingMultiUser extends PApplet{
 			  }
 		}
 
+		void setGradient(int x, int y, float w, float h, int c1, int c2) {
+
+			  noFill();
+
+			    for (int i = y; i <= y+h; i++) {
+			      float inter = map(i, y, y+h, 0, 1);
+			      int c = lerpColor(c1, c2, inter);
+			      stroke(c);
+			      line(x, i, x+w, i);
+			    } 
+			 
+			}
 		
 		
 		public int sketchWidth() { return displayWidth; }
