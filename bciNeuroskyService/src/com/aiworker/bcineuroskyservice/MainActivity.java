@@ -54,7 +54,7 @@ public class MainActivity extends Activity{
     
 	
 	TextView tv_Med, tv_Att, tv_NeuroskyStatus, tv_AttGradient, tv_MedGradient; 
-	public static int At=42; public static int Med=42;
+	public static int At=42, Med=42, AttLevelWarning = 60, AttLevelCritical=40;
 	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
 	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 		
@@ -64,7 +64,7 @@ public class MainActivity extends Activity{
 	String Key_State_serviceOnOff, Key_State_backendOnOff;
 	public static boolean backend = false;
 	
-	ImageButton ibAtt, ibMed, ibS, ibInfo, ibmOS, ibToroid, ibBack;
+	ImageButton ibAtt, ibMed, ibS, ibInfo, ibmOS, ibToroid, ibBack, ibVisual;
 	ImageButton ibCooperation, ibCompetition, ibRND;
 	public static String UserControl="att";
 	public static String toroidGameType="you";
@@ -109,6 +109,7 @@ public class MainActivity extends Activity{
         ibCompetition = (ImageButton) findViewById(R.id.ib_competition); 
         ibCooperation = (ImageButton) findViewById(R.id.ib_cooperation); 
         ibRND = (ImageButton) findViewById(R.id.ib_rnd); 
+        ibVisual = (ImageButton) findViewById(R.id.ib_visualizer);
 
     
 	    // -- for glass testing only
@@ -432,11 +433,11 @@ public class MainActivity extends Activity{
 	// -- process selected UI buttons
 	// -- ====================================
 	/** -- proceed with info button */
-	public void onImageButtonInfo_Clicked (View v)
-	{
-		Intent intent = new Intent(this, appInfo.class);
-		startActivity(intent);
-	}
+//	public void onImageButtonInfo_Clicked (View v)
+//	{
+//		Intent intent = new Intent(this, appInfo.class);
+//		startActivity(intent);
+//	}
 	
 		// -- layer 1: process Attention/Meditation/S/P selection
 	/** -- set S (A-M) flag for further use */
@@ -450,14 +451,14 @@ public class MainActivity extends Activity{
 	public void onImageButtonA_Clicked (View v)
 	{
 		switchToLayer2();
-		UserControl = "att";
+		UserControl = "A";
 	}
 	
 	/** -- set Meditation flag for further use */
 	public void onImageButtonM_Clicked (View v)
 	{
 		switchToLayer2();
-		UserControl = "med";
+		UserControl = "M";
 	}
 	
 		// -- layer 2: process game selection and back button
@@ -473,6 +474,15 @@ public class MainActivity extends Activity{
 	{
 //		Intent intent = new Intent(this, ProcessingWave.class);
 		Intent intent = new Intent(this, ProcessingMindOS.class);
+		startActivity(intent);
+	}
+	
+	/** -- start Visualizer*/
+	public void onImageButtonVisualizer_Clicked (View v)
+	{
+//		AttLevelWarning = 60, AttLevelCritical=40;
+		toroidGameType="visualizer";
+		Intent intent = new Intent(this, ProcessingVisualizer.class);
 		startActivity(intent);
 	}
 	
@@ -517,6 +527,7 @@ public class MainActivity extends Activity{
 		ibCompetition.setVisibility(View.VISIBLE); ibRND.setVisibility(View.VISIBLE); ibCooperation.setVisibility(View.VISIBLE);
 		ibmOS.setVisibility(View.VISIBLE); 
 		ibBack.setVisibility(View.VISIBLE);
+		ibVisual.setVisibility(View.VISIBLE);
 					
 	}
 	
@@ -528,6 +539,7 @@ public class MainActivity extends Activity{
 		ibCompetition.setVisibility(View.INVISIBLE); ibRND.setVisibility(View.INVISIBLE); ibCooperation.setVisibility(View.INVISIBLE);
 		ibmOS.setVisibility(View.INVISIBLE); 
 		ibBack.setVisibility(View.INVISIBLE);
+		ibVisual.setVisibility(View.INVISIBLE);
 	}
 	
 	/** -- switch to layer 2 from layer 3 */

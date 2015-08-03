@@ -88,5 +88,48 @@ public class Algorithm {
 		if (alpha>=360){alpha = alpha - 360;}
 		return alpha;
 	}
+	
+	/** 
+	 * calculate array (non-zero values) average
+	 * <p>
+	 * @param histData - array with historical data
+	 * @return average*/
+	public static float MovingAverage(float[] histData){	
+		  int count = 0;
+		  float total = 0;
+		  float average;
+
+		  int l = histData.length;
+		  //Are you sure you want this to start at index 1?
+		  for (int i = 0; i < l; i++)
+		  {
+		      if (histData[i] > 0)
+		      {
+		          total += histData[i];
+		          count++;
+		      } 
+		  }
+
+		  average = total / count;
+		
+		  return average;
+	}
+
+	public static int nonZeroLength(float[] histData){	
+		  int count = 0;
+
+		  int l = histData.length;
+		  //Are you sure you want this to start at index 1?
+		  for (int i = 0; i < l; i++)
+		  {
+		      if (histData[i] > 0)
+		      {
+		          count++;
+		      } 
+		  }
+		
+		  return count;
+	}
+
 
 }

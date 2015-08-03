@@ -190,7 +190,7 @@ public class ProcessingMultiUser extends PApplet{
 //			  text(s,4.5f*displayWidth/10, 2.0f*displayHeight/10 - 20f); 
 			  text(s, 4.5f*displayWidth/10, finishLineY1coordinate - 0.5f*histChartRsmall); 
 			  // ===============================================
-			  		// -- get EEG index (one from att/med/S/P)
+			  		// -- get EEG index (one from A/M/S/P)
 //			  indexLocalPlayer = getEEG();
 //			  indexNetworkPlayer = getEEGNetworkUser();		  
 			  // -- indexRND calculated in getRndNormalDistribution();
@@ -203,7 +203,7 @@ public class ProcessingMultiUser extends PApplet{
 				    	indexLocalPlayer[1] = getEEGPlayer2();
 				    	indexLocalPlayer[2] = getEEGPlayer3();
 				    	indexLocalPlayer[3] = getEEGPlayer4();
-				    	indexLocalPlayer[1] = 61;  	indexLocalPlayer[2] = 80;    	indexLocalPlayer[3] = 100;
+//				    	indexLocalPlayer[1] = 61;  	indexLocalPlayer[2] = 80;    	indexLocalPlayer[3] = 100;
 //						indexNetworkPlayer = getEEGNetworkUser();
 //						indexNetworkPlayer = 100;
 
@@ -475,9 +475,9 @@ public class ProcessingMultiUser extends PApplet{
 		public int getEEG(){		
 			if (millis() - ma_LastTime<=ma_length_ms){
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At); 	
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med); 
 			 	 case "S":
 			 		ma_value = 0.5f*(ma_value + (eegService.At - eegService.Med)); 
@@ -488,10 +488,10 @@ public class ProcessingMultiUser extends PApplet{
 			}else{
 			
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At); 
 			 		return eegService.At;
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med); 
 			 		return eegService.Med;
 			 	 case "S":
@@ -511,9 +511,9 @@ public class ProcessingMultiUser extends PApplet{
 		public int getEEGPlayer2(){		
 			if (millis() - ma_LastTime<=ma_length_ms){
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 	
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
 			 	 case "S":
 			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 - eegService.Med_pl2)); 
@@ -524,10 +524,10 @@ public class ProcessingMultiUser extends PApplet{
 			}else{
 			
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 
 			 		return eegService.At_pl2;
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
 			 		return eegService.Med_pl2;
 			 	 case "S":
@@ -547,9 +547,9 @@ public class ProcessingMultiUser extends PApplet{
 		public int getEEGPlayer3(){		
 			if (millis() - ma_LastTime<=ma_length_ms){
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl3); 	
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl3); 
 			 	 case "S":
 			 		ma_value = 0.5f*(ma_value + (eegService.At_pl3 - eegService.Med_pl3)); 
@@ -560,10 +560,10 @@ public class ProcessingMultiUser extends PApplet{
 			}else{
 			
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl3); 
 			 		return eegService.At_pl3;
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl3); 
 			 		return eegService.Med_pl3;
 			 	 case "S":
@@ -584,9 +584,9 @@ public class ProcessingMultiUser extends PApplet{
 		public int getEEGPlayer4(){		
 			if (millis() - ma_LastTime<=ma_length_ms){
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl4); 	
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl4); 
 			 	 case "S":
 			 		ma_value = 0.5f*(ma_value + (eegService.At_pl4 - eegService.Med_pl4)); 
@@ -597,10 +597,10 @@ public class ProcessingMultiUser extends PApplet{
 			}else{
 			
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl4); 
 			 		return eegService.At_pl4;
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl4); 
 			 		return eegService.Med_pl4;
 			 	 case "S":
@@ -621,9 +621,9 @@ public class ProcessingMultiUser extends PApplet{
 		public int getEEGNetworkUser(){		
 			if (millis() - ma_LastTime<=ma_length_ms){
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 	
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
 			 	 case "S":
 			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 - eegService.Med_pl2)); 
@@ -634,10 +634,10 @@ public class ProcessingMultiUser extends PApplet{
 			}else{
 			
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 
 			 		return eegService.At_pl2;
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
 			 		return eegService.Med_pl2;
 			 	 case "S":
@@ -677,9 +677,9 @@ public class ProcessingMultiUser extends PApplet{
 			 		 
 				  switch(MainActivity.UserControl){
 				  	 // -- store current index value
-//				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = ind; break;
-				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
-				 	 case "med": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
+//				 	 case "A": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = ind; break;
+				 	 case "A": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
+				 	 case "M": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
 				 	 case "S": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				 	 case "P": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				  }
@@ -722,9 +722,9 @@ public class ProcessingMultiUser extends PApplet{
 			 		 
 				  switch(MainActivity.UserControl){
 				  	 // -- store current index value
-//				 	 case "att": RNDYvalues[RNDYvalues.length-1] = ind; break;
-				 	 case "att": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*ind; break;
-				 	 case "med": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*ind; break;
+//				 	 case "A": RNDYvalues[RNDYvalues.length-1] = ind; break;
+				 	 case "A": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*ind; break;
+				 	 case "M": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*ind; break;
 				 	 case "S": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				 	 case "P": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				  }
@@ -752,14 +752,14 @@ public class ProcessingMultiUser extends PApplet{
 			  
 			double val = 0;
 			switch(MainActivity.UserControl){
-			 case "att":
+			 case "A":
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
 				 indexRND  = (int) Math.round(val);
 				 if (indexRND >100) {indexRND =100;} if (indexRND <0) {indexRND =0;}	           
 //				 if (mLastTime>rndUpdDelay_ms){mLastTime=0;}
 				 Torroid2info = "mean ~ " + String.valueOf(50+GameLevel*5);
 			  	 break;
-			 case "med":
+			 case "M":
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
 				 indexRND  = (int) Math.round(val);
 				 if (indexRND >100) {indexRND =100;} if (indexRND <0) {indexRND =0;}	           
@@ -796,10 +796,10 @@ public class ProcessingMultiUser extends PApplet{
 			  
 		  		// -- create dynamic time-series based on EEG index value
 			  switch(MainActivity.UserControl){
-				case "att":
+				case "A":
 				  plPositionY[plID] = Algorithm.CreateDynamic(ind, plPositionY[plID], 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
-				case "med":
+				case "M":
 				  plPositionY[plID] = Algorithm.CreateDynamic(ind, plPositionY[plID], 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":
@@ -861,10 +861,10 @@ public class ProcessingMultiUser extends PApplet{
 			  
 			  		// -- create dynamic ts based on pS
 			  switch(MainActivity.UserControl){
-				case "att":
+				case "A":
 				  Player2Accel = Algorithm.CreateDynamic(indexNetworkPlayer , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
-				case "med":
+				case "M":
 				  Player2Accel = Algorithm.CreateDynamic(indexNetworkPlayer , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":
@@ -904,10 +904,10 @@ public class ProcessingMultiUser extends PApplet{
 			  
 			  		// -- create dynamic ts based on pS
 			  switch(MainActivity.UserControl){
-				case "att":
+				case "A":
 				  Player2Accel = Algorithm.CreateDynamic(indexRND , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
-				case "med":
+				case "M":
 				  Player2Accel = Algorithm.CreateDynamic(indexRND , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":

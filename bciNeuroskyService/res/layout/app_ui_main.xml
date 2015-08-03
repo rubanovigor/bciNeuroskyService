@@ -203,6 +203,19 @@
 		    android:onClick="onImageButtonBack_Clicked" />
 
 		<ImageButton
+		    android:id="@+id/ib_visualizer"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toRightOf="@+id/ib_back"
+		    android:layout_below="@+id/ib_cooperation"
+		    android:background="@android:color/transparent"
+		    android:src="@drawable/visualizer" 
+		    android:visibility="invisible"  
+		    android:layout_margin="20dp"
+		    android:onClick="onImageButtonVisualizer_Clicked" />		
+		
+		
+		<ImageButton
 		    android:id="@+id/ib_toroid"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
