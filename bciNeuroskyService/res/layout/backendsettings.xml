@@ -107,5 +107,24 @@
 	        android:inputType="number" />
 	 </PreferenceCategory>
   
+     <PreferenceCategory android:title="@string/pref_Att_settings_title">   
+ 	 	 <EditTextPreference
+	        android:key="pref_att_warning_id"
+	        android:title="@string/pref_att_warning_title"
+	        android:summary="@string/pref_att_warning_summary"
+	        android:dialogTitle="@string/pref_att_warning_title"
+	        android:dialogMessage=""
+	        android:defaultValue="60"
+	        android:inputType="number"     />
+ 	 	 
+ 	 	 <EditTextPreference
+	        android:key="pref_att_critical_id"
+	        android:title="@string/pref_att_critical_title"
+	        android:summary="@string/pref_att_critical_summary"
+	        android:dialogTitle="@string/pref_att_critical_title"
+	        android:dialogMessage=""
+	        android:inputType="number"
+	        android:defaultValue="40"       />
+ 	 </PreferenceCategory>
   
 </PreferenceScreen>

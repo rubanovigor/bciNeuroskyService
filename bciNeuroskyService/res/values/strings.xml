@@ -55,5 +55,12 @@
 	  <string name="pref_use_cooperationgame_title">SetUp EEG Cooperation Game</string>
 	  <string name="pref_use_cooperationgame_summary">SetUp 2nd user Exercise ID</string>
 	  
+	   <string name="pref_Att_settings_title">Manually adjust Attention threshold </string>
+	  
+	  <string name="pref_att_warning_title">WARNING threshold </string>
+	  <string name="pref_att_warning_summary">Select "warning" threshold for Attention </string>
+	  
+	  <string name="pref_att_critical_title">CRITICAL threshold</string>
+	  <string name="pref_att_critical_summary">Select "critical" threshold for Attention </string>
 	  
 </resources>

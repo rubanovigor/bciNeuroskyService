@@ -648,6 +648,10 @@ public class MainActivity extends Activity{
 		    }
 	        
 	        
+	        // -- user selected warning and critical levels
+	        AttLevelWarning = Integer.parseInt(sharedPrefs.getString("pref_att_warning_id", "40")); 
+	        AttLevelCritical = Integer.parseInt(sharedPrefs.getString("pref_att_critical_id", "60")); 
+	        
 	        
 	 }
 	 

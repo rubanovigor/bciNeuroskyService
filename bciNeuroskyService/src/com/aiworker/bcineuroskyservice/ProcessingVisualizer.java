@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.io.IOException; 
 
+import android.content.Intent;
 import android.view.KeyEvent;
 
 
@@ -80,6 +81,8 @@ public class ProcessingVisualizer extends PApplet{
 			// -- array for data collection and moving average 
 		float[] histData1min, histData10min, histData20min, histData30min;
 		float[][] movingAvgHistData;
+		
+		String music_play_flag = "stop";
 		
 		public void setup(){	 
 //			 frameRate(15); 
@@ -209,7 +212,7 @@ public class ProcessingVisualizer extends PApplet{
 			    	// =================================================
 				    case "visualizer":
 				    	indexLocalPlayer[0] = getEEG();
-//				    	indexLocalPlayer[0] = 100;
+//				    	indexLocalPlayer[0] = 0;
 
 				    	DataCollection(indexLocalPlayer[0]);
 				    	
@@ -229,7 +232,7 @@ public class ProcessingVisualizer extends PApplet{
 						// -- display selected index
 						textFont(f,displayHeight/20);                 
 						fill(255);  
-						text(MainActivity.UserControl,  torroidX , displayHeight - 1*sphereR);
+						text(MainActivity.UserControl,  torroidX-3*sphereR , displayHeight - 1*sphereR);
 
 //						drawVerticalLine();
 //						//displaySphere(indexLocalPlayer[playerID], torroidX, torroidY);
@@ -575,9 +578,18 @@ public class ProcessingVisualizer extends PApplet{
 				// -- setup gradient colors
 			  indexR = (255 * ind) / 100; indexG = 0;  indexB = (255 * (100 - ind)) / 100 ;
 			  	// -- setup fixed 3 colors based on threshold			
-			  if(ind<MainActivity.AttLevelCritical){indexR = 255; indexG = 0; indexB = 0;} // -- red
-			  if(ind>=MainActivity.AttLevelCritical && ind<=MainActivity.AttLevelWarning){indexR = 255; indexG = 255; indexB = 0;} // -- yellow
-			  if(ind>MainActivity.AttLevelWarning){indexR = 0; indexG = 255; indexB = 0;} // -- green
+			  if(ind<MainActivity.AttLevelCritical){
+				  indexR = 255; indexG = 0; indexB = 0;
+				  if(music_play_flag.equals("playing")){startService(new Intent(MusicService.ACTION_STOP)); music_play_flag = "stop";};
+			  } 
+			  if(ind>=MainActivity.AttLevelCritical && ind<=MainActivity.AttLevelWarning){
+				  indexR = 255; indexG = 255; indexB = 0;
+				  if(music_play_flag.equals("playing")){startService(new Intent(MusicService.ACTION_STOP)); music_play_flag = "stop";};  
+			  } 
+			  if(ind>MainActivity.AttLevelWarning){
+				  indexR = 0; indexG = 255; indexB = 0;
+				  if(music_play_flag.equals("stop")){startService(new Intent(MusicService.ACTION_PLAY)); music_play_flag = "playing";};
+			  } 
 			  
 			  
 		  		// -- create dynamic time-series based on EEG index value
@@ -610,9 +622,9 @@ public class ProcessingVisualizer extends PApplet{
 			  
 			  
 			  // -- display current score
-//			  textFont(f,displayHeight/40); 	//-- Specify font to be used	
-//			  fill(255);                        //-- Specify font color 
-//			  text(plScore[plID],  x ,  1.0f*displayHeight/10); 
+			  textFont(f,displayHeight/50); 	//-- Specify font to be used	
+			  fill(255);                        //-- Specify font color 
+			  text("audio fedback: "+  music_play_flag,   torroidX+1*sphereR , displayHeight - 1*sphereR); 
 			  
 		}
 		

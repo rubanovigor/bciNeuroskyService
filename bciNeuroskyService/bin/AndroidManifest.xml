@@ -157,6 +157,32 @@
         <service android:enabled="true"
             	 android:name=".eegService" />
         
+        <service android:exported="false" android:name=".MusicService">
+            <intent-filter>
+                <action android:name="com.aiworker.bcineuroskyservice.action.TOGGLE_PLAYBACK" />
+                <action android:name="com.aiworker.bcineuroskyservice.action.PLAY" />
+                <action android:name="com.aiworker.bcineuroskyservice.action.STOP" />
+                <action android:name="com.aiworker.bcineuroskyservice.action.PAUSE" />
+                <action android:name="com.aiworker.bcineuroskyservice.action.SKIP" />
+                <action android:name="com.aiworker.bcineuroskyservice.action.REWIND" />                
+            </intent-filter>
+            
+            <intent-filter>
+                <action android:name="com.aiworker.bcineuroskyservice.action.URL" />
+                <data android:scheme="http" />
+            </intent-filter>
+        </service>
+        
+        <receiver android:name=".MusicIntentReceiver">
+            <intent-filter>
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+        
+        
     </application>
 
 </manifest>
