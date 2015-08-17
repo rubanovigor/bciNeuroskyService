@@ -165,7 +165,7 @@ public class ProcessingRNDgame extends PApplet{
 //			  text(s,4.5f*displayWidth/10, 2.0f*displayHeight/10 - 20f); 
 			  text(s, 4.5f*displayWidth/10, 2*histChartR + 2*histChartRsmall); 
 			  // ===============================================
-			  		// -- get EEG index (one from att/med/S/P)
+			  		// -- get EEG index (one from A/M/S/P)
 //			  indexLocalPlayer = getEEG();
 //			  indexNetworkPlayer = getEEGNetworkUser();		  
 			  // -- indexRND calculated in getRndNormalDistribution();
@@ -324,13 +324,13 @@ public class ProcessingRNDgame extends PApplet{
 			 
 			  // -- draw chart legends
 			  switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 					  textFont(f,32);  fill(255);	text(" 0",10f, legend0+legendAdjY);  
 					  textFont(f,20);  fill(190);	text("  40",10f, legend40+legendAdjY); 
 					  textFont(f,20);  fill(190);	text("  60",10f, legend60+legendAdjY); 
 					  textFont(f,32);  fill(255);	text("100",10f, legend100+legendAdjY); 
 					  break;
-			 	 case "med":
+			 	 case "M":
 					  textFont(f,32);  fill(255);	text(" 0",10f, legend0+legendAdjY);  
 					  textFont(f,20);  fill(190);	text("  40",10f, legend40+legendAdjY); 
 					  textFont(f,20);  fill(190);	text("  60",10f, legend60+legendAdjY); 
@@ -444,9 +444,9 @@ public class ProcessingRNDgame extends PApplet{
 		public int getEEG(){		
 			if (millis() - ma_LastTime<=ma_length_ms){
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At); 	
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med); 
 			 	 case "S":
 			 		ma_value = 0.5f*(ma_value + (eegService.At - eegService.Med)); 
@@ -457,10 +457,10 @@ public class ProcessingRNDgame extends PApplet{
 			}else{
 			
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At); 
 			 		return eegService.At;
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med); 
 			 		return eegService.Med;
 			 	 case "S":
@@ -480,9 +480,9 @@ public class ProcessingRNDgame extends PApplet{
 		public int getEEGNetworkUser(){		
 			if (millis() - ma_LastTime<=ma_length_ms){
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 	
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
 			 	 case "S":
 			 		ma_value = 0.5f*(ma_value + (eegService.At_pl2 - eegService.Med_pl2)); 
@@ -493,10 +493,10 @@ public class ProcessingRNDgame extends PApplet{
 			}else{
 			
 			 	 switch(MainActivity.UserControl){
-			 	 case "att":
+			 	 case "A":
 			 		ma_value = 0.5f*(ma_value + eegService.At_pl2); 
 			 		return eegService.At_pl2;
-			 	 case "med":
+			 	 case "M":
 			 		ma_value = 0.5f*(ma_value + eegService.Med_pl2); 
 			 		return eegService.Med_pl2;
 			 	 case "S":
@@ -520,13 +520,13 @@ public class ProcessingRNDgame extends PApplet{
 //				  indexR = (255 * indexRND ) / 100; indexG = 0;  indexB = (255 * (100 - indexRND )) / 100 ;	
 				  	// -- setup fixed 3 colors based on threshold
 				  if(MainActivity.UserControl.equals("S")){
-					  if(ind<-30){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+					  if(ind<-30){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 					  if(ind>=-30 && ind<=30){indexR = 0; indexG = 255; indexB = 0;} // -- green
-					  if(ind>30){indexR = 255; indexG = 0; indexB = 0;} // -- red
+					  if(ind>30){indexR = 0; indexG = 0; indexB = 255;} // -- red
 				  }else{
-					  if(ind<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+					  if(ind<40){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 					  if(ind>=40 && ind<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
-					  if(ind>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+					  if(ind>60){indexR = 0; indexG = 0; indexB = 255;} // -- red
 				  }
 				 
 				  
@@ -536,9 +536,9 @@ public class ProcessingRNDgame extends PApplet{
 			 		 
 				  switch(MainActivity.UserControl){
 				  	 // -- store current index value
-//				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = ind; break;
-				 	 case "att": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
-				 	 case "med": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
+//				 	 case "A": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = ind; break;
+				 	 case "A": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
+				 	 case "M": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
 				 	 case "S": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				 	 case "P": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				  }
@@ -558,22 +558,22 @@ public class ProcessingRNDgame extends PApplet{
 			
 		
 		/** collect RND indexes to array for displaying */
-		public void DataCollectionRND(int ind){
+		public void DataCollectionRND(int ind){ 
 	  		// -- collect indexes
 			  if (millis() - DataCollectionLastTime < DataCollectionDelay_ms) return; 
-			  else{		
-				  	// -- setup gradient colors
+			  else{		 
+				  	// -- setup gradient colors 
 //				  indexR = (255 * indexRND ) / 100; indexG = 0;  indexB = (255 * (100 - indexRND )) / 100 ;	
 				  	// -- setup fixed 3 colors based on threshold
 				  if(MainActivity.UserControl.equals("S")){
-					  if(ind<-30){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+					  if(ind<-30){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 					  if(ind>=-30 && ind<=30){indexR = 0; indexG = 255; indexB = 0;} // -- green
-					  if(ind>30){indexR = 255; indexG = 0; indexB = 0;} // -- red
+					  if(ind>30){indexR = 0; indexG = 0; indexB = 255;} // -- red
 				  }else{
-					  if(ind<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+					  if(ind<40){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 					  if(ind>=40 && ind<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
-					  if(ind>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
-				  }
+					  if(ind>60){indexR = 0; indexG = 0; indexB = 255;} // -- red
+				  }    
 				  
 				  RNDColorsValues[RNDColorsValues.length-1][0] = indexR;
 			 	  RNDColorsValues[RNDColorsValues.length-1][1] = indexG;
@@ -581,9 +581,9 @@ public class ProcessingRNDgame extends PApplet{
 			 		 
 				  switch(MainActivity.UserControl){
 				  	 // -- store current index value
-//				 	 case "att": RNDYvalues[RNDYvalues.length-1] = ind; break;
-				 	 case "att": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*ind; break;
-				 	 case "med": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*ind; break;
+//				 	 case "A": RNDYvalues[RNDYvalues.length-1] = ind; break;
+				 	 case "A": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*ind; break;
+				 	 case "M": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*ind; break;
 				 	 case "S": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				 	 case "P": RNDYvalues[RNDYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				  }
@@ -611,14 +611,14 @@ public class ProcessingRNDgame extends PApplet{
 			  
 			double val = 0;
 			switch(MainActivity.UserControl){
-			 case "att":
+			 case "A":
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
 				 indexRND  = (int) Math.round(val);
 				 if (indexRND >100) {indexRND =100;} if (indexRND <0) {indexRND =0;}	           
 //				 if (mLastTime>rndUpdDelay_ms){mLastTime=0;}
 				 Torroid2info = "mean ~ " + String.valueOf(50+GameLevel*5);
 			  	 break;
-			 case "med":
+			 case "M":
 				 val = r.nextGaussian() * 25 + (50+GameLevel*5); // 50 (mean); 25 (standard deviation) - 70% of data
 				 indexRND  = (int) Math.round(val);
 				 if (indexRND >100) {indexRND =100;} if (indexRND <0) {indexRND =0;}	           
@@ -644,21 +644,21 @@ public class ProcessingRNDgame extends PApplet{
 			  indexR = (255 * indexLocalPlayer) / 100; indexG = 0;  indexB = (255 * (100 - indexLocalPlayer)) / 100 ;
 			  	// -- setup fixed 3 colors based on threshold			
 			  if(MainActivity.UserControl.equals("S")){
-				  if(indexLocalPlayer<-30){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+				  if(indexLocalPlayer<-30){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 				  if(indexLocalPlayer>=-30 && indexLocalPlayer<=30){indexR = 0; indexG = 255; indexB = 0;} // -- green
-				  if(indexLocalPlayer>30){indexR = 255; indexG = 0; indexB = 0;} // -- red
-			  }else{
-				  if(indexLocalPlayer<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+				  if(indexLocalPlayer>30){indexR = 0; indexG = 0; indexB = 255;} // -- red
+			  }else{ // -- for A or M
+				  if(indexLocalPlayer<40){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 				  if(indexLocalPlayer>=40 && indexLocalPlayer<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
-				  if(indexLocalPlayer>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  if(indexLocalPlayer>60){indexR = 0; indexG = 0; indexB = 255;} // -- red
 			  }
 			  
 		  		// -- create dynamic ts based on indexLocalPlayer value
 			  switch(MainActivity.UserControl){
-				case "att":
+				case "A":
 				  localPlayerAccel = Algorithm.CreateDynamic(indexLocalPlayer, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
-				case "med":
+				case "M":
 				  localPlayerAccel = Algorithm.CreateDynamic(indexLocalPlayer, localPlayerAccel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":
@@ -688,21 +688,21 @@ public class ProcessingRNDgame extends PApplet{
 			  indexR = (255 * indexNetworkPlayer) / 100; indexG = 0;  indexB = (255 * (100 - indexNetworkPlayer )) / 100 ;
 			  	// -- setup fixed 3 colors based on threshold		  
 			  if(MainActivity.UserControl.equals("S")){
-				  if(indexNetworkPlayer<-30){indexR = 0; indexG = 0; indexB = 255;} // -- blue
-				  if(indexNetworkPlayer>=-30 && indexNetworkPlayer<=30){indexR = 0; indexG = 255; indexB = 0;} // -- green
-				  if(indexNetworkPlayer>30){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  if(indexNetworkPlayer<-30){indexR = 255; indexG = 0; indexB = 0;} 
+				  if(indexNetworkPlayer>=-30 && indexNetworkPlayer<=30){indexR = 0; indexG = 255; indexB = 0;} 
+				  if(indexNetworkPlayer>30){indexR = 0; indexG = 0; indexB = 255;} 
 			  }else{
-				  if(indexNetworkPlayer<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
-				  if(indexNetworkPlayer>=40 && indexNetworkPlayer<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
-				  if(indexNetworkPlayer>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  if(indexNetworkPlayer<40){indexR = 255; indexG = 0; indexB = 0;} 
+				  if(indexNetworkPlayer>=40 && indexNetworkPlayer<=60){indexR = 0; indexG = 255; indexB = 0;} 
+				  if(indexNetworkPlayer>60){indexR = 0; indexG = 0; indexB = 255;} 
 			  }
 			  
 			  		// -- create dynamic ts based on pS
 			  switch(MainActivity.UserControl){
-				case "att":
+				case "A":
 				  Player2Accel = Algorithm.CreateDynamic(indexNetworkPlayer , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
-				case "med":
+				case "M":
 				  Player2Accel = Algorithm.CreateDynamic(indexNetworkPlayer , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":
@@ -731,21 +731,21 @@ public class ProcessingRNDgame extends PApplet{
 //			  indexR = (255 * indexRND ) / 100; indexG = 0;  indexB = (255 * (100 - indexRND )) / 100 ;
 			  	// -- setup fixed 3 colors based on threshold
 			  if(MainActivity.UserControl.equals("S")){
-				  if(indexRND<-30){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+				  if(indexRND<-30){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 				  if(indexRND>=-30 && indexRND<=30){indexR = 0; indexG = 255; indexB = 0;} // -- green
-				  if(indexRND>30){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  if(indexRND>30){indexR = 0; indexG = 0; indexB = 255;} // -- red
 			  }else{
-				  if(indexRND<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+				  if(indexRND<40){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 				  if(indexRND>=40 && indexRND<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
-				  if(indexRND>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  if(indexRND>60){indexR = 0; indexG = 0; indexB = 255;} // -- red
 			  }
 			  
 			  		// -- create dynamic ts based on pS
 			  switch(MainActivity.UserControl){
-				case "att":
+				case "A":
 				  Player2Accel = Algorithm.CreateDynamic(indexRND , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
-				case "med":
+				case "M":
 				  Player2Accel = Algorithm.CreateDynamic(indexRND , Player2Accel, 0, displayHeight - 1*displayHeight/10, 1.0f, 40, 60, 0);	
 				  break;
 				case "S":

@@ -73,18 +73,26 @@ public class ProcessingMultiUser extends PApplet{
 		
 		float alpha = 0f;
 		
-		PImage imgFinish; 
+		PImage imgFinish, imgBackground; 
+		
 		// Constants
 		int Y_AXIS = 1;
 		int X_AXIS = 2;
 		int b1, b2, c1, c2;
 		
 		public void setup(){	 
+//			 size(displayWidth, displayHeight);
+//			 imgBackground.resize(displayWidth, displayHeight); //Resizes the image to be the size of the window
 //			 frameRate(15); 
 			 smooth(); // noStroke();
 			 // colorMode(HSB, 8, 100, 100);
 			 colorMode(RGB, 255, 255, 255, 100);
 			 
+//			 imgBackground = loadImage("tron.png");
+			 imgBackground = loadImage("mentatron.png");
+//			 background(imgBackground);		 
+			 imgFinish = loadImage("finish.png");
+				
 			 // -- setup historical wave graph size
 //			 histChartR = (int)displayHeight/10;
 			 histChartR = (displayHeight*1f)/13f;
@@ -116,8 +124,6 @@ public class ProcessingMultiUser extends PApplet{
 			 RNDYvalues = new float[EEGhistoryLength];
 			 RNDColorsValues = new float[EEGhistoryLength][3];
 				 
-			 // -- finish line			 
-			 imgFinish = loadImage("finish.png");
 			 	
 			 // -- line intitial setup
 			 torroidX = displayWidth/4;
@@ -129,11 +135,18 @@ public class ProcessingMultiUser extends PApplet{
 			 
 			 c1 = color(72, 61, 139);
 			 c2 = color(170,187,204);
+			 
+			 
 		}
 
-		public void draw(){
+		public void draw(){ 
 			  // -- draw background and setup basic lighting setup
-			  background(0);
+			  background(0); // -- black
+//			  background(255,255,255); // -- white
+//			  hint(DISABLE_DEPTH_TEST);
+//			  imageMode(CORNER);
+//			  image(imgBackground, 0, 0, displayWidth, displayHeight);
+//			  hint(ENABLE_DEPTH_TEST);
 			  //lights();  // -- not working on some devices
 		  
 			  
@@ -171,9 +184,12 @@ public class ProcessingMultiUser extends PApplet{
 			  		// -- display finish line
 //			  image(imgFinish, 0, 2.0f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
 //			  image(imgFinish, 0, finishLineY1coordinate, displayWidth, finishLineY2coordinate);
-		  
-			  setGradient(0, (int)(finishLineY1coordinate), displayWidth, finishLineY2coordinate, c1, c2);
-//			  4/20 vs 1/20
+			  
+		      // -- draw gradient of lines
+			  c2 = color(0, 0, 0); c1 = color(0,0,255);
+			  //c1 = color(255,0,0);
+			  setGradient(0, (int)(finishLineY1coordinate), displayWidth, finishLineY2coordinate, c1, c2, "vertical");
+
 			  // ===============================================
 			  		// -- display game time
 			  TimeOfTheGame = millis() - CurrentTime;
@@ -203,7 +219,7 @@ public class ProcessingMultiUser extends PApplet{
 				    	indexLocalPlayer[1] = getEEGPlayer2();
 				    	indexLocalPlayer[2] = getEEGPlayer3();
 				    	indexLocalPlayer[3] = getEEGPlayer4();
-//				    	indexLocalPlayer[1] = 61;  	indexLocalPlayer[2] = 80;    	indexLocalPlayer[3] = 100;
+//				    	indexLocalPlayer[1] = 50;  	indexLocalPlayer[2] = 80;    	indexLocalPlayer[3] = 100;
 //						indexNetworkPlayer = getEEGNetworkUser();
 //						indexNetworkPlayer = 100;
 
@@ -785,13 +801,13 @@ public class ProcessingMultiUser extends PApplet{
 			  indexR = (255 * ind) / 100; indexG = 0;  indexB = (255 * (100 - ind)) / 100 ;
 			  	// -- setup fixed 3 colors based on threshold			
 			  if(MainActivity.UserControl.equals("S")){
-				  if(ind<-30){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+				  if(ind<-30){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 				  if(ind>=-30 && ind<=30){indexR = 0; indexG = 255; indexB = 0;} // -- green
-				  if(ind>30){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  if(ind>30){indexR = 0; indexG = 0; indexB = 255;} // -- red
 			  }else{ // -- for A or M
-				  if(ind<40){indexR = 0; indexG = 0; indexB = 255;} // -- blue
+				  if(ind<40){indexR = 255; indexG = 0; indexB = 0;} // -- blue
 				  if(ind>=40 && ind<=60){indexR = 0; indexG = 255; indexB = 0;} // -- green
-				  if(ind>60){indexR = 255; indexG = 0; indexB = 0;} // -- red
+				  if(ind>60){indexR = 0; indexG = 0; indexB = 255;} // -- red
 			  }
 			  
 		  		// -- create dynamic time-series based on EEG index value
@@ -808,31 +824,39 @@ public class ProcessingMultiUser extends PApplet{
 			  }
 		
 			  		// -- move, spin and draw toroid 	
-//			  pushMatrix();
-//				  translate(x, y);
-//				  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
-//				  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-InternalToroidDelta, ExternalToroidRadius);
-//			  popMatrix();
+			  pushMatrix();
+//				  translate(x-y/8, y);
+			  	  translate(x, y);
+				  rotateZ(frameCount*PI/170); rotateY(frameCount*PI/170); rotateX(frameCount*PI/170);
+				  thoroid(0,0, indexR, indexG, indexB, true, ExternalToroidRadius-InternalToroidDelta, ExternalToroidRadius);
+//				  	float  scale = 0.0004f;
+//				  thoroid(0,0, indexR, indexG, indexB, true, scale*y*(ExternalToroidRadius-InternalToroidDelta), scale*y*ExternalToroidRadius);
+			  popMatrix();
 			  		
 			  		// -- move, spin and draw thron line 	
-			  pushMatrix();
-			  	stroke(0,154,255); fill(0,154,255);
-			  	if (plID == 1){stroke(0,255,0); fill(0,255,0);}
-			  	if (plID == 2){stroke(0,0,255); fill(0,0,255);}
-			  	if (plID == 3){stroke(255,0,0); fill(255,0,0);}
-				rect(X_line, y,
-						line_width, 
-						displayHeight-y - displayHeight/15 );
-						  
+//			  pushMatrix();
+//			  	stroke(0,154,255); fill(0,154,255);
+//			  	if (plID == 1){stroke(0,255,0); fill(0,255,0);}
+//			  	if (plID == 2){stroke(0,0,255); fill(0,0,255);}
+//			  	if (plID == 3){stroke(255,0,0); fill(255,0,0);}
+//				rect(X_line, y,
+//						line_width, 
+//						displayHeight-y - displayHeight/15 );
+//					  		  
+//			  popMatrix();			  
 			  
-			  popMatrix();			  
-			  
+			  		// -- tron neone lights
+//			  c1 = color(72, 61, 139); c2 = color(170,187,204);
+//			  c1 = color(0, 119, 190); c2 = color(0, 190, 166);
+//			  setGradient(displayWidth/2, 0, 25, displayHeight, c1, c2, "horizontal");
+//
+//			  setGradient(displayWidth/2+25, 0, 25, displayHeight, c1, c2, "angle");
+
 			  		// -- display info about player
 
 				  textFont(f,displayHeight/70); 	//-- Specify font to be used	
 				  fill(255);                        //-- Specify font color 
-//				  text(MainActivity.UserControl + " -> " + ind+"\n    (" + playerInfor[plID] + ")",  x + displayWidth/25, y - displayHeight/25); 
-				  text(ind,  x - displayWidth/80, y - displayHeight/100); 
+//				  text(ind,  x - displayWidth/80, y - displayHeight/100); 
 				  textFont(f,displayHeight/50); 
 				  text(playerInfor[plID],  x- displayWidth/50 , displayHeight - displayHeight/20);
 	
@@ -948,18 +972,38 @@ public class ProcessingMultiUser extends PApplet{
 			  }
 		}
 
-		void setGradient(int x, int y, float w, float h, int c1, int c2) {
-
-			  noFill();
-
-			    for (int i = y; i <= y+h; i++) {
-			      float inter = map(i, y, y+h, 0, 1);
-			      int c = lerpColor(c1, c2, inter);
-			      stroke(c);
-			      line(x, i, x+w, i);
-			    } 
+		void setGradient(int x, int y, float w, float h, int c1, int c2, String s) {
 			 
-			}
+		  noFill();
+		  switch(s){
+		  	case "vertical":
+			    for (int i = y; i <= y+h; i++) {
+			        float inter = map(i, y, y+h, 0, 1);
+			        int c = lerpColor(c1, c2, inter);
+			        stroke(c);
+			        line(x, i, x+w, i);
+			    
+			    }  
+			    break;
+		  	case "horizontal":
+			    for (int i = x; i <= x+w; i++) {
+			        float inter = map(i, x, x+w, 0, 1);
+			        int c = lerpColor(c1, c2, inter);
+			        stroke(c);
+			        line(i, y, i, y+h);
+			    }
+			    break;
+		  	case "angle":
+		  		noFill();
+		  		strokeWeight(1);
+		  		beginShape();
+		  		vertex(20, 20);
+		  		quadraticVertex(100, 0, 125, 1550);
+		  		endShape();
+//			    }
+				break;
+		  }
+		}
 		
 		
 		public int sketchWidth() { return displayWidth; }
