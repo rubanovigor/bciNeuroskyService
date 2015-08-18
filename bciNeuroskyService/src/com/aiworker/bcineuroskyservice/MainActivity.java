@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -59,8 +60,8 @@ public class MainActivity extends Activity{
 	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 		
 //	Switch serviceOnOff, backendOnOff;
-	ToggleButton serviceOnOff, backendOnOff;
-	public static boolean State_serviceOnOff, State_backendOnOff;
+	ToggleButton serviceOnOff, backendOnOff, audioFeadbackOnOff;
+	public static boolean State_serviceOnOff, State_backendOnOff, State_audioFeadbackOnOff;
 	String Key_State_serviceOnOff, Key_State_backendOnOff;
 	public static boolean backend = false;
 	
@@ -95,7 +96,8 @@ public class MainActivity extends Activity{
 		
                      
         serviceOnOff = (ToggleButton) findViewById(R.id.switch_service);
-        backendOnOff = (ToggleButton) findViewById(R.id.switch_backend);       
+        backendOnOff = (ToggleButton) findViewById(R.id.switch_backend);   
+        audioFeadbackOnOff = (ToggleButton) findViewById(R.id.switch_audio);
 //        serviceOnOff = (Switch) findViewById(R.id.switch_service);
 //        backendOnOff = (Switch) findViewById(R.id.switch_backend);
 
@@ -289,6 +291,25 @@ public class MainActivity extends Activity{
 //	}
 
 	/** switch on/off the service*/
+	public void onSwitchAudioFeadback(View view) {
+	    // Is the toggle on?
+//	    boolean on = serviceOnOff.isChecked();
+		audioFeadbackOnOff.setText("");
+	    State_audioFeadbackOnOff = audioFeadbackOnOff.isChecked();
+	    
+	    //check the current state before we display the screen
+	    if(State_audioFeadbackOnOff){
+	    	audioFeadbackOnOff.setBackgroundResource(R.drawable.audio_on);
+	    	audioFeadbackOnOff.setTextColor(Color.WHITE);
+	    	audioFeadbackOnOff.setText("ON");
+	    }
+	    else {
+	    	audioFeadbackOnOff.setBackgroundResource(R.drawable.audio_off);
+	    	audioFeadbackOnOff.setTextColor(Color.GRAY);
+	    	audioFeadbackOnOff.setText("OFF");
+	    }  
+	}
+	
 	public void onSwitchClickedService(View view) {
 	    // Is the toggle on?
 //	    boolean on = serviceOnOff.isChecked();
@@ -312,6 +333,7 @@ public class MainActivity extends Activity{
 			ServiceRunningFlag = "stoped";
 	    }    
 	}
+	
 	public void ServiceOff() {
 		// -- Service will only stop if it is already running
 			stopService(new Intent(this, eegService.class));

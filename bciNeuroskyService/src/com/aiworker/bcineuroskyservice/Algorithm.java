@@ -100,7 +100,6 @@ public class Algorithm {
 		  float average;
 
 		  int l = histData.length;
-		  //Are you sure you want this to start at index 1?
 		  for (int i = 0; i < l; i++)
 		  {
 		      if (histData[i] > 0)

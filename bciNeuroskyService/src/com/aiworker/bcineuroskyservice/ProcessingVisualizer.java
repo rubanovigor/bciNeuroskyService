@@ -118,11 +118,15 @@ public class ProcessingVisualizer extends PApplet{
 				 
 			 LocalPlayerYvalues = new float[EEGfraphHistLength];
 			 LocalPlayerColorsValues = new float[EEGfraphHistLength][3];
-			
+			 
+			 	// -- 60s-1-10-20-10
 			 histData1min = new float[60]; Arrays.fill(histData1min, 0);
-			 histData10min = new float[600]; Arrays.fill(histData10min, 0);
-			 histData20min = new float[1200];
-			 histData30min = new float[1800];
+//			 histData10min = new float[600]; Arrays.fill(histData10min, 0);
+//			 histData20min = new float[1200]; Arrays.fill(histData20min, 0);
+			 	// -- 60s-1-5-10-30
+			 histData10min = new float[300]; Arrays.fill(histData10min, 0);
+			 histData20min = new float[600]; Arrays.fill(histData20min, 0);
+			 histData30min = new float[1800]; Arrays.fill(histData30min, 0);
 			 
 			 movingAvgHistData = new float[arrD][EEGfraphHistLength]; //Arrays.fill(movingAvgHistData, 100);
 			 
@@ -281,11 +285,13 @@ public class ProcessingVisualizer extends PApplet{
 //			  displayGraphOfEEGindex();
 			  
 			  // -- display graphs
-			  displayCircleGraph(movingAvgHistData, 0, "1s" , 0);
-			  displayCircleGraph(movingAvgHistData, 1, "1m" ,  1*displayHeight/5);
-			  displayCircleGraph(movingAvgHistData, 2, "10m" , 2*displayHeight/5);
-			  displayCircleGraph(movingAvgHistData, 3, "20m" , 3*displayHeight/5);
-			  displayCircleGraph(movingAvgHistData, 4, "30m" , 4*displayHeight/5);
+			  displayCircleGraph(movingAvgHistData, 0, "1s" , 0, 0);
+			  displayCircleGraph(movingAvgHistData, 1, "1m" ,  1*displayHeight/5, 0);
+//			  displayCircleGraph(movingAvgHistData, 2, "10m" , 2*displayHeight/5, 10*OneMin);
+//			  displayCircleGraph(movingAvgHistData, 3, "20m" , 3*displayHeight/5, 20*OneMin);
+			  displayCircleGraph(movingAvgHistData, 2, "5m" , 2*displayHeight/5, 5*OneMin);
+			  displayCircleGraph(movingAvgHistData, 3, "10m" , 3*displayHeight/5, 10*OneMin);			  
+			  displayCircleGraph(movingAvgHistData, 4, "30m" , 4*displayHeight/5, 30*OneMin);
 
 		}
 
@@ -577,18 +583,28 @@ public class ProcessingVisualizer extends PApplet{
 		public void displayToroidByID(int ind, int plID, float x, float y){
 				// -- setup gradient colors
 			  indexR = (255 * ind) / 100; indexG = 0;  indexB = (255 * (100 - ind)) / 100 ;
-			  	// -- setup fixed 3 colors based on threshold			
+			  	// -- setup fixed 3 colors based on threshold	
+			  if(MainActivity.State_audioFeadbackOnOff == false){
+				  music_play_flag = "OFF";
+			  }
 			  if(ind<MainActivity.AttLevelCritical){
 				  indexR = 255; indexG = 0; indexB = 0;
-				  if(music_play_flag.equals("playing")){startService(new Intent(MusicService.ACTION_STOP)); music_play_flag = "stop";};
+				  if(MainActivity.State_audioFeadbackOnOff){
+					  if(music_play_flag.equals("playing")){startService(new Intent(MusicService.ACTION_STOP)); music_play_flag = "stop";};  
+				  }
+				  
 			  } 
 			  if(ind>=MainActivity.AttLevelCritical && ind<=MainActivity.AttLevelWarning){
-				  indexR = 255; indexG = 255; indexB = 0;
-				  if(music_play_flag.equals("playing")){startService(new Intent(MusicService.ACTION_STOP)); music_play_flag = "stop";};  
+				  indexR = 0; indexG = 255; indexB = 0;
+				  if(MainActivity.State_audioFeadbackOnOff){
+					  if(music_play_flag.equals("playing")){startService(new Intent(MusicService.ACTION_STOP)); music_play_flag = "stop";};  
+				  }
 			  } 
 			  if(ind>MainActivity.AttLevelWarning){
-				  indexR = 0; indexG = 255; indexB = 0;
-				  if(music_play_flag.equals("stop")){startService(new Intent(MusicService.ACTION_PLAY)); music_play_flag = "playing";};
+				  indexR = 0; indexG = 0; indexB = 255;
+				  if(MainActivity.State_audioFeadbackOnOff){
+					  if(music_play_flag.equals("stop")){startService(new Intent(MusicService.ACTION_PLAY)); music_play_flag = "playing";};
+				  }
 			  } 
 			  
 			  
@@ -685,15 +701,15 @@ public class ProcessingVisualizer extends PApplet{
 //				 	 case "S": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 //				 	 case "P": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				  }
-				  
+				  // -- update value on graph each minute (for 5-10-30 graph)
 				  if (millis() - DataCollection >= OneMin){
 					  // -- adding new value to the end
 					  int l = movingAvgHistData[0].length;
 					  movingAvgHistData[0][l-1] = ind;
 					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData1min);
-					  movingAvgHistData[2][l-1] = Algorithm.MovingAverage(histData10min);
-					  movingAvgHistData[3][l-1] = Algorithm.MovingAverage(histData20min);
-					  movingAvgHistData[4][l-1] = Algorithm.MovingAverage(histData30min);
+					  if(TimeOfTheGame >= 5*OneMin){ movingAvgHistData[2][l-1] = Algorithm.MovingAverage(histData10min);}
+					  if(TimeOfTheGame >= 10*OneMin){ movingAvgHistData[3][l-1] = Algorithm.MovingAverage(histData20min);}
+					  if(TimeOfTheGame >= 30*OneMin){ movingAvgHistData[4][l-1] = Algorithm.MovingAverage(histData30min);}
 					  
 					  // -- shift array, to keep only last EEGfraphHistLength values
 					  for (int j = 0; j < histData1min.length-1; j++) { histData1min[j] = histData1min[j+1]; }
@@ -701,11 +717,16 @@ public class ProcessingVisualizer extends PApplet{
 					  for (int j = 0; j < histData20min.length-1; j++) { histData20min[j] = histData20min[j+1]; }
 					  for (int j = 0; j < histData30min.length-1; j++) { histData30min[j] = histData30min[j+1]; }
 					  
+					  if(TimeOfTheGame <= OneMin){arrD = 2;}
+					  if(TimeOfTheGame >= 5*OneMin){arrD = 3;}
+					  if(TimeOfTheGame >= 10*OneMin){arrD = 4;}
+					  if(TimeOfTheGame >= 30*OneMin){arrD = 5;}
 					  for (int j = 0; j < EEGfraphHistLength-1; j++) {
 						  for (int i = 0; i < arrD; i++) {
 							  movingAvgHistData[i][j] = movingAvgHistData[i][j+1];
 						  }
 					  }
+					  
 					  DataCollection=millis();
 				  } else {
 					  int l = movingAvgHistData[0].length;
@@ -720,8 +741,7 @@ public class ProcessingVisualizer extends PApplet{
 						  for (int i = 0; i < 2; i++) {
 							  movingAvgHistData[i][j] = movingAvgHistData[i][j+1];
 						  }
-					  }
-					  
+					  }					 
 				  }
 				  
 				  DataCollectionLastTimeLocalPlayer=millis();	
@@ -732,7 +752,7 @@ public class ProcessingVisualizer extends PApplet{
 		}
 		
 		/** display circle graph with R, color define by EEG index */
-		void displayCircleGraph(float[][] graphData, int k, String s, float yAdj) {
+		void displayCircleGraph(float[][] graphData, int k, String s, float yAdj, int minPass) {
 			  noSmooth();  noFill();		  
 			  
 			  beginShape();			  
@@ -743,8 +763,8 @@ public class ProcessingVisualizer extends PApplet{
 				  
 				  // -- setup colors of bars
 				  if(graphData[k][i]<MainActivity.AttLevelCritical){strokeWeight(4); stroke(255,0,0);}
-				  if(graphData[k][i]>=MainActivity.AttLevelCritical && graphData[k][i]<=MainActivity.AttLevelWarning){strokeWeight(3); stroke(255,165,0);}
-				  if(graphData[k][i]>MainActivity.AttLevelWarning){strokeWeight(2); stroke(0,255,0);}
+				  if(graphData[k][i]>=MainActivity.AttLevelCritical && graphData[k][i]<=MainActivity.AttLevelWarning){strokeWeight(3); stroke(0,255,0);}
+				  if(graphData[k][i]>MainActivity.AttLevelWarning){strokeWeight(2); stroke(0,0,255);}
 				  
 //				  if(ind<MainActivity.AttLevelCritical){indexR = 255; indexG = 0; indexB = 0;} // -- red
 //				  if(ind>=MainActivity.AttLevelCritical && ind<=MainActivity.AttLevelWarning){indexR = 255; indexG = 165; indexB = 0;} // -- yellow
@@ -759,14 +779,15 @@ public class ProcessingVisualizer extends PApplet{
 				  if (i==graphData[0].length-5){strokeWeight(4); }	
 				  
 				  // -- draw bars
-				  line(displayWidth-histChartR-histChartRsmall + (histChartRsmall)*sin(alpha),
-						  histChartR+histChartRsmall + (histChartRsmall)*cos(alpha) + yAdj,
-						  displayWidth-histChartR-histChartRsmall + ((histChartRsmall)+ graphData[k][i])*sin(alpha),
-						  histChartR+histChartRsmall + ((histChartRsmall)+graphData[k][i])*cos(alpha) + yAdj);
-				  
-				  // -- update alpha: shift bars to the left
-				  alpha = alpha - (float)Math.PI/45f; 
-
+				  if(TimeOfTheGame >= minPass){
+					  line(displayWidth-histChartR-histChartRsmall + (histChartRsmall)*sin(alpha),
+							  histChartR+histChartRsmall + (histChartRsmall)*cos(alpha) + yAdj,
+							  displayWidth-histChartR-histChartRsmall + ((histChartRsmall)+ graphData[k][i])*sin(alpha),
+							  histChartR+histChartRsmall + ((histChartRsmall)+graphData[k][i])*cos(alpha) + yAdj);
+					  
+					  // -- update alpha: shift bars to the left
+					  alpha = alpha - (float)Math.PI/45f; 
+				  }
 			  }
 			  endShape();
 			  // -- reset alpha, to draw current value at angle=0
