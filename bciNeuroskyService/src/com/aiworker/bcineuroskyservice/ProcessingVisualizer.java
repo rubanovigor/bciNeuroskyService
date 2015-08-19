@@ -83,6 +83,7 @@ public class ProcessingVisualizer extends PApplet{
 		float[][] movingAvgHistData;
 		
 		String music_play_flag = "stop";
+		int Y_AXIS = 1, X_AXIS = 2, YX_AXIS = 3;
 		
 		public void setup(){	 
 //			 frameRate(15); 
@@ -762,9 +763,15 @@ public class ProcessingVisualizer extends PApplet{
 				  strokeWeight(2);
 				  
 				  // -- setup colors of bars
-				  if(graphData[k][i]<MainActivity.AttLevelCritical){strokeWeight(4); stroke(255,0,0);}
-				  if(graphData[k][i]>=MainActivity.AttLevelCritical && graphData[k][i]<=MainActivity.AttLevelWarning){strokeWeight(3); stroke(0,255,0);}
-				  if(graphData[k][i]>MainActivity.AttLevelWarning){strokeWeight(2); stroke(0,0,255);}
+				  if(graphData[k][i]<MainActivity.AttLevelCritical){strokeWeight(4); stroke(255,0,0);
+					stroke(lerpColor(color(255,0,0), color(251,19,55), map(graphData[k][i], 0, 100, 0f, 1f)));  
+				  }
+				  if(graphData[k][i]>=MainActivity.AttLevelCritical && graphData[k][i]<=MainActivity.AttLevelWarning){strokeWeight(3); stroke(0,255,0);
+				   stroke(lerpColor(color(219,251,19), color(39,191,0), map(graphData[k][i], 0, 100, 0f, 1f)));
+				  }
+				  if(graphData[k][i]>MainActivity.AttLevelWarning){strokeWeight(2); stroke(0,0,255);
+				  	stroke(lerpColor(color(19,223,251), color(66,0,191), map(graphData[k][i], 0, 100, 0f, 1f)));
+				  	}
 				  
 //				  if(ind<MainActivity.AttLevelCritical){indexR = 255; indexG = 0; indexB = 0;} // -- red
 //				  if(ind>=MainActivity.AttLevelCritical && ind<=MainActivity.AttLevelWarning){indexR = 255; indexG = 165; indexB = 0;} // -- yellow
@@ -772,14 +779,36 @@ public class ProcessingVisualizer extends PApplet{
 //				  stroke(LocalPlayerColorsValues[i][0],LocalPlayerColorsValues[i][1],LocalPlayerColorsValues[i][2]);
 				  
 				  // -- setup width of the first 5 bars
-				  if (i==graphData[0].length-1){strokeWeight(10); }	 
-				  if (i==graphData[0].length-2){strokeWeight(8); }	  
-				  if (i==graphData[0].length-3){strokeWeight(6); }	 
-				  if (i==graphData[0].length-4){strokeWeight(5); }	 
-				  if (i==graphData[0].length-5){strokeWeight(4); }	
+//				  if (i==graphData[0].length-1){strokeWeight(10); }	 
+//				  if (i==graphData[0].length-2){strokeWeight(8); }	  
+//				  if (i==graphData[0].length-3){strokeWeight(6); }	 
+//				  if (i==graphData[0].length-4){strokeWeight(5); }	 
+//				  if (i==graphData[0].length-5){strokeWeight(4); }	
 				  
 				  // -- draw bars
 				  if(TimeOfTheGame >= minPass){
+					// -- draw gradient of lines
+					  int c1 = color(0,255,0); int c2 = color(0, 0, 255); // green-blue
+//					  int c1 = color(255,0,0); int c2 = color(0, 255, 0); // red-green
+					  //c1 = color(255,0,0);
+//					  setGradient((int)(displayWidth-histChartR-histChartRsmall + (histChartRsmall)*sin(alpha)),
+//							  (int)(histChartR+histChartRsmall + (histChartRsmall)*cos(alpha) + yAdj),
+//							  displayWidth-histChartR-histChartRsmall + ((histChartRsmall)+ graphData[k][i])*sin(alpha),
+//							  histChartR+histChartRsmall + ((histChartRsmall)+graphData[k][i])*cos(alpha) + yAdj,
+//							  c1, c2, YX_AXIS);
+					  
+//					  float x1=displayWidth-histChartR-histChartRsmall + (histChartRsmall)*sin(alpha);
+//					  float y1 = histChartR+histChartRsmall + (histChartRsmall)*cos(alpha) + yAdj;
+//					  noFill();
+//						beginShape();
+//					    for (float i1 = x1; i1 <= x1+100f; i1++) {
+//					      vertex(x1+i1, y1+i1);
+//						    }
+//					    endShape();
+
+					  
+					  
+					  
 					  line(displayWidth-histChartR-histChartRsmall + (histChartRsmall)*sin(alpha),
 							  histChartR+histChartRsmall + (histChartRsmall)*cos(alpha) + yAdj,
 							  displayWidth-histChartR-histChartRsmall + ((histChartRsmall)+ graphData[k][i])*sin(alpha),
@@ -793,6 +822,8 @@ public class ProcessingVisualizer extends PApplet{
 			  // -- reset alpha, to draw current value at angle=0
 			  alpha = 0;
 
+//			  textFont(f,displayHeight/60);  fill(255);  text(histChartR+histChartRsmall + (histChartRsmall)*cos(alpha) + yAdj, 400, 400);
+			  
 				// -- display info about player
 			  textFont(f,displayHeight/60);  fill(255);    
 			  text(Math.round(graphData[k][graphData[0].length-1]),
@@ -801,6 +832,39 @@ public class ProcessingVisualizer extends PApplet{
 			  text(s, displayWidth-histChartR-1.5f*histChartRsmall - (histChartR+histChartRsmall), histChartR+1.4f*histChartRsmall + yAdj);
 		}
 		
+		void setGradient(int x, int y, float w, float h, int c1, int c2, int axis) {
+
+			  noFill();
+
+			  if (axis == Y_AXIS) {  // Top to bottom gradient
+			    for (int i = y; i <= y+h; i++) {
+			      float inter = map(i, y, y+h, 0, 1);
+			      int c = lerpColor(c1, c2, inter);
+			      stroke(c);
+			      line(x, i, x+w, i);
+			    }
+			  }  
+			  else if (axis == X_AXIS) {  // Left to right gradient
+			    for (int i = x; i <= x+w; i++) {
+			      float inter = map(i, x, x+w, 0, 1);
+			      int c = lerpColor(c1, c2, inter);
+			      stroke(c);
+			      line(i, y, i, y+h);
+			    }
+			  }
+		  	
+			  if (axis == YX_AXIS){
+				strokeWeight(3);
+				beginShape();
+			    for (int i = x; i <= x+w; i++) {
+			      vertex(x+i, y+i);
+				    }
+			    endShape();
+			  }
+					
+		}
+
+
 		
 		public int sketchWidth() { return displayWidth; }
 		public int sketchHeight() { return displayHeight; }
