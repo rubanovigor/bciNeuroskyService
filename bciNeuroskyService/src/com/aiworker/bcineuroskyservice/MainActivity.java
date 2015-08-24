@@ -57,7 +57,7 @@ public class MainActivity extends Activity{
 	TextView tv_Med, tv_Att, tv_NeuroskyStatus, tv_AttGradient, tv_MedGradient; 
 	public static int At=42, Med=42, AttLevelWarning = 60, AttLevelCritical=40;
 	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
-	public static String NeuroskyStatus = ""; String Key_NeuroskyStatus;
+	public static String NeuroskyStatus = "Neurosky disconnected"; String Key_NeuroskyStatus;
 		
 //	Switch serviceOnOff, backendOnOff;
 	ToggleButton serviceOnOff, backendOnOff, audioFeadbackOnOff;

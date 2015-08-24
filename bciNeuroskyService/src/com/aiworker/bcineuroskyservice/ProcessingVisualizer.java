@@ -173,6 +173,7 @@ public class ProcessingVisualizer extends PApplet{
 			  // -- draw background and setup basic lighting setup
 			  background(0); //black background
 			  NeuroskyStatus = MainActivity.NeuroskyStatus;
+			  if(NeuroskyStatus.equals("Neurosky connected")) {AttMedZero = eegService.AttMedZero;}
 			  
 			  	// -- video
 //			  textFont(f,displayHeight/20);  
@@ -183,9 +184,10 @@ public class ProcessingVisualizer extends PApplet{
 			  //lights();  // -- not working on some devices
 		  
 			  		// -- display game time
-			  if(NeuroskyStatus.equals("Neurosky connected") && AttMedZero.equals("")){
-				  TimeOfTheGame = millis() - CurrentTime;
-			  } else {TimeOfTheGame=TimeOfTheGame;};
+			  TimeOfTheGame = millis() - CurrentTime;
+//			  if(NeuroskyStatus.equals("Neurosky connected") && AttMedZero.equals("")){
+//				  TimeOfTheGame = millis() - CurrentTime;
+//			  } else {TimeOfTheGame=TimeOfTheGame;};
 			  
 			  fill(255); textFont(f,displayHeight/30);  	
 			  String s = String.format("%02d:%02d:%02d", 
@@ -214,10 +216,14 @@ public class ProcessingVisualizer extends PApplet{
 			  		// =================================================
 			    	// =================================================
 				    case "visualizer":
-				    	indexLocalPlayer[0] = getEEG();
-//				    	indexLocalPlayer[0] = 0;
-
-				    	DataCollection(indexLocalPlayer[0]);
+//				    	indexLocalPlayer[0] = getEEG();
+////				    	indexLocalPlayer[0] = 0;
+//				    	DataCollection(indexLocalPlayer[0]);
+				    	
+//				    	DataCollection(getEEG());
+				    	if(NeuroskyStatus.equals("Neurosky connected") && AttMedZero.equals("")){
+				    		histData = eegService.histData;	movingAvgHistData = eegService.movingAvgHistData;
+				    	}
 				    	
 				    	// -- Convert a number range to another range, maintaining ratio
 //				    	NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin;
@@ -252,7 +258,6 @@ public class ProcessingVisualizer extends PApplet{
 			  } 
 //			  }
 			// ===============================================	
-//			  DataCollection(indexLocalPlayer);	
 //			  displayGraphOfEEGindex();
 			  
 			  // -- display graphs
@@ -370,8 +375,9 @@ public class ProcessingVisualizer extends PApplet{
 			  
 		}*/
 		
+		
 		/** display LocalPlayer EEG index in  form of circle with R=index */
-		void displayEEGindexCircleLocalPlayer() {
+		/*void displayEEGindexCircleLocalPlayer() {
 			  noSmooth();  
 			  noFill();
 			  beginShape();
@@ -406,7 +412,7 @@ public class ProcessingVisualizer extends PApplet{
 			  endShape();
 			  // -- reset alpha, to draw current value at angle=0
 			  alpha = 0;
-		}
+		}*/
 		
 			
 		/** get EEG data from MainActivity and calculate S,P
@@ -493,7 +499,7 @@ public class ProcessingVisualizer extends PApplet{
 			
 		
 		/** display toroid for local/local+network player */
-		public void drawVerticalLine(){	
+		/*public void drawVerticalLine(){	
 			stroke(255,0,0); fill(255,0,0);
 			rect(X_line, Y_line, line_width,line_hight);
 			
@@ -509,10 +515,10 @@ public class ProcessingVisualizer extends PApplet{
 					(displayHeight - (int) ((((MainActivity.AttLevelCritical - 0) * ((Y_line + line_hight) - Y_line)) / (100 - 0)) + Y_line) ) );
 			
 								
-		}
+		}*/
 		
 		/** display toroid for local/local+network player */
-		public void displaySphere(int ind, float x, float y){
+	/*	public void displaySphere(int ind, float x, float y){
 				// -- setup gradient colors
 //			  indexR = (255 * ind) / 100; indexG = 0;  indexB = (255 * (100 - ind)) / 100 ;
 			  	// -- setup fixed 3 colors based on threshold			
@@ -546,10 +552,8 @@ public class ProcessingVisualizer extends PApplet{
 			  translate(x, y);
 			  sphere(sphereR);
 			  popMatrix();
-			  
-		
-			  
-		}
+					  
+		}*/
 		
 		/** display toroid for local/local+network player */
 		public void displayToroidByID(int ind, int plID, float x, float y){
@@ -618,23 +622,23 @@ public class ProcessingVisualizer extends PApplet{
 		
 	
 		/** display game level at the bottom of the screen */
-//		public void displayGameLevel(){
-//			  noStroke();
-//			  for(int i=0; i<MaxGameLevel; i++){
-//				  		// -- set fill to red
-//					fill(255,0,0); 
-//						// -- Draw ellipse using CENTER mode
-////					ellipse(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.2f*displayHeight/10, 15, 15); 
-//					ellipse(displayWidth/10 + i*displayWidth/MaxGameLevel, displayHeight - 0.2f*displayHeight/10, 15, 15); 
-//					 
-//		  	  }
-//			  for(int i=0; i<GameLevel; i++){
-//					fill(0,0,255);  // -- set fill to blue
-//						// -- Draw ellipse using CENTER mode
-////					ellipse(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.2f*displayHeight/10, 20, 20); 
-//					ellipse(displayWidth/10 + i*displayWidth/MaxGameLevel, displayHeight - 0.2f*displayHeight/10, 20, 20); 
-//			  }
-//		}
+	/*	public void displayGameLevel(){
+			  noStroke();
+			  for(int i=0; i<MaxGameLevel; i++){
+				  		// -- set fill to red
+					fill(255,0,0); 
+						// -- Draw ellipse using CENTER mode
+//					ellipse(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.2f*displayHeight/10, 15, 15); 
+					ellipse(displayWidth/10 + i*displayWidth/MaxGameLevel, displayHeight - 0.2f*displayHeight/10, 15, 15); 
+					 
+		  	  }
+			  for(int i=0; i<GameLevel; i++){
+					fill(0,0,255);  // -- set fill to blue
+						// -- Draw ellipse using CENTER mode
+//					ellipse(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.2f*displayHeight/10, 20, 20); 
+					ellipse(displayWidth/10 + i*displayWidth/MaxGameLevel, displayHeight - 0.2f*displayHeight/10, 20, 20); 
+			  }
+		}*/
 
 		/** collect user indexes to array */
 		public void DataCollection(int ind){
@@ -642,100 +646,51 @@ public class ProcessingVisualizer extends PApplet{
 			if(NeuroskyStatus.equals("Neurosky connected")){
 			  if (millis() - DataCollectionLastTimeLocalPlayer < DataCollectionDelay_ms ) return; 
 			  else{		
-				  if(eegService.At == 0 && eegService.Med ==0){AttMedZero = "Att&Med are equal to ZERO";}
+				  if(eegService.At == 0 && eegService.Med ==0){
+					  AttMedZero = "Att&Med are equal to ZERO";
+				  }
 				  else{
 					  AttMedZero="";
-					  switch(MainActivity.UserControl){
-					  	 // -- store current index value
-					  	 case "A": {
-	//				  		histData1min[histData1min.length-1] = ind; 
-	//				  		histData10min[histData10min.length-1] = ind; 
-	//				  		histData20min[histData20min.length-1] = ind; 
-	//				  		histData30min[histData30min.length-1] = ind; 
-					  		 
-	//				  		histData[histData.length-1] = ind;
-					  		histData = Algorithm.saveIndexToArray(ind, histData);
-					  		 
-					  		break;
-					  	 }
-					  	 case "M": {
-					  		histData = Algorithm.saveIndexToArray(ind, histData);
-	//				  		histData1min[histData1min.length-1] = ind; 
-	//				  		histData10min[histData10min.length-1] = ind; 
-	//				  		histData20min[histData20min.length-1] = ind; 
-	//				  		histData30min[histData30min.length-1] = ind; 
-					  		 
-					  		break;
-					  	 }
-					  	 case "S": {
-					  		histData = Algorithm.saveIndexToArray((int)(ind+100)/2, histData);
-	//				  		histData1min[histData1min.length-1] = (ind+100)/2; 
-	//				  		histData10min[histData10min.length-1] = (ind+100)/2; 
-	//				  		histData20min[histData20min.length-1] = (ind+100)/2; 
-	//				  		histData30min[histData30min.length-1] = (ind+100)/2; 
-					  		 
-					  		break;
-					  	 }
-				  	 
-//				 	 case "A": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
-//				 	 case "M": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
-//				 	 case "S": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
-//				 	 case "P": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
-				  }
-				  }
-				  // -- update value on graph each minute (for 5-10-30 graph)
-				  if (millis() - DataCollection >= OneMin && AttMedZero.equals("")){
-					  // -- adding new value to the end
-					  int l = movingAvgHistData[0].length;
-					  movingAvgHistData[0][l-1] = ind; // 1sec
-					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData, 60); // 1min
-					  if(TimeOfTheGame >= 5*OneMin){ movingAvgHistData[2][l-1] = Algorithm.MovingAverage(histData,300);} // 5min
-					  if(TimeOfTheGame >= 10*OneMin){ movingAvgHistData[3][l-1] = Algorithm.MovingAverage(histData,600);} // 10min
-					  if(TimeOfTheGame >= 30*OneMin){ movingAvgHistData[4][l-1] = Algorithm.MovingAverage(histData,1800);} // 30min
+					  histData = Algorithm.saveIndexToArray(ind, histData);
+//				  }
+					  // -- update value on graph each second (for 1sec-1min) / minute (for 5-10-30 graph)
+					  if (millis() - DataCollection >= OneMin && AttMedZero.equals("")){					  
+						  // -- adding new value to the end
+						  int l = movingAvgHistData[0].length;
+						  movingAvgHistData[0][l-1] = ind; // 1sec
+						  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData, 60); // 1min
+						  if(TimeOfTheGame >= 5*OneMin){ movingAvgHistData[2][l-1] = Algorithm.MovingAverage(histData,300);} // 5min
+						  if(TimeOfTheGame >= 10*OneMin){ movingAvgHistData[3][l-1] = Algorithm.MovingAverage(histData,600);} // 10min
+						  if(TimeOfTheGame >= 30*OneMin){ movingAvgHistData[4][l-1] = Algorithm.MovingAverage(histData,1800);} // 30min
+						  
+						  // -- shift histData array to the left
+						  histData = Algorithm.shiftToLeft1DArray(histData);
+						  
+						  // -- shift array to the left, to  keep only last EEGfraphHistLength values
+						  if(TimeOfTheGame <= OneMin){arrD = 2;}	  if(TimeOfTheGame >= 5*OneMin){arrD = 3;}
+						  if(TimeOfTheGame >= 10*OneMin){arrD = 4;}	  if(TimeOfTheGame >= 30*OneMin){arrD = 5;}
+						  
+						  movingAvgHistData = Algorithm.shiftToLeft2DArray(movingAvgHistData, EEGfraphHistLength, arrD);
+						  
+						  DataCollection=millis();
+					  } 
+					
+					  // -- update value on graph each second (for 1sec-1min)
+					  if (millis() - DataCollection < OneMin && AttMedZero.equals("")) {
+						  int l = movingAvgHistData[0].length;
+						  movingAvgHistData[0][l-1] = ind; // 1sec
+						  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData, 60); // 1min
+						  
+						  // -- shift histData array to the left
+						  histData = Algorithm.shiftToLeft1DArray(histData);
+						  
+						  // -- shift values only for 1sec and 1min arrays
+						  movingAvgHistData = Algorithm.shiftToLeft2DArray(movingAvgHistData, EEGfraphHistLength, 2);
+					 
+					   }
 					  
-					  // -- shift array, to keep only last EEGfraphHistLength values
-					  for (int j = 0; j < histData.length-1; j++) { histData[j] = histData[j+1]; }
-//					  for (int j = 0; j < histData1min.length-1; j++) { histData1min[j] = histData1min[j+1]; }
-//					  for (int j = 0; j < histData10min.length-1; j++) { histData10min[j] = histData10min[j+1]; }
-//					  for (int j = 0; j < histData20min.length-1; j++) { histData20min[j] = histData20min[j+1]; }
-//					  for (int j = 0; j < histData30min.length-1; j++) { histData30min[j] = histData30min[j+1]; }
-					  
-					  if(TimeOfTheGame <= OneMin){arrD = 2;}
-					  if(TimeOfTheGame >= 5*OneMin){arrD = 3;}
-					  if(TimeOfTheGame >= 10*OneMin){arrD = 4;}
-					  if(TimeOfTheGame >= 30*OneMin){arrD = 5;}
-					  for (int j = 0; j < EEGfraphHistLength-1; j++) {
-						  for (int i = 0; i < arrD; i++) {
-							  movingAvgHistData[i][j] = movingAvgHistData[i][j+1];
-						  }
-					  }
-					  
-					  DataCollection=millis();
-				  } 
-				  if (millis() - DataCollection < OneMin && AttMedZero.equals("")) {
-					  int l = movingAvgHistData[0].length;
-					  movingAvgHistData[0][l-1] = ind;
-					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData, 60); // 1min
-//					  text(Math.round(Algorithm.MovingAverage(histData, 60)),	  300, 300);
-//					  text(Math.round(histData[1799]),	  400, 300);
-					  
-					  for (int j = 0; j < histData.length-1; j++) { histData[j] = histData[j+1]; }
-//					  for (int j = 0; j < histData1min.length-1; j++) { histData1min[j] = histData1min[j+1]; }
-//					  for (int j = 0; j < histData10min.length-1; j++) { histData10min[j] = histData10min[j+1]; }
-//					  for (int j = 0; j < histData20min.length-1; j++) { histData20min[j] = histData20min[j+1]; }
-//					  for (int j = 0; j < histData30min.length-1; j++) { histData30min[j] = histData30min[j+1]; }
-					  
-					  for (int j = 0; j < EEGfraphHistLength-1; j++) {
-						  for (int i = 0; i < 2; i++) {
-							  movingAvgHistData[i][j] = movingAvgHistData[i][j+1];
-						  }
-					  }					 
-				  }
-				  
-				  DataCollectionLastTimeLocalPlayer=millis();	
-				  		
-//				  // -- display graphs
-//				  displayCircleGraph(movingAvgHistData, 0);
+					  DataCollectionLastTimeLocalPlayer=millis();	
+			  		}	
 			  }
 			}
 		}
@@ -743,7 +698,7 @@ public class ProcessingVisualizer extends PApplet{
 		/** display circle graph with R, color define by EEG index */
 		void displayCircleGraph(float[][] graphData, int k, String s, float yAdj, int minPass) {
 			  noSmooth();  noFill();		  
-			  
+//			  graphData=eegService.movingAvgHistData1;
 			  beginShape();			  
 			  for (int i = graphData[0].length-1; i >= 0 ; i--) {
 //			  for (int i = EEGfraphHistLength-1; i >= 0 ; i--) {

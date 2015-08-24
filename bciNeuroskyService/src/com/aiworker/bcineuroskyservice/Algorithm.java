@@ -143,16 +143,76 @@ public class Algorithm {
 	/** 
 	 * save EEG index to the end of the histData array
 	 * <p>
-	 * @param index - EEG index 
-	 * @param histData - array with historical data
+	 * @param index - EEG index
+	 * @param hData - array with historical data
 	 * @return histData with new values*/
 	public static float[] saveIndexToArray(int index, float[] hData){
-		// -- check if Att&Med are non-zero (neurosky sending Att&Med)
-//		if( eegService.At != 0 && eegService.Med !=0){
-			// -- save index to the end of the array
-			hData[hData.length-1] = index; 			
-//		}
-		
+		// -- save index to the end of the array		
+		switch(MainActivity.UserControl){
+		  	 // -- store current index value
+		  	 case "A": {				  		 
+				hData[hData.length-1] = index;				  		 
+		  		break;
+		  	 }
+		  	 case "M": {
+		  		hData[hData.length-1] = index;
+		  		break;
+		  	 }
+		  	 case "S": {
+		  		hData[hData.length-1] = (index+100)/2;
+		  		break;
+		  	 }
+	  	 
+		  }
+			
 		return hData;
 	}
+	
+	/** 
+	 * shift 1D array to the left
+	 * <p>
+	 * @param hData - 1D array
+	 * @return hData shifted array*/
+	public static float[] shiftToLeft1DArray(float[] hData){	
+		for (int j = 0; j < hData.length-1; j++) {
+			hData[j] = hData[j+1]; 
+		}
+			
+		return hData;
+	}
+	
+	/** 
+	 * shift 2D array to the left
+	 * <p>
+	 * @param hData - 2D array
+	 * @return hData shifted array*/
+	public static float[][] shiftToLeft2DArray(float[][] hData, int d1, int d2){			
+		for (int j = 0; j < d1-1; j++) {
+			  for (int i = 0; i < d2; i++) {
+				  hData[i][j] = hData[i][j+1];
+			  }
+		  }
+			
+		return hData;
+	}
+	
+	/** 
+	 * get specific EEG index based on user preferrence
+	 * <p>
+	 * @return index (A, M or S)*/
+	public static int getSpecificEEGIndex(){			
+		switch(MainActivity.UserControl){
+	 	 case "A":
+	 		return eegService.At;
+	 	 case "M":
+	 		return eegService.Med;
+	 	 case "S":
+	 		return (eegService.At - eegService.Med);
+	 	 
+	 	 default:
+	 	     return 0;
+	 	 }			
+	}
+	
+	
 }

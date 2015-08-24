@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
@@ -53,6 +54,13 @@ public class eegService extends Service{
 	private int notificationID = 100;
 	private int numMessages = 0;
 	   
+	public static float[][] movingAvgHistData1;
+	static String AttMedZero = "";
+	int DataCollectionDelay_ms = 1000, OneMin = 60000, arrD=5,  EEGfraphHistLength = 85;
+	private long TimeOfTheGame = 0, DataCollectionLastTimeLocalPlayer,DataCollection;
+	static float[]  histData;	static float[][] movingAvgHistData;
+	
+	
 	   
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -79,7 +87,11 @@ public class eegService extends Service{
 //	   CurrentActivity = intent.getStringExtra("UserActivity");
 	   userName = "UserName";
 	   CurrentActivity = "UserActivity";
-		
+	   
+	   histData = new float[1800]; 
+	   movingAvgHistData = new float[arrD][EEGfraphHistLength]; 
+	   DataCollection = System.currentTimeMillis();
+	   
 	   processStartTG();
 		 
 	   MyThread myThread = new MyThread();
@@ -347,6 +359,7 @@ public class eegService extends Service{
 	    					    msgToActivity.obj  = NeuroskyCurrentStatus;
 	    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
 	    						
+	    						DataCollectionAndMovingAvg(Algorithm.getSpecificEEGIndex());
 	    						// -- comment in specific case
 //	    						updateNotification();
 	    						
@@ -565,4 +578,59 @@ public class eegService extends Service{
 	      mNotificationManager.notify(notificationID, mBuilder.build()); 
 	   }
 	
+    public void DataCollectionAndMovingAvg(int ind){
+  		// -- collect indexes
+//		if(NeuroskyStatus.equals("Neurosky connected")){
+		  if (System.currentTimeMillis() - DataCollectionLastTimeLocalPlayer < DataCollectionDelay_ms ) return; 
+		  else{		
+			  if(At == 0 && Med ==0){
+				  AttMedZero = "Att&Med are equal to ZERO";
+			  }
+			  else{
+				  AttMedZero="";
+				  histData = Algorithm.saveIndexToArray(ind, histData);
+				  
+				  // -- update value on graph each second (for 1sec-1min) / minute (for 5-10-30 graph)
+				  if (System.currentTimeMillis() - DataCollection >= OneMin && AttMedZero.equals("")){					  
+					  // -- adding new value to the end
+					  int l = movingAvgHistData[0].length;
+					  movingAvgHistData[0][l-1] = ind; // 1sec
+					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData, 60); // 1min
+					  if(TimeOfTheGame >= 5*OneMin){ movingAvgHistData[2][l-1] = Algorithm.MovingAverage(histData,300);} // 5min
+					  if(TimeOfTheGame >= 10*OneMin){ movingAvgHistData[3][l-1] = Algorithm.MovingAverage(histData,600);} // 10min
+					  if(TimeOfTheGame >= 30*OneMin){ movingAvgHistData[4][l-1] = Algorithm.MovingAverage(histData,1800);} // 30min
+					  
+					  // -- shift histData array to the left
+					  histData = Algorithm.shiftToLeft1DArray(histData);
+					  
+					  // -- shift array to the left, to  keep only last EEGfraphHistLength values
+					  if(TimeOfTheGame <= OneMin){arrD = 2;}	  if(TimeOfTheGame >= 5*OneMin){arrD = 3;}
+					  if(TimeOfTheGame >= 10*OneMin){arrD = 4;}	  if(TimeOfTheGame >= 30*OneMin){arrD = 5;}
+					  
+					  movingAvgHistData = Algorithm.shiftToLeft2DArray(movingAvgHistData, EEGfraphHistLength, arrD);
+					  
+					  DataCollection=System.currentTimeMillis();
+				  } 
+				
+				  // -- update value on graph each second (for 1sec-1min)
+				  if (System.currentTimeMillis() - DataCollection < OneMin && AttMedZero.equals("")) {
+					  int l = movingAvgHistData[0].length;
+					  movingAvgHistData[0][l-1] = ind; // 1sec
+					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData, 60); // 1min
+					  
+					  // -- shift histData array to the left
+					  histData = Algorithm.shiftToLeft1DArray(histData);
+					  
+					  // -- shift values only for 1sec and 1min arrays
+					  movingAvgHistData = Algorithm.shiftToLeft2DArray(movingAvgHistData, EEGfraphHistLength, 2);
+				 
+				   }
+				  
+				  DataCollectionLastTimeLocalPlayer=System.currentTimeMillis();	
+		  	}
+			  
+		}
+	}
+    
+    
 }
