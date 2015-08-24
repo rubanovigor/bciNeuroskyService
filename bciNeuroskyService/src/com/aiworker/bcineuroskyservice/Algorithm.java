@@ -93,18 +93,28 @@ public class Algorithm {
 	 * calculate array (non-zero values) average
 	 * <p>
 	 * @param histData - array with historical data
+	 * @param l - length of the history to be used in calculating moving average
 	 * @return average*/
-	public static float MovingAverage(float[] histData){	
+	public static float MovingAverage(float[] hData, int l){	
 		  int count = 0;
 		  float total = 0;
 		  float average;
 
-		  int l = histData.length;
-		  for (int i = 0; i < l; i++)
+//		  int l = hData.length;
+//		  for (int i = 0; i < l; i++)
+//		  {
+//		      if (hData[i] > 0)
+//		      {
+//		          total += hData[i];
+//		          count++;
+//		      } 
+//		  }
+		  
+		  for (int i = hData.length - l; i < hData.length; i++)
 		  {
-		      if (histData[i] > 0)
+		      if (hData[i] > 0)
 		      {
-		          total += histData[i];
+		          total += hData[i];
 		          count++;
 		      } 
 		  }
@@ -130,5 +140,19 @@ public class Algorithm {
 		  return count;
 	}
 
-
+	/** 
+	 * save EEG index to the end of the histData array
+	 * <p>
+	 * @param index - EEG index 
+	 * @param histData - array with historical data
+	 * @return histData with new values*/
+	public static float[] saveIndexToArray(int index, float[] hData){
+		// -- check if Att&Med are non-zero (neurosky sending Att&Med)
+//		if( eegService.At != 0 && eegService.Med !=0){
+			// -- save index to the end of the array
+			hData[hData.length-1] = index; 			
+//		}
+		
+		return hData;
+	}
 }

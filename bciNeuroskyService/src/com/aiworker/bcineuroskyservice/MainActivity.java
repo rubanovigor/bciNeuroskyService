@@ -57,7 +57,7 @@ public class MainActivity extends Activity{
 	TextView tv_Med, tv_Att, tv_NeuroskyStatus, tv_AttGradient, tv_MedGradient; 
 	public static int At=42, Med=42, AttLevelWarning = 60, AttLevelCritical=40;
 	public String ServiceRunningFlag = "stoped";  String Key_ServiceRunningFlag;
-	public String NeuroskyStatus = ""; String Key_NeuroskyStatus;
+	public static String NeuroskyStatus = ""; String Key_NeuroskyStatus;
 		
 //	Switch serviceOnOff, backendOnOff;
 	ToggleButton serviceOnOff, backendOnOff, audioFeadbackOnOff;
@@ -143,21 +143,21 @@ public class MainActivity extends Activity{
 	          			NeuroskyStatus = msg.obj.toString();
 	          			tv_NeuroskyStatus.setText(NeuroskyStatus);
 
-	          			if(NeuroskyStatus.equals("connected") ){
+	          			if(NeuroskyStatus.equals("Neurosky connected") ){
 	          				State_serviceOnOff = true; 
 	          				serviceOnOff.setChecked(State_serviceOnOff); 
 	          				tv_NeuroskyStatus.setText(NeuroskyStatus);
 	          				
 //	          				avgTime = System.currentTimeMillis();
 	          			}
-	          			if(NeuroskyStatus.equals("connecting . . .") ){
+	          			if(NeuroskyStatus.equals("Neurosky connecting . . .") ){
 	          				State_serviceOnOff = true; 
 	          				serviceOnOff.setChecked(State_serviceOnOff); 
 	          				tv_NeuroskyStatus.setText(NeuroskyStatus);
 	          			}
-	          			if(NeuroskyStatus.equals("neurosky mindwave mobile\ndisconnected") || 
-	          			   NeuroskyStatus.equals("neurosky mindwave mobile\nnot paired") ||
-	          			   NeuroskyStatus.equals("neurosky mindwave mobile\nwas not found")    ){
+	          			if(NeuroskyStatus.equals("Neurosky disconnected") || 
+	          			   NeuroskyStatus.equals("Neurosky not paired") ||
+	          			   NeuroskyStatus.equals("Neurosky was not found")    ){
 //	          				Button StopServiceButton=(Button)findViewById(R.id.stop_service);
 //		          			StopServiceButton.setVisibility(View.INVISIBLE); 
 //		          			Button StartServiceButton=(Button)findViewById(R.id.start_service);
@@ -172,7 +172,7 @@ public class MainActivity extends Activity{
 	          			At = msg.arg1; tv_Att.setText(String.valueOf(At));
 	          			Med = msg.arg2; tv_Med.setText(String.valueOf(Med));
 	          			NeuroskyStatus = msg.obj.toString();
-	          			tv_NeuroskyStatus.setText("connected");
+	          			tv_NeuroskyStatus.setText("Neurosky connected");
 	          			
 	          			
 //	          			// -- calculate AVG

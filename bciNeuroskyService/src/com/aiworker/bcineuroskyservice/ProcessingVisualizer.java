@@ -19,16 +19,21 @@ import java.io.OutputStream;
 import java.io.IOException; 
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
+import android.widget.Toast;
+
+
 
 
 /** activity for Network Game Sample        */
-public class ProcessingVisualizer extends PApplet{
+public class ProcessingVisualizer extends PApplet{		
 		// -- local EEG variables
 		int pAt=0; int pMed=0; int pS=0; int pP=0;
 		int indexRND=0, indexNetworkPlayer=0;
 		int indexLocalPlayer[] = new int[] {0,0,0,0};
-		String Torroid1info = "", Torroid2info = "";
+		String Torroid1info = "", Torroid2info = "", AttMedZero = "";
 		String playerInfor[] = new String[] {"you","pl1","pl2","pl3"};
 		float plPositionY[] = new float[] {0,0,0,0};
 		int plScore[] = new int[] {0,0,0,0};
@@ -79,17 +84,32 @@ public class ProcessingVisualizer extends PApplet{
 		PImage imgFinish; 
 		
 			// -- array for data collection and moving average 
-		float[] histData1min, histData10min, histData20min, histData30min;
+		float[]  histData, histData1min, histData10min, histData20min, histData30min;
 		float[][] movingAvgHistData;
 		
 		String music_play_flag = "stop";
 		int Y_AXIS = 1, X_AXIS = 2, YX_AXIS = 3;
+		public static Handler NeuroskyStatusHandler = null;
+		private String NeuroskyStatus = "";
 		
-		public void setup(){	 
+		public void setup(){	
+			
+//			NeuroskyStatusHandler = new Handler() // Receive messages from service class 
+//	        {
+//				public void handleMessage(Message msg)
+//	        	{
+//					NeuroskyStatus = msg.obj.toString();
+//	          		
+//	        	}
+//	        };
+			
+//	        NeuroskyStatus = MainActivity.NeuroskyStatus;
+	        
 //			 frameRate(15); 
-			 smooth(); // noStroke();
+//			 smooth(); // noStroke();
 			 // colorMode(HSB, 8, 100, 100);
-			 colorMode(RGB, 255, 255, 255, 100);
+//			 colorMode(RGB, 255, 255, 255, 100);
+			  
 			 
 			 // -- setup historical wave graph size
 //			 histChartR = (int)displayHeight/10;
@@ -129,6 +149,7 @@ public class ProcessingVisualizer extends PApplet{
 			 histData20min = new float[600]; Arrays.fill(histData20min, 0);
 			 histData30min = new float[1800]; Arrays.fill(histData30min, 0);
 			 
+			 histData = new float[1800]; Arrays.fill(histData, 0);
 			 movingAvgHistData = new float[arrD][EEGfraphHistLength]; //Arrays.fill(movingAvgHistData, 100);
 			 
 //			 RNDYvalues = new float[EEGfraphHistLength];
@@ -150,52 +171,23 @@ public class ProcessingVisualizer extends PApplet{
 
 		public void draw(){
 			  // -- draw background and setup basic lighting setup
-			  background(0);
+			  background(0); //black background
+			  NeuroskyStatus = MainActivity.NeuroskyStatus;
+			  
+			  	// -- video
+//			  textFont(f,displayHeight/20);  
+//			  text(videoView.getDuration(), 100, 100); //display the length of the video in milliseconds
+//			  text(videoView.getCurrentPosition(), 100, 300); //visa hur långt videon spelats 
+			  	// -- end video
 			  
 			  //lights();  // -- not working on some devices
 		  
-			  
-//			  // -- get index of single race winner
-//			  float largest = plPositionY[0]; int WinnerIndex = 0;
-//			  for (int i = 1; i < plPositionY.length; i++) {
-//			    if ( plPositionY[i] >= largest ) {
-//			        largest = plPositionY[i];
-//			        WinnerIndex = i;
-//			     }
-//			  }
-//			  		// -- update parameters when single race is finished
-//			  if ((displayHeight - 1*displayHeight/10 - ExternalToroidRadius-InternalToroidDelta - plPositionY[WinnerIndex])<=
-//					  (finishLineY1coordinate+finishLineY2coordinate)){				  
-//				  plScore[WinnerIndex] =  plScore[WinnerIndex] + 1;
-//				  Arrays.fill(plPositionY, 0f);
-//				  GameLevel = GameLevel + 1; 
-//				  CurrentTime=millis();
-//			  }
-			  
-			  		  
-//			  if (GameLevel>MaxGameLevel)	{GameLevel = MaxGameLevel;} 
-			  
-			  // -- get index of single race winner
-//			  float l = plScore[0]; int WI = 0;
-//			  for (int i = 1; i < plScore.length; i++) {
-//			    if ( plScore[i] >= l ) {
-//			        l = plScore[i];
-//			        WI = i;
-//			     }
-//			  }
-			  
-			  // ===============================================
-			  		// -- display finish line
-//			  image(imgFinish, 0, 2.0f*displayHeight/10, displayWidth, 0.5f*displayHeight/10);
-//			  image(imgFinish, 0, finishLineY1coordinate, displayWidth, finishLineY2coordinate);
-		  
-//			  4/20 vs 1/20
-			  // ===============================================
 			  		// -- display game time
-			  TimeOfTheGame = millis() - CurrentTime;
-			  textFont(f,displayHeight/30);                 // STEP 4 Specify font to be used
-			  fill(255);                        // STEP 5 Specify font color 
-	
+			  if(NeuroskyStatus.equals("Neurosky connected") && AttMedZero.equals("")){
+				  TimeOfTheGame = millis() - CurrentTime;
+			  } else {TimeOfTheGame=TimeOfTheGame;};
+			  
+			  fill(255); textFont(f,displayHeight/30);  	
 			  String s = String.format("%02d:%02d:%02d", 
 					  TimeUnit.MILLISECONDS.toHours(TimeOfTheGame),
 					  TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame) -  
@@ -203,7 +195,13 @@ public class ProcessingVisualizer extends PApplet{
 					  TimeUnit.MILLISECONDS.toSeconds(TimeOfTheGame) - 
 					  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame))); 
 
-			  text(s, torroidX, 0.7f*histChartR); 
+			  text(s, 10, 0.8f*histChartR);
+			  
+			  		// -- display status of the headset
+			  if(!NeuroskyStatus.equals("Neurosky connected")){fill(255,0,0);} else {fill(0,255,0);}
+			  textFont(f,displayHeight/60); text(NeuroskyStatus,  10, 0.2f*histChartR);
+			  fill(255,0,0); textFont(f,displayHeight/60); text(AttMedZero,  10, 0.4f*histChartR);
+			  
 			  // ===============================================
 			  		// -- get EEG index (one from A/M/S/P)
 //			  indexLocalPlayer = getEEG();
@@ -211,7 +209,7 @@ public class ProcessingVisualizer extends PApplet{
 			  // -- indexRND calculated in getRndNormalDistribution();
 			  		  
 			  
-			  
+//			  if (NeuroskyStatus.equals("Neurosky connected")){
 			  switch(MainActivity.toroidGameType){
 			  		// =================================================
 			    	// =================================================
@@ -224,7 +222,7 @@ public class ProcessingVisualizer extends PApplet{
 				    	// -- Convert a number range to another range, maintaining ratio
 //				    	NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin;
 //				    	torroidY = displayHeight - (int) ((((indexLocalPlayer[0] - 0) * ((Y_line + line_hight) - Y_line)) / (100 - 0)) + Y_line);
-				    	torroidY = displayHeight - (int) (((((int)(Math.round(Algorithm.MovingAverage(histData1min))) - 0) * ((Y_line + line_hight) - Y_line)) / (100 - 0)) + Y_line);
+				    	torroidY = displayHeight - (int) (((((int)(Math.round(Algorithm.MovingAverage(histData,60))) - 0) * ((Y_line + line_hight) - Y_line)) / (100 - 0)) + Y_line);
 				    	
 //				    	text(indexLocalPlayer[0],  displayWidth/3,  torroidY); 
 				    	// 0 = 222; 50 = 888; 100 = 1554
@@ -242,45 +240,17 @@ public class ProcessingVisualizer extends PApplet{
 //						drawVerticalLine();
 //						//displaySphere(indexLocalPlayer[playerID], torroidX, torroidY);
 //						displaySphere((int)(Math.round(Algorithm.MovingAverage(histData1min))), torroidX, torroidY);
-						displayToroidByID((int)(Math.round(Algorithm.MovingAverage(histData1min))),
+						displayToroidByID((int)(Math.round(Algorithm.MovingAverage(histData, 60))),
 								playerID, torroidX, torroidY);
 //						displayToroidByID(indexLocalPlayer[playerID], playerID, torroidX, torroidY);
 						
-						
-//						displayToroidByID(indexLocalPlayer[playerID], playerID, torroidX, torroidY - plPositionY[playerID]);
-//						displayToroidByID(indexLocalPlayer[playerID], playerID, torroidX, torroidY - indexLocalPlayer[playerID]*10);
-
-						// -- display average Index
-//						textFont(f,displayHeight/40); fill(255); 
-//						text("Moving Average",  displayWidth/11, displayHeight/15); 
-//						text(" 1min : " + Math.round(Algorithm.MovingAverage(histData1min))+ " " + Algorithm.nonZeroLength(histData1min), 								
-//								displayWidth/10  , displayHeight/10); 
-//						text("10min: " + Math.round(Algorithm.MovingAverage(histData10min))+ " "  + Algorithm.nonZeroLength(histData10min),
-//								displayWidth/10  , displayHeight/10 + displayHeight/20); 
-						
-//						text("20min: " + Math.round(Algorithm.MovingAverage(histData20min)),  displayWidth/10  , displayHeight/10 + 2*displayHeight/20); 
-//						text("30min: " + Math.round(Algorithm.MovingAverage(histData30min)),  displayWidth/10  , displayHeight/10 + 3*displayHeight/20); 
-//						
-//					    	displayGameLevel();
-
-//							  // -- display current score
-////							  textFont(f,displayHeight/40); 	//-- Specify font to be used	
-//							  textFont(createFont("Arial",40,true)); 	//-- Specify font to be used	
-//							  fill(255);                        //-- Specify font color 
-//							  text("Winner player with index " + WI,  displayWidth/3,  displayHeight/2); 
-						
-						// -- display graph and values for Moving Average				
-//						  DataCollection(indexLocalPlayer);	
-//						  displayEEGindexCircleRND();
-						
-//						  DataCollection(indexLocalPlayer[0]);
-							
+													
 				    	break;
 				    // =================================================
 				    // =================================================
 				    	
 			  } 
-			 
+//			  }
 			// ===============================================	
 //			  DataCollection(indexLocalPlayer);	
 //			  displayGraphOfEEGindex();
@@ -288,12 +258,13 @@ public class ProcessingVisualizer extends PApplet{
 			  // -- display graphs
 			  displayCircleGraph(movingAvgHistData, 0, "1s" , 0, 0);
 			  displayCircleGraph(movingAvgHistData, 1, "1m" ,  1*displayHeight/5, 0);
-//			  displayCircleGraph(movingAvgHistData, 2, "10m" , 2*displayHeight/5, 10*OneMin);
-//			  displayCircleGraph(movingAvgHistData, 3, "20m" , 3*displayHeight/5, 20*OneMin);
+////			  displayCircleGraph(movingAvgHistData, 2, "10m" , 2*displayHeight/5, 10*OneMin);
+////			  displayCircleGraph(movingAvgHistData, 3, "20m" , 3*displayHeight/5, 20*OneMin);
 			  displayCircleGraph(movingAvgHistData, 2, "5m" , 2*displayHeight/5, 5*OneMin);
 			  displayCircleGraph(movingAvgHistData, 3, "10m" , 3*displayHeight/5, 10*OneMin);			  
 			  displayCircleGraph(movingAvgHistData, 4, "30m" , 4*displayHeight/5, 30*OneMin);
 
+			  
 		}
 
 		public void thoroid (int _positionX, int _positionY, int _R, int _G, int _B, boolean isWireFrame_l,
@@ -668,55 +639,66 @@ public class ProcessingVisualizer extends PApplet{
 		/** collect user indexes to array */
 		public void DataCollection(int ind){
 	  		// -- collect indexes
-			  if (millis() - DataCollectionLastTimeLocalPlayer < DataCollectionDelay_ms) return; 
+			if(NeuroskyStatus.equals("Neurosky connected")){
+			  if (millis() - DataCollectionLastTimeLocalPlayer < DataCollectionDelay_ms ) return; 
 			  else{		
-				  switch(MainActivity.UserControl){
-				  	 // -- store current index value
-				  	 case "A": {
-				  		histData1min[histData1min.length-1] = ind; 
-				  		histData10min[histData10min.length-1] = ind; 
-				  		histData20min[histData20min.length-1] = ind; 
-				  		histData30min[histData30min.length-1] = ind; 
-				  		 
-				  		break;
-				  	 }
-				  	 case "M": {
-				  		histData1min[histData1min.length-1] = ind; 
-				  		histData10min[histData10min.length-1] = ind; 
-				  		histData20min[histData20min.length-1] = ind; 
-				  		histData30min[histData30min.length-1] = ind; 
-				  		 
-				  		break;
-				  	 }
-				  	 case "S": {
-				  		histData1min[histData1min.length-1] = (ind+100)/2; 
-				  		histData10min[histData10min.length-1] = (ind+100)/2; 
-				  		histData20min[histData20min.length-1] = (ind+100)/2; 
-				  		histData30min[histData30min.length-1] = (ind+100)/2; 
-				  		 
-				  		break;
-				  	 }
+				  if(eegService.At == 0 && eegService.Med ==0){AttMedZero = "Att&Med are equal to ZERO";}
+				  else{
+					  AttMedZero="";
+					  switch(MainActivity.UserControl){
+					  	 // -- store current index value
+					  	 case "A": {
+	//				  		histData1min[histData1min.length-1] = ind; 
+	//				  		histData10min[histData10min.length-1] = ind; 
+	//				  		histData20min[histData20min.length-1] = ind; 
+	//				  		histData30min[histData30min.length-1] = ind; 
+					  		 
+	//				  		histData[histData.length-1] = ind;
+					  		histData = Algorithm.saveIndexToArray(ind, histData);
+					  		 
+					  		break;
+					  	 }
+					  	 case "M": {
+					  		histData = Algorithm.saveIndexToArray(ind, histData);
+	//				  		histData1min[histData1min.length-1] = ind; 
+	//				  		histData10min[histData10min.length-1] = ind; 
+	//				  		histData20min[histData20min.length-1] = ind; 
+	//				  		histData30min[histData30min.length-1] = ind; 
+					  		 
+					  		break;
+					  	 }
+					  	 case "S": {
+					  		histData = Algorithm.saveIndexToArray((int)(ind+100)/2, histData);
+	//				  		histData1min[histData1min.length-1] = (ind+100)/2; 
+	//				  		histData10min[histData10min.length-1] = (ind+100)/2; 
+	//				  		histData20min[histData20min.length-1] = (ind+100)/2; 
+	//				  		histData30min[histData30min.length-1] = (ind+100)/2; 
+					  		 
+					  		break;
+					  	 }
 				  	 
 //				 	 case "A": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
 //				 	 case "M": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*ind; break;
 //				 	 case "S": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 //				 	 case "P": LocalPlayerYvalues[LocalPlayerYvalues.length-1] = (histChartR/100)*(ind+100)/2; break;
 				  }
+				  }
 				  // -- update value on graph each minute (for 5-10-30 graph)
-				  if (millis() - DataCollection >= OneMin){
+				  if (millis() - DataCollection >= OneMin && AttMedZero.equals("")){
 					  // -- adding new value to the end
 					  int l = movingAvgHistData[0].length;
-					  movingAvgHistData[0][l-1] = ind;
-					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData1min);
-					  if(TimeOfTheGame >= 5*OneMin){ movingAvgHistData[2][l-1] = Algorithm.MovingAverage(histData10min);}
-					  if(TimeOfTheGame >= 10*OneMin){ movingAvgHistData[3][l-1] = Algorithm.MovingAverage(histData20min);}
-					  if(TimeOfTheGame >= 30*OneMin){ movingAvgHistData[4][l-1] = Algorithm.MovingAverage(histData30min);}
+					  movingAvgHistData[0][l-1] = ind; // 1sec
+					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData, 60); // 1min
+					  if(TimeOfTheGame >= 5*OneMin){ movingAvgHistData[2][l-1] = Algorithm.MovingAverage(histData,300);} // 5min
+					  if(TimeOfTheGame >= 10*OneMin){ movingAvgHistData[3][l-1] = Algorithm.MovingAverage(histData,600);} // 10min
+					  if(TimeOfTheGame >= 30*OneMin){ movingAvgHistData[4][l-1] = Algorithm.MovingAverage(histData,1800);} // 30min
 					  
 					  // -- shift array, to keep only last EEGfraphHistLength values
-					  for (int j = 0; j < histData1min.length-1; j++) { histData1min[j] = histData1min[j+1]; }
-					  for (int j = 0; j < histData10min.length-1; j++) { histData10min[j] = histData10min[j+1]; }
-					  for (int j = 0; j < histData20min.length-1; j++) { histData20min[j] = histData20min[j+1]; }
-					  for (int j = 0; j < histData30min.length-1; j++) { histData30min[j] = histData30min[j+1]; }
+					  for (int j = 0; j < histData.length-1; j++) { histData[j] = histData[j+1]; }
+//					  for (int j = 0; j < histData1min.length-1; j++) { histData1min[j] = histData1min[j+1]; }
+//					  for (int j = 0; j < histData10min.length-1; j++) { histData10min[j] = histData10min[j+1]; }
+//					  for (int j = 0; j < histData20min.length-1; j++) { histData20min[j] = histData20min[j+1]; }
+//					  for (int j = 0; j < histData30min.length-1; j++) { histData30min[j] = histData30min[j+1]; }
 					  
 					  if(TimeOfTheGame <= OneMin){arrD = 2;}
 					  if(TimeOfTheGame >= 5*OneMin){arrD = 3;}
@@ -729,14 +711,19 @@ public class ProcessingVisualizer extends PApplet{
 					  }
 					  
 					  DataCollection=millis();
-				  } else {
+				  } 
+				  if (millis() - DataCollection < OneMin && AttMedZero.equals("")) {
 					  int l = movingAvgHistData[0].length;
 					  movingAvgHistData[0][l-1] = ind;
-					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData1min);
-					  for (int j = 0; j < histData1min.length-1; j++) { histData1min[j] = histData1min[j+1]; }
-					  for (int j = 0; j < histData10min.length-1; j++) { histData10min[j] = histData10min[j+1]; }
-					  for (int j = 0; j < histData20min.length-1; j++) { histData20min[j] = histData20min[j+1]; }
-					  for (int j = 0; j < histData30min.length-1; j++) { histData30min[j] = histData30min[j+1]; }
+					  movingAvgHistData[1][l-1] = Algorithm.MovingAverage(histData, 60); // 1min
+//					  text(Math.round(Algorithm.MovingAverage(histData, 60)),	  300, 300);
+//					  text(Math.round(histData[1799]),	  400, 300);
+					  
+					  for (int j = 0; j < histData.length-1; j++) { histData[j] = histData[j+1]; }
+//					  for (int j = 0; j < histData1min.length-1; j++) { histData1min[j] = histData1min[j+1]; }
+//					  for (int j = 0; j < histData10min.length-1; j++) { histData10min[j] = histData10min[j+1]; }
+//					  for (int j = 0; j < histData20min.length-1; j++) { histData20min[j] = histData20min[j+1]; }
+//					  for (int j = 0; j < histData30min.length-1; j++) { histData30min[j] = histData30min[j+1]; }
 					  
 					  for (int j = 0; j < EEGfraphHistLength-1; j++) {
 						  for (int i = 0; i < 2; i++) {
@@ -750,6 +737,7 @@ public class ProcessingVisualizer extends PApplet{
 //				  // -- display graphs
 //				  displayCircleGraph(movingAvgHistData, 0);
 			  }
+			}
 		}
 		
 		/** display circle graph with R, color define by EEG index */
@@ -865,7 +853,8 @@ public class ProcessingVisualizer extends PApplet{
 		}
 
 
-		
+		   	    
+		    
 		public int sketchWidth() { return displayWidth; }
 		public int sketchHeight() { return displayHeight; }
 		public String sketchRenderer() { return P3D; }	

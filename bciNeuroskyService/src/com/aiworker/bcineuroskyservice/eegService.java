@@ -38,7 +38,7 @@ public class eegService extends Service{
 	public static Handler 		meegServiceHandler 			= null;
 	// -- used for keep track on Android running status
 	public static Boolean 		mIsServiceRunning 			= false;
-	private String NeuroskyCurrentStatus;
+	public static String NeuroskyCurrentStatus;
 	// -- BT and TG
 	private BluetoothAdapter bluetoothAdapter;	TGDevice tgDevice;
 	private static final boolean RAW_ENABLED = false; // false by default	
@@ -230,9 +230,10 @@ public class eegService extends Service{
 			                    	//Toast.makeText(this, "connecting...", Toast.LENGTH_SHORT).show();
 		    						// -- send message to the MainActivity
 		    						msgToActivity.what = 1; // -- connecting 
-		    					    msgToActivity.obj  = "connecting . . ."; 		    						
+		    					    msgToActivity.obj  = "Neurosky connecting . . ."; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
 		    						NeuroskyCurrentStatus = "Neurosky connecting . . .";
+//		    						ProcessingVisualizer.NeuroskyStatusHandler.sendMessage(msgToActivity);
 		    						
 		    						// -- comment in specific case
 //		    						displayNotification();
@@ -243,7 +244,7 @@ public class eegService extends Service{
 			                        tgDevice.start();
 			                        
 		    						msgToActivity.what = 1; // -- connecting 
-		    					    msgToActivity.obj  = "connected"; 		    						
+		    					    msgToActivity.obj  = "Neurosky connected"; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity);
 		    						NeuroskyCurrentStatus = "Neurosky connected";
 		    						
@@ -262,7 +263,7 @@ public class eegService extends Service{
 			                    case TGDevice.STATE_DISCONNECTED:
 			                    	Log.i("STATE_DISCONNECTED", "TGDevice");
 				    				msgToActivity.what = 1; // -- connecting 
-			    					msgToActivity.obj  = "neurosky mindwave mobile\ndisconnected"; 		    						
+			    					msgToActivity.obj  = "Neurosky disconnected"; 		    						
 			    					MainActivity.mUiHandler.sendMessage(msgToActivity);  
 			    					NeuroskyCurrentStatus = "Neurosky mindwave mobile disconnected";
 			    					
@@ -273,7 +274,7 @@ public class eegService extends Service{
 			                    case TGDevice.STATE_NOT_FOUND:
 			                    	Log.i("STATE_NOT_FOUND", "TGDevice");
 		    						msgToActivity.what = 1; // -- connecting 
-		    					    msgToActivity.obj  = "neurosky mindwave mobile\nwas not found"; 		    						
+		    					    msgToActivity.obj  = "Neurosky was not found"; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity); 
 		    						NeuroskyCurrentStatus = "Neurosky mindwave mobile was not found";
 		    						
@@ -285,7 +286,7 @@ public class eegService extends Service{
 			                    	Log.i("STATE_NOT_PAIRED", "TGDevice");
 			                    	//Toast.makeText(this, "neurosky mindwave mobile not paired !", Toast.LENGTH_SHORT).show();
 			    					msgToActivity.what = 1; // -- connecting 
-		    					    msgToActivity.obj  = "neurosky mindwave mobile\nnot paired"; 		    						
+		    					    msgToActivity.obj  = "Neurosky not paired"; 		    						
 		    						MainActivity.mUiHandler.sendMessage(msgToActivity); 
 		    						NeuroskyCurrentStatus = "Neurosky mindwave mobile not paired";
 		    						
@@ -337,12 +338,13 @@ public class eegService extends Service{
 			                	//Log.e("ir_Response Med", String.valueOf(iam[1]));	
 			                	
 			                    At = msg.arg1;      
-			                    
-			                    msgToActivity.what = 2; // -- sending At/Med  
+			                    // -- sending msg to Main Activity 
+			                    msgToActivity.what = 2; 
 			                    msgToActivity.arg1 = At;
 			                    msgToActivity.arg2 = Med;
 //			                    msgToActivity.arg2 = At_pl2;
-	    					    msgToActivity.obj  = "connected"; 		    						
+//	    					    msgToActivity.obj  = "connected"; 	
+	    					    msgToActivity.obj  = NeuroskyCurrentStatus;
 	    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
 	    						
 	    						// -- comment in specific case
@@ -374,7 +376,7 @@ public class eegService extends Service{
 			                    msgToActivity.what = 2; // -- sending At/Med  
 			                    msgToActivity.arg1 = At;
 			                    msgToActivity.arg2 = Med;
-	    					    msgToActivity.obj  = "connected"; 		    						
+	    					    msgToActivity.obj  = "Neurosky connected"; 		    						
 	    					    MainActivity.mUiHandler.sendMessage(msgToActivity);	
 	    					    
 	    					    // -- comment in specific case
