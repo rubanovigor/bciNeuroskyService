@@ -50,7 +50,7 @@ public class ProcessingVisualizer extends PApplet{
 		Random r = new Random(); private long mLastTime; int rndUpdDelay_ms = 1000;
 		private long DataCollectionLastTime, DataCollectionLastTimeLocalPlayer,DataCollection;
 		int DataCollectionDelay_ms = 1000, OneMin = 60000;
-		private long CurrentTime,TimeOfTheGame = 0;
+		static public long CurrentTime,TimeOfTheGame = 0;
 		int GameLevel = 1; int MaxGameLevel=4; 
 		int ma_LastTime=0;  float ma_value = 0; int ma_length_ms=0;
 		
@@ -173,7 +173,10 @@ public class ProcessingVisualizer extends PApplet{
 			  // -- draw background and setup basic lighting setup
 			  background(0); //black background
 			  NeuroskyStatus = MainActivity.NeuroskyStatus;
-			  if(NeuroskyStatus.equals("Neurosky connected")) {AttMedZero = eegService.AttMedZero;}
+			  if(NeuroskyStatus.equals("Neurosky connected")) {
+				  AttMedZero = eegService.AttMedZero;
+//				  TimeOfTheGame = millis() - CurrentTime;
+			  }
 			  
 			  	// -- video
 //			  textFont(f,displayHeight/20);  
@@ -184,10 +187,11 @@ public class ProcessingVisualizer extends PApplet{
 			  //lights();  // -- not working on some devices
 		  
 			  		// -- display game time
-			  TimeOfTheGame = millis() - CurrentTime;
-//			  if(NeuroskyStatus.equals("Neurosky connected") && AttMedZero.equals("")){
-//				  TimeOfTheGame = millis() - CurrentTime;
-//			  } else {TimeOfTheGame=TimeOfTheGame;};
+//			  TimeOfTheGame = millis() - CurrentTime;
+			  
+			  if(NeuroskyStatus.equals("Neurosky connected") && AttMedZero.equals("")){
+				  TimeOfTheGame = millis() - CurrentTime;
+			  } else {TimeOfTheGame=TimeOfTheGame;};
 			  
 			  fill(255); textFont(f,displayHeight/30);  	
 			  String s = String.format("%02d:%02d:%02d", 
@@ -226,29 +230,18 @@ public class ProcessingVisualizer extends PApplet{
 				    	}
 				    	
 				    	// -- Convert a number range to another range, maintaining ratio
-//				    	NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin;
-//				    	torroidY = displayHeight - (int) ((((indexLocalPlayer[0] - 0) * ((Y_line + line_hight) - Y_line)) / (100 - 0)) + Y_line);
+				    	////NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin;
 				    	torroidY = displayHeight - (int) (((((int)(Math.round(Algorithm.MovingAverage(histData,60))) - 0) * ((Y_line + line_hight) - Y_line)) / (100 - 0)) + Y_line);
-				    	
-//				    	text(indexLocalPlayer[0],  displayWidth/3,  torroidY); 
-				    	// 0 = 222; 50 = 888; 100 = 1554
-				    	
-						// -- initial constant offset on Y axis
-//						torroidY = displayHeight - 1*displayHeight/10;						
+				    						
 						playerID = 0; 
-//						torroidX = displayWidth/4; 
 						
 						// -- display selected index
-						textFont(f,displayHeight/20);                 
-						fill(255);  
+						textFont(f,displayHeight/20); fill(255);  
 						text(MainActivity.UserControl,  torroidX-3*sphereR , displayHeight - 1*sphereR);
 
-//						drawVerticalLine();
-//						//displaySphere(indexLocalPlayer[playerID], torroidX, torroidY);
-//						displaySphere((int)(Math.round(Algorithm.MovingAverage(histData1min))), torroidX, torroidY);
+						// -- display torroid
 						displayToroidByID((int)(Math.round(Algorithm.MovingAverage(histData, 60))),
 								playerID, torroidX, torroidY);
-//						displayToroidByID(indexLocalPlayer[playerID], playerID, torroidX, torroidY);
 						
 													
 				    	break;
@@ -264,12 +257,25 @@ public class ProcessingVisualizer extends PApplet{
 			  displayCircleGraph(movingAvgHistData, 0, "1s" , 0, 0);
 			  displayCircleGraph(movingAvgHistData, 1, "1m" ,  1*displayHeight/5, 0);
 ////			  displayCircleGraph(movingAvgHistData, 2, "10m" , 2*displayHeight/5, 10*OneMin);
-////			  displayCircleGraph(movingAvgHistData, 3, "20m" , 3*displayHeight/5, 20*OneMin);
+////			  displayCircleGraph(movingAvgHistData, 3, "20m" , 3*displayHeight/5, 20*OneMin); 60000
 			  displayCircleGraph(movingAvgHistData, 2, "5m" , 2*displayHeight/5, 5*OneMin);
 			  displayCircleGraph(movingAvgHistData, 3, "10m" , 3*displayHeight/5, 10*OneMin);			  
 			  displayCircleGraph(movingAvgHistData, 4, "30m" , 4*displayHeight/5, 30*OneMin);
 
 			  
+			  // -- testing new ideas
+//			  stroke(255,0,0);
+//			  noFill();
+//			  beginShape();
+//				  curveVertex(40, 40); // the first control point
+//				  curveVertex(40, 40); // is also the start point of curve
+//				  curveVertex(80, 60);
+//				  curveVertex(100, 100);
+//				  curveVertex(60, 120);
+//				  curveVertex(50, 150); // the last point of curve
+//				  curveVertex(50, 150); // is also the last control point
+//
+//			  endShape();
 		}
 
 		public void thoroid (int _positionX, int _positionY, int _R, int _G, int _B, boolean isWireFrame_l,
@@ -641,7 +647,7 @@ public class ProcessingVisualizer extends PApplet{
 		}*/
 
 		/** collect user indexes to array */
-		public void DataCollection(int ind){
+		/*public void DataCollection(int ind){
 	  		// -- collect indexes
 			if(NeuroskyStatus.equals("Neurosky connected")){
 			  if (millis() - DataCollectionLastTimeLocalPlayer < DataCollectionDelay_ms ) return; 
@@ -693,7 +699,7 @@ public class ProcessingVisualizer extends PApplet{
 			  		}	
 			  }
 			}
-		}
+		}*/
 		
 		/** display circle graph with R, color define by EEG index */
 		void displayCircleGraph(float[][] graphData, int k, String s, float yAdj, int minPass) {
@@ -767,11 +773,12 @@ public class ProcessingVisualizer extends PApplet{
 
 //			  textFont(f,displayHeight/60);  fill(255);  text(histChartR+histChartRsmall + (histChartRsmall)*cos(alpha) + yAdj, 400, 400);
 			  
-				// -- display info about player
+				// -- display average value of the index
 			  textFont(f,displayHeight/60);  fill(255);    
 			  text(Math.round(graphData[k][graphData[0].length-1]),
 					  displayWidth-histChartR-1.55f*histChartRsmall, histChartR+1.4f*histChartRsmall + yAdj);
-			  
+			 
+			  	// -- display graph label
 			  text(s, displayWidth-histChartR-1.5f*histChartRsmall - (histChartR+histChartRsmall), histChartR+1.4f*histChartRsmall + yAdj);
 		}
 		

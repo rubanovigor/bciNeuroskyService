@@ -99,16 +99,6 @@ public class Algorithm {
 		  int count = 0;
 		  float total = 0;
 		  float average;
-
-//		  int l = hData.length;
-//		  for (int i = 0; i < l; i++)
-//		  {
-//		      if (hData[i] > 0)
-//		      {
-//		          total += hData[i];
-//		          count++;
-//		      } 
-//		  }
 		  
 		  for (int i = hData.length - l; i < hData.length; i++)
 		  {

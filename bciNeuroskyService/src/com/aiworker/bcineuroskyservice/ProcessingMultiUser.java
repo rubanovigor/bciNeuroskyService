@@ -62,7 +62,7 @@ public class ProcessingMultiUser extends PApplet{
 		float X_line, Y_line, line_width, line_hight;
 		
 			// -- EEGindex graph
-		PFont f; 
+		PFont f, my_font; 
 		float histChartR, histChartRsmall;							// -- big and small radius of the historical chart
 		float finishLineY1coordinate, finishLineY2coordinate;	
 		int EEGhistoryLength = 85;         							// -- length of array for collecting historical indexes 
@@ -79,6 +79,10 @@ public class ProcessingMultiUser extends PApplet{
 		int Y_AXIS = 1;
 		int X_AXIS = 2;
 		int b1, b2, c1, c2;
+		boolean race_end=false, countdown = true;;
+		String TotalStat;
+		int[][] score = new int[4][4];
+		int hour_ini, min_ini, min_current, sec_current;
 		
 		public void setup(){	 
 //			 size(displayWidth, displayHeight);
@@ -103,11 +107,15 @@ public class ProcessingMultiUser extends PApplet{
 			 ExternalToroidRadius = (displayWidth*1f)/25f;
 			 InternalToroidDelta = histChartRsmall/2;
 			 
-			 f = createFont("Arial",16,true); // STEP 3 Create Font
+			 f = createFont("Arial",16,true);
+			 my_font = createFont("Arial",90,true);
 			 DataCollectionLastTime = millis();
 			 DataCollectionLastTimeLocalPlayer = millis();
 			 CurrentTime = millis();
 			 ma_LastTime = millis();
+			 
+			 min_ini = minute(); hour_ini = hour();
+			 countdown = true;
 			 // -- for wave
 //				 EEGhistoryLength = 90 ;
 //				 xvalues = new float[EEGhistoryLength];
@@ -118,6 +126,7 @@ public class ProcessingMultiUser extends PApplet{
 //				   xvalues[i] = xvalues[i-1] + displayWidth/(EEGhistoryLength);
 //				 }
 				 
+			 
 			 LocalPlayerYvalues = new float[EEGhistoryLength];
 			 LocalPlayerColorsValues = new float[EEGhistoryLength][3];
 						 
@@ -142,36 +151,91 @@ public class ProcessingMultiUser extends PApplet{
 		public void draw(){ 
 			  // -- draw background and setup basic lighting setup
 			  background(0); // -- black
-//			  background(255,255,255); // -- white
-//			  hint(DISABLE_DEPTH_TEST);
-//			  imageMode(CORNER);
-//			  image(imgBackground, 0, 0, displayWidth, displayHeight);
-//			  hint(ENABLE_DEPTH_TEST);
+			  //background(255,255,255); // -- white
 			  //lights();  // -- not working on some devices
 		  
-			  
-			  // -- get index of single race winner
-			  float largest = plPositionY[0]; int WinnerIndex = 0;
-			  for (int i = 1; i < plPositionY.length; i++) {
-			    if ( plPositionY[i] >= largest ) {
-			        largest = plPositionY[i];
-			        WinnerIndex = i;
-			     }
+			  // -- count down (to the closest minute)
+			  if(countdown){
+				  sec_current = second();  // Values from 0 - 59
+				  min_current = minute();  // Values from 0 - 59
+				  
+				 if(min_current <= min_ini){
+					  textFont(my_font,60);  fill(255); 
+					  if((60-sec_current)>15){
+						  text("GAME WILL START AT", 2.1f*displayWidth/10, 3.1f*displayHeight/10);
+						  text(hour_ini+" hh "+(min_ini+1)+" mm", 3.6f*displayWidth/10, 3.5f*displayHeight/10);
+					  }
+					  // -- change color dependent on time left
+					  if((60-sec_current)<=30){ textFont(my_font,70); fill(255,0,0);}
+					  if((60-sec_current)<=20){textFont(my_font,80); fill(255,165,0);}
+					  if((60-sec_current)<=10){textFont(my_font,90); fill(0,255,0);}
+					  text(60-sec_current, 4.5f*displayWidth/10, 4.5f*displayHeight/10); 
+					  
+				 }else{
+					 countdown = false;
+					 CurrentTime = millis();
+				 }
+					 
 			  }
-			  		// -- update parameters when single race is finished
-//			  if ((displayHeight - 1*displayHeight/10 - ExternalToroidRadius-InternalToroidDelta - plPositionY[WinnerIndex])<=
-			  if ((displayHeight - 1*displayHeight/10 - plPositionY[WinnerIndex])<=
-					  (finishLineY1coordinate+finishLineY2coordinate)){				  
-				  plScore[WinnerIndex] =  plScore[WinnerIndex] + 1;
+			  
+			 			  
+			  		// -- get index of single race first/second places   
+			  float highest = Integer.MIN_VALUE+1; 
+			  float sec_highest = Integer.MIN_VALUE;
+			  int highestIndex = 0, sec_highestIndex = 0;
+			  for (int i = 1; i < plPositionY.length; i++)
+			  {
+			      if(plPositionY[i]>highest)
+			      {
+			         sec_highest = highest; //make current highest to second highest
+			         sec_highestIndex = highestIndex;
+			         highest = plPositionY[i]; //make current value to highest
+			         highestIndex = i;
+			      }
+			      else if(plPositionY[i]>sec_highest && plPositionY[i] != highest) 
+			      {
+			         sec_highest = plPositionY[i];
+			         sec_highestIndex = i;
+			      }
+			  }
+			  
+			  
+			  		// -- check if 1st reach finish line and add points if yes
+			  if ((displayHeight - 1*displayHeight/10 - plPositionY[highestIndex])<=
+					  									(finishLineY1coordinate+finishLineY2coordinate)){		
+				  plPositionY[highestIndex] = displayHeight - 1*displayHeight/10 - finishLineY1coordinate ;
+			  }
+					// -- check if 2nd reach finish line and start new lap (by changing the status of the flag)
+			  if ((displayHeight - 1*displayHeight/10 - plPositionY[sec_highestIndex])<=
+														(finishLineY1coordinate+finishLineY2coordinate)){		
+					plPositionY[sec_highestIndex] = displayHeight - 1*displayHeight/10 - finishLineY1coordinate - finishLineY1coordinate/10;
+					race_end = true;
+			  }
+			  
+			  		// -- 1st and 2nd reach finish line
+			  if (race_end){
+				  plScore[highestIndex] =  plScore[highestIndex] + 3;
+				  plScore[sec_highestIndex] =  plScore[sec_highestIndex] + 1;
+//				  for(int i=0;i<=3;i++){score[GameLevel-1][i] = plScore[i];}
+				  for(int i=0;i<=3;i++){score[GameLevel-1][i] = 0;}
+				  score[GameLevel-1][highestIndex] = 3; score[GameLevel-1][sec_highestIndex]=1;
+				  race_end = false;
+					// -- reset positions
 				  Arrays.fill(plPositionY, 0f);
+				  	
 				  GameLevel = GameLevel + 1; 
 				  CurrentTime=millis();
+				  
+				  TotalStat = "you  |  green  |  blue  |  red\n" +
+						  	  "  "+score[0][0]+"    |   "+score[0][1]+"    |   "+score[0][2]+"   |   "+score[0][3]+"\n" +
+						  	  "  "+score[1][0]+"    |   "+score[1][1]+"    |   "+score[1][2]+"   |   "+score[1][3]+"\n" +
+						  	  "  "+score[2][0]+"    |   "+score[2][1]+"    |   "+score[2][2]+"   |   "+score[2][3]+"\n" +
+						  	  "  "+score[3][0]+"    |   "+score[3][1]+"    |   "+score[3][2]+"   |   "+score[3][3]+"\n" +
+						  	  "-------------------------------\n"+
+						  	  plScore[0]+"     |   "+plScore[1]+"    |   "+plScore[2]+"    |   "+plScore[3];
 			  }
-			  
-			  		  
-//			  if (GameLevel>MaxGameLevel)	{GameLevel = MaxGameLevel;} 
-			  
-			  // -- get index of single race winner
+			  			  
+			  // -- get index of the race winner
 			  float l = plScore[0]; int WI = 0;
 			  for (int i = 1; i < plScore.length; i++) {
 			    if ( plScore[i] >= l ) {
@@ -186,122 +250,67 @@ public class ProcessingMultiUser extends PApplet{
 //			  image(imgFinish, 0, finishLineY1coordinate, displayWidth, finishLineY2coordinate);
 			  
 		      // -- draw gradient of lines
-			  c2 = color(0, 0, 0); c1 = color(0,0,255);
-			  //c1 = color(255,0,0);
+			  c2 = color(0, 0, 0); c1 = color(0,0,155);
 			  setGradient(0, (int)(finishLineY1coordinate), displayWidth, finishLineY2coordinate, c1, c2, "vertical");
 
 			  // ===============================================
 			  		// -- display game time
-			  TimeOfTheGame = millis() - CurrentTime;
-			  textFont(f,32);                 // STEP 4 Specify font to be used
-			  fill(255);                        // STEP 5 Specify font color 
-	
-			  String s = String.format("%02d:%02d:%02d", 
-					  TimeUnit.MILLISECONDS.toHours(TimeOfTheGame),
-					  TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame) -  
-					  TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(TimeOfTheGame)), // The change is in this line
-					  TimeUnit.MILLISECONDS.toSeconds(TimeOfTheGame) - 
-					  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame))); 
-			  
-//			  text(s,4.5f*displayWidth/10, 2.0f*displayHeight/10 - 20f); 
-			  text(s, 4.5f*displayWidth/10, finishLineY1coordinate - 0.5f*histChartRsmall); 
+			  if(!countdown){
+				  TimeOfTheGame = millis() - CurrentTime;
+				  textFont(f,32);  fill(255); 
+		
+				  String s = String.format("%02d:%02d:%02d", 
+						  TimeUnit.MILLISECONDS.toHours(TimeOfTheGame),
+						  TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame) -  
+						  TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(TimeOfTheGame)), // The change is in this line
+						  TimeUnit.MILLISECONDS.toSeconds(TimeOfTheGame) - 
+						  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame))); 
+				  
+				  text(s, 4.5f*displayWidth/10, finishLineY1coordinate - 0.5f*histChartRsmall); 
+			  }
 			  // ===============================================
-			  		// -- get EEG index (one from A/M/S/P)
-//			  indexLocalPlayer = getEEG();
-//			  indexNetworkPlayer = getEEGNetworkUser();		  
-			  // -- indexRND calculated in getRndNormalDistribution();
 			  
 			  switch(MainActivity.toroidGameType){
 			  		// =================================================
 			    	// =================================================
 				    case "pl1 vs pl2":
-				    	indexLocalPlayer[0] = getEEG();
-				    	indexLocalPlayer[1] = getEEGPlayer2();
-				    	indexLocalPlayer[2] = getEEGPlayer3();
-				    	indexLocalPlayer[3] = getEEGPlayer4();
-//				    	indexLocalPlayer[1] = 50;  	indexLocalPlayer[2] = 80;    	indexLocalPlayer[3] = 100;
-//						indexNetworkPlayer = getEEGNetworkUser();
-//						indexNetworkPlayer = 100;
-
 						// -- initial constant offset on Y axis
 //						torroidY = displayHeight - 1*displayHeight/10;
 						if(GameLevel <= MaxGameLevel){
+							// -- check if count down is finished
+							if(countdown){
+								for(int i=0; i<=3; i++){indexLocalPlayer[i] = 0;}
+							}else{
+//								indexLocalPlayer[0] = getEEG();
+//						    	indexLocalPlayer[1] = getEEGPlayer2();
+//						    	indexLocalPlayer[2] = getEEGPlayer3();
+//						    	indexLocalPlayer[3] = getEEGPlayer4();
+						    	indexLocalPlayer[1] = 61;  	indexLocalPlayer[2] = 80;  	indexLocalPlayer[3] = 100;
+							}
 							// -- draw 4 players in loop					
 							for(int i = 0; i < 4; i = i+1) {							
 								playerID = i; 
 								torroidX = displayWidth/10 + playerID*displayWidth/4; 
 								X_line = torroidX - displayWidth/80;
-//								Y_line = displayHeight/8;
-//								line_hight = torroidY - plPositionY[playerID];
 								
 								displayToroidByID(indexLocalPlayer[i], playerID, torroidX, torroidY - plPositionY[playerID]);
-							}
-							
-													
-	//						DataCollectionLocalPlayer(indexLocalPlayer);
-	//						displayEEGindexCircleLocalPlayer();
-							
-								// -- networkUser
-	//						Torroid2info = "player 2";
-	//						displayNetworklPlayerToroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
-	//						DataCollectionRND(indexNetworkPlayer);
-	//						displayEEGindexCircleRND();	
-							
+							}							
+																			
 					    	displayGameLevel();
 						}else{
 							  // -- display current score
 //							  textFont(f,displayHeight/40); 	//-- Specify font to be used	
 							  textFont(createFont("Arial",40,true)); 	//-- Specify font to be used	
 							  fill(255);                        //-- Specify font color 
-							  text("The Winner is " + playerInfor[WI],  displayWidth/3,  displayHeight/2); 
+							  text("The Winner is " + playerInfor[WI],  displayWidth/3,  displayHeight/4); 
+							  text(TotalStat,  displayWidth/3,  displayHeight/2); 
+//							  text(score,  displayWidth/3,  displayHeight/0.5f); 
 						}
 				    	break;
-				    // =================================================
-				    // =================================================
-				    	
-//					case "rnd vs you":
-//						indexLocalPlayer = getEEG();	 
-////						indexLocalPlayer = -95;
-////						indexRND = 100;
-//						// -- indexRND calculated in getRndNormalDistribution();
-//							// -- local
-//						Torroid1info = "you";
-//						displayToroidByID(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
-//						DataCollectionLocalPlayer(indexLocalPlayer);	displayEEGindexCircleLocalPlayer();
-//							// -- RND
-////						Torroid2info = "RND";
-//						displayRND_Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
-//						DataCollectionRND(indexRND);	displayEEGindexCircleRND();						
-//						
-//						displayGameLevel();
-//						break;
-//						
-//					case "rnd vs pl1 + pl2":
-//						indexLocalPlayer = getEEG();
-////						indexLocalPlayer = 39;
-//						indexNetworkPlayer = getEEGNetworkUser();
-////						indexNetworkPlayer = 100;
-//						// -- calculate aggregate index
-//						indexLocalPlayer = (indexLocalPlayer + indexNetworkPlayer)/2;
-//							// -- local
-//						Torroid1info = "team";
-//						displayToroidByID(displayWidth/2 + 2f*displayWidth/10,displayHeight - 1*displayHeight/10 - localPlayerAccel);
-//						DataCollectionLocalPlayer(indexLocalPlayer);	displayEEGindexCircleLocalPlayer();
-//							// -- RND
-////						Torroid2info = "RND";
-//						displayRND_Toroid(displayWidth/2 - 3f*displayWidth/10, displayHeight - 1*displayHeight/10 - Player2Accel);
-//						DataCollectionRND(indexRND);	displayEEGindexCircleRND();	
-//						
-//						displayGameLevel();
-//						break;
+
 			  } 
 			 
 			// ===============================================
-//			  DataCollection(indexNetworkPlayer);	
-//			  DataCollection(indexLocalPlayer);	
-//			  DataCollectionRND();	displayEEGindexCircleRND();
-			  
-//			  displayGraphOfEEGindex();
 			  
 
 

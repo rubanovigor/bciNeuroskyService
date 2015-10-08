@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
@@ -90,6 +91,7 @@ public class eegService extends Service{
 	   
 	   histData = new float[1800]; 
 	   movingAvgHistData = new float[arrD][EEGfraphHistLength]; 
+	   	   
 	   DataCollection = System.currentTimeMillis();
 	   
 	   processStartTG();
@@ -335,6 +337,7 @@ public class eegService extends Service{
 			                	int[] iam={0, 0};
 			                		// -- local user
 //			                	if(MainActivity.backend){ iam = APIClient.getData();}
+			                	
 			                		// -- network user
 			                	if(MainActivity.backend){ iam = APIClient.getDataPlayer2();}			                	
 			                	At_pl2 = iam[0]; Med_pl2 = iam[1];
@@ -342,10 +345,7 @@ public class eegService extends Service{
 			                	At_pl3 = iam[0]; Med_pl3 = iam[1];
 			                	if(MainActivity.backend){ iam = APIClient.getDataPlayer4();}			                	
 			                	At_pl4 = iam[0]; Med_pl4 = iam[1];
-			                	
-//			                	At_pl3 = 0; Med_pl3 = 0;		                	              	
-//			                	At_pl4 = 0; Med_pl4 = 0;
-			                	
+			                				                	
 			                	//Log.e("ir_Response Att", String.valueOf(iam[0]));	
 			                	//Log.e("ir_Response Med", String.valueOf(iam[1]));	
 			                	
@@ -359,6 +359,17 @@ public class eegService extends Service{
 	    					    msgToActivity.obj  = NeuroskyCurrentStatus;
 	    						MainActivity.mUiHandler.sendMessage(msgToActivity);	
 	    						
+	    						if(MainActivity.toroidGameType.contentEquals("visualizer")){
+	    						   TimeOfTheGame = ProcessingVisualizer.TimeOfTheGame;
+	    						   String s = String.format("%02d:%02d:%02d", 
+	    									  TimeUnit.MILLISECONDS.toHours(TimeOfTheGame),
+	    									  TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame) -  
+	    									  TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(TimeOfTheGame)), // The change is in this line
+	    									  TimeUnit.MILLISECONDS.toSeconds(TimeOfTheGame) - 
+	    									  TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(TimeOfTheGame))); 
+	    						   
+	    						   Log.i("TimeOfTheGame", s);
+	    						}
 	    						DataCollectionAndMovingAvg(Algorithm.getSpecificEEGIndex());
 	    						// -- comment in specific case
 //	    						updateNotification();
@@ -604,8 +615,10 @@ public class eegService extends Service{
 					  histData = Algorithm.shiftToLeft1DArray(histData);
 					  
 					  // -- shift array to the left, to  keep only last EEGfraphHistLength values
-					  if(TimeOfTheGame <= OneMin){arrD = 2;}	  if(TimeOfTheGame >= 5*OneMin){arrD = 3;}
-					  if(TimeOfTheGame >= 10*OneMin){arrD = 4;}	  if(TimeOfTheGame >= 30*OneMin){arrD = 5;}
+					  if(TimeOfTheGame <= OneMin){arrD = 2;}
+					  if(TimeOfTheGame >= 5*OneMin){arrD = 3;}
+					  if(TimeOfTheGame >= 10*OneMin){arrD = 4;}	
+					  if(TimeOfTheGame >= 30*OneMin){arrD = 5;}
 					  
 					  movingAvgHistData = Algorithm.shiftToLeft2DArray(movingAvgHistData, EEGfraphHistLength, arrD);
 					  
