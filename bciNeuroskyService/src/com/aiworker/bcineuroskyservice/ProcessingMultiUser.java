@@ -27,8 +27,8 @@ public class ProcessingMultiUser extends PApplet{
 		int indexRND=0, indexNetworkPlayer=0;
 		int indexLocalPlayer[] = new int[] {0,0,0,0};
 		String Torroid1info = "", Torroid2info = "";
-//		String playerInfor[] = new String[] {"you","player1","player2","player3"};
-		String playerInfor[] = new String[] {"you","green","blue","red"};
+		String playerInfor[] = new String[] {"player1","player2","player3","player4"};
+//		String playerInfor[] = new String[] {"you","green","blue","red"};
 		float plPositionY[] = new float[] {0,0,0,0};
 		int plScore[] = new int[] {0,0,0,0};
 		int playerID;
@@ -154,7 +154,7 @@ public class ProcessingMultiUser extends PApplet{
 			  //background(255,255,255); // -- white
 			  //lights();  // -- not working on some devices
 		  
-			  // -- count down (to the closest minute)
+			  		// -- count down (to the closest minute)
 			  if(countdown){
 				  sec_current = second();  // Values from 0 - 59
 				  min_current = minute();  // Values from 0 - 59
@@ -162,20 +162,19 @@ public class ProcessingMultiUser extends PApplet{
 				 if(min_current <= min_ini){
 					  textFont(my_font,60);  fill(255); 
 					  if((60-sec_current)>15){
-						  text("GAME WILL START AT", 2.1f*displayWidth/10, 3.1f*displayHeight/10);
+						  text("GAME WILL START AT", 2.4f*displayWidth/10, 3.1f*displayHeight/10);
 						  text(hour_ini+" hh "+(min_ini+1)+" mm", 3.6f*displayWidth/10, 3.5f*displayHeight/10);
 					  }
 					  // -- change color dependent on time left
 					  if((60-sec_current)<=30){ textFont(my_font,70); fill(255,0,0);}
 					  if((60-sec_current)<=20){textFont(my_font,80); fill(255,165,0);}
-					  if((60-sec_current)<=10){textFont(my_font,90); fill(0,255,0);}
+					  if((60-sec_current)<=10){textFont(my_font,180); fill(0,255,0);}
 					  text(60-sec_current, 4.5f*displayWidth/10, 4.5f*displayHeight/10); 
 					  
 				 }else{
 					 countdown = false;
 					 CurrentTime = millis();
-				 }
-					 
+				 }					 
 			  }
 			  
 			 			  
@@ -183,7 +182,7 @@ public class ProcessingMultiUser extends PApplet{
 			  float highest = Integer.MIN_VALUE+1; 
 			  float sec_highest = Integer.MIN_VALUE;
 			  int highestIndex = 0, sec_highestIndex = 0;
-			  for (int i = 1; i < plPositionY.length; i++)
+			  for (int i = 0; i < plPositionY.length; i++)
 			  {
 			      if(plPositionY[i]>highest)
 			      {
@@ -227,12 +226,12 @@ public class ProcessingMultiUser extends PApplet{
 				  CurrentTime=millis();
 				  
 				  TotalStat = "you  |  green  |  blue  |  red\n" +
-						  	  "  "+score[0][0]+"    |   "+score[0][1]+"    |   "+score[0][2]+"   |   "+score[0][3]+"\n" +
-						  	  "  "+score[1][0]+"    |   "+score[1][1]+"    |   "+score[1][2]+"   |   "+score[1][3]+"\n" +
-						  	  "  "+score[2][0]+"    |   "+score[2][1]+"    |   "+score[2][2]+"   |   "+score[2][3]+"\n" +
-						  	  "  "+score[3][0]+"    |   "+score[3][1]+"    |   "+score[3][2]+"   |   "+score[3][3]+"\n" +
+						  	  "  "+score[0][0]+"    |      "+score[0][1]+"      |     "+score[0][2]+"    |   "+score[0][3]+"\n" +
+						  	  "  "+score[1][0]+"    |      "+score[1][1]+"      |     "+score[1][2]+"    |   "+score[1][3]+"\n" +
+						  	  "  "+score[2][0]+"    |      "+score[2][1]+"      |     "+score[2][2]+"    |   "+score[2][3]+"\n" +
+						  	  "  "+score[3][0]+"    |      "+score[3][1]+"      |     "+score[3][2]+"    |   "+score[3][3]+"\n" +
 						  	  "-------------------------------\n"+
-						  	  plScore[0]+"     |   "+plScore[1]+"    |   "+plScore[2]+"    |   "+plScore[3];
+						  	  " "+plScore[0]+"     |      "+plScore[1]+"      |     "+plScore[2]+"    |   "+plScore[3];
 			  }
 			  			  
 			  // -- get index of the race winner
@@ -250,9 +249,9 @@ public class ProcessingMultiUser extends PApplet{
 //			  image(imgFinish, 0, finishLineY1coordinate, displayWidth, finishLineY2coordinate);
 			  
 		      // -- draw gradient of lines
-			  c2 = color(0, 0, 0); c1 = color(0,0,155);
-			  setGradient(0, (int)(finishLineY1coordinate), displayWidth, finishLineY2coordinate, c1, c2, "vertical");
-
+//			  c2 = color(178, 34, 34); c1 = color(255,140,0);
+//			  setGradient(0, (int)(finishLineY1coordinate), displayWidth, finishLineY2coordinate, c1, c2, "vertical");
+			  
 			  // ===============================================
 			  		// -- display game time
 			  if(!countdown){
@@ -282,10 +281,11 @@ public class ProcessingMultiUser extends PApplet{
 								for(int i=0; i<=3; i++){indexLocalPlayer[i] = 0;}
 							}else{
 //								indexLocalPlayer[0] = getEEG();
-//						    	indexLocalPlayer[1] = getEEGPlayer2();
-//						    	indexLocalPlayer[2] = getEEGPlayer3();
-//						    	indexLocalPlayer[3] = getEEGPlayer4();
-						    	indexLocalPlayer[1] = 61;  	indexLocalPlayer[2] = 80;  	indexLocalPlayer[3] = 100;
+								indexLocalPlayer[0] = getEEGPlayer1();
+						    	indexLocalPlayer[1] = getEEGPlayer2();
+						    	indexLocalPlayer[2] = getEEGPlayer3();
+						    	indexLocalPlayer[3] = getEEGPlayer4();
+//						    	indexLocalPlayer[1] = 61; 	indexLocalPlayer[2] = 51;  	indexLocalPlayer[3] = 100;
 							}
 							// -- draw 4 players in loop					
 							for(int i = 0; i < 4; i = i+1) {							
@@ -294,15 +294,26 @@ public class ProcessingMultiUser extends PApplet{
 								X_line = torroidX - displayWidth/80;
 								
 								displayToroidByID(indexLocalPlayer[i], playerID, torroidX, torroidY - plPositionY[playerID]);
-							}							
-																			
+							}				
+							
+							// -- display finish line
+							setGradient(0, (int)(finishLineY1coordinate+finishLineY2coordinate), displayWidth, 30, color(255, 69, 0), color(255,0,0), "vertical");		  
+							setGradient(0, (int)(finishLineY1coordinate+finishLineY2coordinate-30), displayWidth, 30, color(255,165,0), color(255,140,0), "vertical");
+							setGradient(0, (int)(finishLineY1coordinate+finishLineY2coordinate-60), displayWidth, 30, color(46,139,87), color(34,139,34), "vertical");
+							setGradient(0, (int)(finishLineY1coordinate+finishLineY2coordinate-90), displayWidth, 30, color(32,178,170), color(102,205,170), "vertical");
+							setGradient(0, (int)(finishLineY1coordinate+finishLineY2coordinate-120), displayWidth, 30, color(46,139,87), color(0,128,128), "vertical");
+							setGradient(0, (int)(finishLineY1coordinate+finishLineY2coordinate-150), displayWidth, 30, color(0,0,139), color(75,0,130), "vertical");
+							
+//							setGradient(0, (int)(finishLineY2coordinate), displayWidth, 180, color(0,255,0), color(75,0,130), "vertical");
+							
+							
 					    	displayGameLevel();
 						}else{
 							  // -- display current score
 //							  textFont(f,displayHeight/40); 	//-- Specify font to be used	
-							  textFont(createFont("Arial",40,true)); 	//-- Specify font to be used	
-							  fill(255);                        //-- Specify font color 
-							  text("The Winner is " + playerInfor[WI],  displayWidth/3,  displayHeight/4); 
+							  textFont(my_font,70);; 	  fill(0,255,0);
+							  text("The Winner is " + playerInfor[WI],  2.0f*displayWidth/10, 3.1f*displayHeight/10); 
+							  textFont(my_font,50);; 	  fill(255);
 							  text(TotalStat,  displayWidth/3,  displayHeight/2); 
 //							  text(score,  displayWidth/3,  displayHeight/0.5f); 
 						}
@@ -530,6 +541,40 @@ public class ProcessingMultiUser extends PApplet{
 			 	 }
 			}
 		}		
+
+		public int getEEGPlayer1(){		
+			if (millis() - ma_LastTime<=ma_length_ms){
+			 	 switch(MainActivity.UserControl){
+			 	 case "A":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl1); 	
+			 	 case "M":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl1); 
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl1 - eegService.Med_pl1)); 
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl1 + eegService.Med_pl1));
+			 	 }
+				 return 0;
+			}else{
+			
+			 	 switch(MainActivity.UserControl){
+			 	 case "A":
+			 		ma_value = 0.5f*(ma_value + eegService.At_pl1); 
+			 		return eegService.At_pl1;
+			 	 case "M":
+			 		ma_value = 0.5f*(ma_value + eegService.Med_pl1); 
+			 		return eegService.Med_pl1;
+			 	 case "S":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl1 - eegService.Med_pl1)); 
+			 		return (eegService.At_pl1 - eegService.Med_pl1);
+			 	 case "P":
+			 		ma_value = 0.5f*(ma_value + (eegService.At_pl1 + eegService.Med_pl1));
+			 		return (eegService.At_pl1 + eegService.Med_pl1);
+			 	 default:
+			 	     return 0;
+			 	 }
+			}
+		}
 		
 		/** get EEG data from MainActivity and calculate S,P
 		 *  moving average not working yet!!! */
@@ -863,11 +908,11 @@ public class ProcessingMultiUser extends PApplet{
 
 			  		// -- display info about player
 
-				  textFont(f,displayHeight/70); 	//-- Specify font to be used	
-				  fill(255);                        //-- Specify font color 
-//				  text(ind,  x - displayWidth/80, y - displayHeight/100); 
+				  textFont(f,displayHeight/70);  fill(255); 
+				  text(ind,  x - displayWidth/80, y - displayHeight/100); 
+				  
 				  textFont(f,displayHeight/50); 
-				  text(playerInfor[plID],  x- displayWidth/50 , displayHeight - displayHeight/20);
+				  text(playerInfor[plID],  x- displayWidth/49, displayHeight - displayHeight/24);
 	
 			  
 			  // -- display current score
@@ -967,17 +1012,17 @@ public class ProcessingMultiUser extends PApplet{
 			  noStroke();
 			  for(int i=0; i<MaxGameLevel; i++){
 				  		// -- set fill to red
-					fill(255,0,0); 
+					fill(128,128,128); 
 						// -- Draw ellipse using CENTER mode
 //					ellipse(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.2f*displayHeight/10, 15, 15); 
 					ellipse(displayWidth/10 + i*displayWidth/MaxGameLevel, displayHeight - 0.2f*displayHeight/10, 15, 15); 
 					 
 		  	  }
 			  for(int i=0; i<GameLevel; i++){
-					fill(0,0,255);  // -- set fill to blue
+					fill(0,100,0);  // -- set fill to blue
 						// -- Draw ellipse using CENTER mode
 //					ellipse(1f*displayWidth/10 + i*displayWidth/10, displayHeight - 0.2f*displayHeight/10, 20, 20); 
-					ellipse(displayWidth/10 + i*displayWidth/MaxGameLevel, displayHeight - 0.2f*displayHeight/10, 20, 20); 
+					ellipse(displayWidth/10 + i*displayWidth/MaxGameLevel, displayHeight - 0.2f*displayHeight/10, 30, 30); 
 			  }
 		}
 

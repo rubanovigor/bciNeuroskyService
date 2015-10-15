@@ -313,10 +313,15 @@ public class MainActivity extends Activity{
 	public void onSwitchClickedService(View view) {
 	    // Is the toggle on?
 //	    boolean on = serviceOnOff.isChecked();
-	    State_serviceOnOff = serviceOnOff.isChecked();
+		serviceOnOff.setText("");
+		State_serviceOnOff = serviceOnOff.isChecked();
 	    
 	    if (State_serviceOnOff) {
-//			startService(new Intent(this, eegService.class));
+	    	// -- manage icon
+	    	serviceOnOff.setBackgroundResource(R.drawable.service_on);
+	    	serviceOnOff.setTextColor(Color.WHITE);
+	    	serviceOnOff.setText("ON");
+	    	
 			ServiceRunningFlag = "running";
 			
 			Intent serviceIntent = new Intent(this, eegService.class);
@@ -329,9 +334,14 @@ public class MainActivity extends Activity{
 //			startActivity(intent);
 			  
 	    } else { //Service will only stop if it is already running
+	    	serviceOnOff.setBackgroundResource(R.drawable.service_off);
+	    	serviceOnOff.setTextColor(Color.GRAY);
+	    	serviceOnOff.setText("OFF");
+	    	
 			stopService(new Intent(this, eegService.class));
 			ServiceRunningFlag = "stoped";
-	    }    
+	    }     
+	    
 	}
 	
 	public void ServiceOff() {
@@ -429,7 +439,20 @@ public class MainActivity extends Activity{
 	    // -- service
 		SharedPreferences ss1 = getSharedPreferences(tService, 0);
 		State_serviceOnOff =  ss1.getBoolean(Key_State_serviceOnOff, false);
-			serviceOnOff.setChecked(State_serviceOnOff);
+		serviceOnOff.setChecked(State_serviceOnOff);
+		
+		if (State_serviceOnOff) {
+	    	// -- manage icon
+	    	serviceOnOff.setBackgroundResource(R.drawable.service_on);
+	    	serviceOnOff.setTextColor(Color.WHITE);
+	    	serviceOnOff.setText("ON");			  
+	    } else {
+	    	serviceOnOff.setBackgroundResource(R.drawable.service_off);
+	    	serviceOnOff.setTextColor(Color.GRAY);
+	    	serviceOnOff.setText("OFF");
+	    }     
+		
+		
 			
 		// -- backend
 		SharedPreferences ss2 = getSharedPreferences(tBackEnd, 0);

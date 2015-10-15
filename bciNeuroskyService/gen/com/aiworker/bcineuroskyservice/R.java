@@ -48,8 +48,10 @@ public final class R {
         public static final int p_red=0x7f020017;
         public static final int rnd=0x7f020018;
         public static final int s_red=0x7f020019;
-        public static final int settings=0x7f02001a;
-        public static final int visualizer=0x7f02001b;
+        public static final int service_off=0x7f02001a;
+        public static final int service_on=0x7f02001b;
+        public static final int settings=0x7f02001c;
+        public static final int visualizer=0x7f02001d;
     }
     public static final class id {
         public static final int Att_label=0x7f06000b;

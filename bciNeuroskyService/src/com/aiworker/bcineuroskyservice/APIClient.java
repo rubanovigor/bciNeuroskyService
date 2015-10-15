@@ -31,15 +31,17 @@ public class APIClient {
 	// for rubanovigor@gmail.com
 		//    private static int profileId = 9;
 		//    private static int exerciseId = 11;
-		//    private static String token = "x_x55Xp1DgVW8jBXdGfk"; 
-	
+		    private static String token = "x_x55Xp1DgVW8jBXdGfk"; 
+//		    private static String token;
+		    
 //    public static int profileId = MainActivity.profileId;
 //    public static int exerciseId = MainActivity.exerciseId;
 //    public static String token = MainActivity.token;
 		// -- backend settings for local user
-    private static int profileId, exerciseId;	private static String token;
+    private static int profileId, exerciseId;	
     	// -- backend settings for network user
-    private static int profileIdPlayer2, exerciseIdPlayer2, profileIdPlayer3, exerciseIdPlayer3, profileIdPlayer4, exerciseIdPlayer4;
+    private static int profileIdPlayer1, exerciseIdPlayer1, profileIdPlayer2, exerciseIdPlayer2, 
+    				   profileIdPlayer3, exerciseIdPlayer3, profileIdPlayer4, exerciseIdPlayer4;
 //    public static String tokenNetUser = "";
     
 //    private static String host = "neuro-backend.herokuapp.com";
@@ -47,7 +49,7 @@ public class APIClient {
     private static boolean backendEnabled = true;
     private static boolean backendConfigured = true;
     public static String msgFromBackend;
-	public static int[] indexes2 = {0, 0}, indexes3 = {0, 0}, indexes4 = {0, 0};
+	public static int[]  indexes1 = {0, 0}, indexes2 = {0, 0}, indexes3 = {0, 0}, indexes4 = {0, 0};
 	public static String lastTS1;
     
     
@@ -59,16 +61,6 @@ public class APIClient {
 
     private static String lastTS = null;
     private static StatsCollector statsCollector = new StatsCollector();
-
-    public static void setProfileId(int pId) {
-        profileId = pId;
-        checkConfiguration();
-    }
-
-    public static void setExerciseId(int eId) {
-        exerciseId = eId;
-        checkConfiguration();
-    }
 
     public static void setToken(String tkn) {
         token = tkn;
@@ -165,7 +157,10 @@ public class APIClient {
         lastTS = ts;
     }
     
+    
     // ====================================
+    public static void setProfileId(int pId) { profileId = pId;  checkConfiguration();  }
+    public static void setExerciseId(int eId){ exerciseId = eId; checkConfiguration();  }
     // -- for network user's
     public static void setProfileIdPlayer2(int pId) {profileIdPlayer2 = pId;  checkConfiguration(); }
     public static void setExerciseIdPlayer2(int eId){exerciseIdPlayer2 = eId; checkConfiguration(); }
@@ -176,7 +171,28 @@ public class APIClient {
     public static void setProfileIdPlayer4(int pId) {profileIdPlayer4 = pId;  checkConfiguration(); }
     public static void setExerciseIdPlayer4(int eId){exerciseIdPlayer4 = eId; checkConfiguration(); }
     
-    
+    public static int[] getDataPlayer1() {
+        client.get(null, getPlayer1LatestDataURL(), null, null, new AsyncHttpResponseHandler(){
+               @Override
+               public void onSuccess(String response) {
+               	msgFromBackend = response;
+               	indexes1 = parseMsg(msgFromBackend);
+               	Log.e("ir_Response", response); 
+//               	Log.e("ir_indexes", String.valueOf(indexes2)); 
+               }
+
+              @Override
+                public void onFailure(Throwable e) {
+           	   Log.e("ir_error","ir_OnFailure getDataPlayer1()!", e);
+                }
+           });
+        return indexes1;
+   }
+   
+   public static String getPlayer1LatestDataURL() {   	
+   	return "http://" + host + "/profiles/" + profileId + "/exercises/" + exerciseId +
+   			"/statistics/latest.json?auth_token=" + token;
+   }     
     
     public static int[] getDataPlayer2() {
 //	     String ts1 = getCurrentTimeUTC();
@@ -193,7 +209,7 @@ public class APIClient {
 
                @Override
                  public void onFailure(Throwable e) {
-            	   Log.e("error","ir_OnFailure!", e);
+            	   Log.e("error","ir_OnFailure getDataPlayer2()!", e);
                  }
             });
 //	      } 
@@ -202,7 +218,6 @@ public class APIClient {
 //        	Log.e("ir_Response Med:", String.valueOf(indexes2[1]));
           return indexes2;
     }
- 
     
     public static String getPlayer2LatestDataURL() {   	
     	return "http://" + host + "/profiles/" + profileIdPlayer2 + "/exercises/" + exerciseIdPlayer2 +
@@ -219,7 +234,7 @@ public class APIClient {
                }
 
               @Override
-                public void onFailure(Throwable e) {Log.e("error","ir_OnFailure!", e); }
+                public void onFailure(Throwable e) {Log.e("error","ir_OnFailure getDataPlayer3()!", e); }
            });
          return indexes3;
    }
@@ -241,7 +256,7 @@ public class APIClient {
               	}
 
              @Override
-               public void onFailure(Throwable e) {Log.e("error","ir_OnFailure!", e);}
+               public void onFailure(Throwable e) {Log.e("error","ir_OnFailure getDataPlayer4()!", e);}
           });
         return indexes4;
   }

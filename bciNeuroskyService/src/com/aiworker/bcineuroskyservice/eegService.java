@@ -45,7 +45,7 @@ public class eegService extends Service{
 	private BluetoothAdapter bluetoothAdapter;	TGDevice tgDevice;
 	private static final boolean RAW_ENABLED = false; // false by default	
 	public static int At=0, Med=0;
-	public static int At_pl2=0, Med_pl2=0, At_pl3=0, Med_pl3=0, At_pl4=0, Med_pl4=0;
+	public static int At_pl1=0, Med_pl1=0, At_pl2=0, Med_pl2=0, At_pl3=0, Med_pl3=0, At_pl4=0, Med_pl4=0;
 	private int delta = 0; private int high_alpha = 0; private int high_beta = 0; private int low_alpha = 0;
 	private int low_beta = 0; private int low_gamma = 0; private int mid_gamma = 0; private int theta = 0;
 	private String CurrentActivity = "default";
@@ -339,6 +339,9 @@ public class eegService extends Service{
 //			                	if(MainActivity.backend){ iam = APIClient.getData();}
 			                	
 			                		// -- network user
+			                	if(MainActivity.backend){ iam = APIClient.getDataPlayer1();}			                	
+			                	At_pl1 = iam[0]; Med_pl1 = iam[1];
+			                	
 			                	if(MainActivity.backend){ iam = APIClient.getDataPlayer2();}			                	
 			                	At_pl2 = iam[0]; Med_pl2 = iam[1];
 			                	if(MainActivity.backend){ iam = APIClient.getDataPlayer3();}			                	
